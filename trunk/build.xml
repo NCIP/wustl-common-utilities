@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="washu-commons" basedir="." default="build.jar">
+	<property name="build.dir" location="build" />
+	<property name="classes.dir" location="classes" />
+	<target name="clean">
+		<mkdir dir="${build.dir}" />
+		<delete includeemptydirs="true">
+			<fileset dir="${build.dir}">
+				<include name="**/*" />
+			</fileset>
+		</delete>
+		<mkdir dir="${classes.dir}" />
+		<delete includeemptydirs="true">
+			<fileset dir="${classes.dir}">
+				<include name="**/*" />
+			</fileset>
+		</delete>	
+	</target>
+
+	<path id="run.classpath">
+		<pathelement location="conf" />
+		<fileset dir="lib">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement location="${output}" />
+	</path>
+	<target name="compile" depends="clean">	
+		<javac srcdir="src" destdir="${classes.dir}" fork="true" memoryMaximumSize="1200m" includes="**/*.java" debug="on" deprecation="true" classpathref="run.classpath" failonerror="true" nowarn="on" target="1.5" />
+	</target>
+
+	<target name="build.jar" depends="compile">
+		<delete>
+			<fileset dir="${build.dir}" includes="**/*" />
+		</delete>
+
+		<jar jarfile="${build.dir}/washu-commons.jar">
+			<fileset dir="${classes.dir}">
+				<include name="**/*" />
+				<exclude name="**/*Test" />
+			</fileset>
+		</jar>
+	</target>
+
+</project>
