@@ -1,10 +1,11 @@
 package edu.wustl.common.util;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,262 +15,231 @@ import java.util.Set;
  * @version 1.0
  * @created 31-Oct-2006 12.46.04 PM
  */
-
-// TODO check getEdge(). edgeObj may be null.
-// TODO check Edge.hashCode() no equals
-// TODO check isConnected()... self-edge causes problem. ASSUMES ROOTED GRAPH.
-// TODO getReachablePaths etc... incorrect if cycles present.
-public class Graph<V, E> implements Serializable {
+public class Graph<V, E> implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 2744129191470144562L;
 
-    private Map<V, List<Edge>> incommingEdgeMap = new HashMap<V, List<Edge>>();
+    private transient HashMap<V, Map<V, E>> incomingEdgeMap;
 
-    private Map<V, List<Edge>> outgoingEdgeMap = new HashMap<V, List<Edge>>();
+    private HashMap<V, Map<V, E>> outgoingEdgeMap;
 
     public Graph() {
+        initMaps();
     }
 
-    // Internal Edge class to create the edge object
-    class Edge implements Serializable {
-
-        private static final long serialVersionUID = 2747448736801686112L;
-
-        private V sourceVertex;
-
-        private V targetVertex;
-
-        private E edgeObj;
-
-        public Edge(V sourceVertex, V targetVertex, E edgeobj) {
-            this.sourceVertex = sourceVertex;
-            this.targetVertex = targetVertex;
-            this.edgeObj = edgeobj;
-        }
-
-        public V getSourceVertex() {
-            return sourceVertex;
-        }
-
-        public V getTargetVertex() {
-            return targetVertex;
-        }
-
-        public E getEdgeObject() {
-            return edgeObj;
-        }
-
-        public void setEdgeObject(E edgeObj) {
-            this.edgeObj = edgeObj;
-        }
-
-        /**
-         * @see java.lang.Object#toString()
-         */
-        @Override
-        public String toString() {
-            return "[" + sourceVertex + "--" + edgeObj + "-->" + targetVertex
-                    + "]";
-        }
-
+    public Graph(Graph<? extends V, ? extends E> graph) {
+        assign(graph);
     }
 
+    private void initMaps() {
+        incomingEdgeMap = new HashMap<V, Map<V, E>>();
+        outgoingEdgeMap = new HashMap<V, Map<V, E>>();
+    }
+
+    /* DATA-RELATED METHODS */
+    // ACCESSORS
     /**
-     * Add a vertex to the list of vertices if same does not exist in the list
-     * @param vertex
-     * @return true upon adding vertex to existing vertex list; false otherwise
+     * To get List of all vertices present in graph.
+     * 
+     * @return List of all vertices present in graph.
      */
-    public boolean addVertex(V vertex) {
-        if (containsVertex(vertex))
-            return false;
-        else {
-            incommingEdgeMap.put(vertex, new ArrayList<Edge>());
-            outgoingEdgeMap.put(vertex, new ArrayList<Edge>());
-            return true;
-        }
+    public Set<V> getVertices() {
+        return copy(incomingEdgeMap.keySet());
     }
 
     /**
      * Checks if specified vertex is present in this graph.
-     * @param vertex
-     *            the vertex whose presence is to be checked.
+     * 
+     * @param vertex the vertex whose presence is to be checked.
      * @return <tt>true</tt> if this vertex is present in this graph;
      *         <tt>false</tt> otherwise.
      */
     public boolean containsVertex(V vertex) {
-        return incommingEdgeMap.containsKey(vertex);
+        return outgoingEdgeMap.containsKey(vertex);
     }
 
     /**
-     * Get the edge from the list of edges, if one exists between source vertex
-     * and target vertex.
-     * @param sourceVertex
-     * @param targetVertex
-     * @return edge object if it exists; null otherwise
+     * @return list of all edges in this graph.
      */
-    public E getEdge(V sourceVertex, V targetVertex) {
-        List<Edge> edges = outgoingEdgeMap.get(sourceVertex);
-
-        if (edges != null) {
-            Edge edge = getEdgeFromList(edges, targetVertex, false);
-
-            if (edge != null)
-                return edge.getEdgeObject();
+    public Set<E> getEdges() {
+        Set<E> res = new HashSet<E>();
+        for (Map<V, E> edges : outgoingEdgeMap.values()) {
+            res.addAll(edges.values());
         }
-        return null;
+        return res;
+    }
+
+    public Map<V, E> getOutgoingEdges(V source) {
+        validateVertex(source);
+        return copy(outgoingEdgeMap.get(source));
+    }
+
+    public Map<V, E> getIncomingEdges(V target) {
+        validateVertex(target);
+        return copy(incomingEdgeMap.get(target));
     }
 
     /**
      * This method checks whether an edge lies between the source vertex and
      * target vertex.
-     * @param sourceVertex
-     * @param targetVertex
+     * 
      * @return true if the edge exists; false otherwise
      */
-    public boolean containsEdge(V sourceVertex, V targetVertex) {
-        return getEdge(sourceVertex, targetVertex) != null;
+    public boolean containsEdge(V source, V target) {
+        validateVertex(source);
+        validateVertex(target);
+        return outgoingEdgeMap.get(source).containsKey(target);
     }
 
     /**
+     * Get the edge from the list of edges, if one exists between source vertex
+     * and target vertex.
+     * 
+     * @return edge object if it exists; null otherwise
+     */
+    public E getEdge(V source, V target) {
+        validateVertex(source);
+        validateVertex(target);
+        return outgoingEdgeMap.get(source).get(target);
+    }
+
+    // MODIFIERS
+    /**
      * Remove the edge if it exists in the list of edges.
+     * 
      * @param sourceVertex
      * @param targetVertex
      * @return removed edge if edge object is not null; null otherwise
      */
-    public E removeEdge(V sourceVertex, V targetVertex) {
-        List<Edge> incommingEdges = incommingEdgeMap.get(targetVertex);
-        List<Edge> outgoingEdges = outgoingEdgeMap.get(sourceVertex);
-
-        if (incommingEdges != null && outgoingEdges != null) {
-            Edge edge = (Edge) getEdgeFromList(incommingEdges, sourceVertex,
-                                               true);
-
-            if (edge != null) {
-                incommingEdges.remove(edge);
-                outgoingEdges.remove(edge);
-                return edge.getEdgeObject();
-            }
-        }
-        return null;
+    public E removeEdge(V source, V target) {
+        validateVertex(source);
+        validateVertex(target);
+        outgoingEdgeMap.get(source).remove(target);
+        return incomingEdgeMap.get(target).remove(source);
     }
 
     /**
      * Put the edge into the list of edges if it does not exist. If the edge
      * exists return the old edge and replace it with a new edge.
+     * 
      * @param sourceVertex
      * @param targetVertex
      * @param edge
      * @return the old edge if it exists; null otherwise
      */
-    public E putEdge(V sourceVertex, V targetVertex, E edge) {
-        Edge theEdge = (Edge) getEdgeFromList(
-                                              outgoingEdgeMap.get(sourceVertex),
-                                              targetVertex, false);
+    public E putEdge(V source, V target, E edge) {
+        // if (edge == null) {
+        // throw new NullPointerException("null edge not allowed.");
+        // }
+        addVertex(source);
+        addVertex(target);
 
-        if (theEdge == null) // The edge does not exist!!
-        {
-            // Adding vertex in the vertex list if not present.
-            addVertex(sourceVertex);
-            addVertex(targetVertex);
-
-            // Add this Edge in outgoing & incomming Edges.
-            Edge newEdge = new Edge(sourceVertex, targetVertex, edge);
-            outgoingEdgeMap.get(sourceVertex).add(newEdge);
-            incommingEdgeMap.get(targetVertex).add(newEdge);
-
-            return null;
-        } else
-        // The edge already exists, so replace the existing edge and return it.
-        {
-            E oldEdge = theEdge.getEdgeObject();
-            theEdge.setEdgeObject(edge);
-            return oldEdge;
-        }
+        outgoingEdgeMap.get(source).put(target, edge);
+        return incomingEdgeMap.get(target).put(source, edge);
     }
 
     /**
-     * Checks if the graph is weakly connected. Graph will be connected if 1.
-     * after Depth first traversing (without considering edge Direction) through
-     * graph from (the only one)unreachable node, results into
-     * @return true if graph is connected; false if graph is disjoint
+     * Add a vertex to the list of vertices if same does not exist in the list
+     * 
+     * @param vertex the vertex to add to the graph.
+     * @return <tt>true</tt> if this vertex already existed.
+     * @throws NullPointerException if the specified vertex is null.
      */
-    public boolean isConnected() {
-        boolean isConnected = true;
-
-        List<V> unreachableNodes = getUnreachableNodeList();
-        // if (unreachableNodes.size() > 1)
-        // return false;
-
-        Set<V> allVertexSet = new HashSet<V>();
-        allVertexSet.addAll(incommingEdgeMap.keySet());
-
-        dfs(unreachableNodes.get(0), allVertexSet);
-        if (allVertexSet.isEmpty())
-            isConnected = true;
-        else
-            // after traversing if the allVertexSet is not empty means its a
-            // disconnected graph.
-            isConnected = false;
-
-        return isConnected;
-    }
-
-    /**
-     * This method will return the list of vertices having no incomming Edges.
-     * The node having no incomming edges will be treated as Root node.
-     * @return list of vertices having no incomming Edges.
-     */
-    public List<V> getUnreachableNodeList() {
-        List<V> list = new ArrayList<V>();
-
-        Set<V> vertices = incommingEdgeMap.keySet();
-        for (Iterator<V> iter = vertices.iterator(); iter.hasNext();) {
-            V vertex = iter.next();
-            List<Edge> incommingEdges = incommingEdgeMap.get(vertex);
-            if (incommingEdges == null || incommingEdges.isEmpty())
-                list.add(vertex);
+    public boolean addVertex(V vertex) {
+        if (vertex == null) {
+            throw new NullPointerException("null vertex not allowed.");
         }
-        return list;
+        if (containsVertex(vertex))
+            return false;
+        else {
+            incomingEdgeMap.put(vertex, new HashMap<V, E>());
+            outgoingEdgeMap.put(vertex, new HashMap<V, E>());
+            return true;
+        }
     }
 
     /**
      * Removes the specified vertex from the list of vertices if one exists
+     * 
      * @param vertex
      * @return true upon removing specified existing vertex; false otherwise
      */
     public boolean removeVertex(V vertex) {
-        boolean flag = false;
-        if (incommingEdgeMap.containsKey(vertex)) {
-            removeAllEdgesOfVertex(vertex);
-
-            // removing refernce of vertex from edge maps.
-            incommingEdgeMap.remove(vertex);
-            outgoingEdgeMap.remove(vertex);
-            flag = true;
+        if (!containsVertex(vertex)) {
+            return false;
         }
-        return flag;
+        for (V src : incomingEdgeMap.get(vertex).keySet()) {
+            removeEdge(src, vertex);
+        }
+        for (V target : outgoingEdgeMap.get(vertex).keySet()) {
+            removeEdge(vertex, target);
+        }
+        incomingEdgeMap.remove(vertex);
+        outgoingEdgeMap.remove(vertex);
+        return true;
+    }
+
+    // HELPERS
+    void checkNull(V vertex) {
+        if (vertex == null) {
+            throw new NullPointerException("null vertex.");
+        }
+    }
+
+    void validateVertex(V vertex) {
+        checkNull(vertex);
+        if (!containsVertex(vertex)) {
+            throw new IllegalArgumentException("specified vertex is not present in graph.");
+        }
+    }
+
+    private static <T> Set<T> copy(Set<T> set) {
+        return new HashSet<T>(set);
+    }
+
+    private static <K, V> Map<K, V> copy(Map<K, V> map) {
+        return new HashMap<K, V>(map);
+    }
+
+    // ////////////////////////////////////////////////////////////////////////////////
+    /* GRAPH STRUCTURE BASED OPERATIONS */
+    /**
+     * To get the list directly reachable Vertices from the given vertex.
+     * 
+     * @return List of Vertices directly reachable from the given vertex.
+     *         Returns null if vertex is not present in graph, Returns empty
+     *         list if vertex has no directly reachable node.
+     */
+    public Set<V> getChildren(V v) {
+        return getOutgoingEdges(v).keySet();
     }
 
     /**
-     * To remove all edges of Vertex. This will remove all incoming & outgoing
-     * edges of given vertex.
-     * @param vertex
-     *            the reference to vertex.
+     * To get the list of vertices from which the given vertex is directly
+     * reachable.
+     * 
+     * @return List of Vertices from which the given vertex is directly
+     *         reachable. Returns null if vertex is not present in graph,
+     *         Returns empty list if vertex has no incomming Edges.
      */
-    private void removeAllEdgesOfVertex(V vertex) {
-        // removing all incomming edges for the given vertex.
-        List<Edge> incommingEdges = incommingEdgeMap.get(vertex);
-        for (int index = 0; index < incommingEdges.size(); index++) {
-            Edge edge = incommingEdges.get(index);
-            removeEdge(edge.sourceVertex, edge.targetVertex);
-        }
+    public Set<V> getParents(V v) {
+        return getIncomingEdges(v).keySet();
+    }
 
-        // removing all outgoing edges for given vertex.
-        List<Edge> outgoingEdges = outgoingEdgeMap.get(vertex);
-        for (int index = 0; index < outgoingEdges.size(); index++) {
-            Edge edge = outgoingEdges.get(index);
-            removeEdge(edge.sourceVertex, edge.targetVertex);
+    /**
+     * This method will return the list of vertices having no incomming Edges.
+     * The node having no incoming edges will be treated as Root node.
+     * 
+     * @return list of vertices having no incomming Edges.
+     */
+    public Set<V> getUnreachableNodeList() {
+        Set<V> res = new HashSet<V>();
+        for (Map.Entry<V, Map<V, E>> entry : incomingEdgeMap.entrySet()) {
+            if (entry.getValue().isEmpty()) {
+                res.add(entry.getKey());
+            }
         }
+        return res;
     }
 
     /**
@@ -278,20 +248,16 @@ public class Graph<V, E> implements Serializable {
      * cycle only when the target vertex is reachable from source vertex i.e.
      * Vertex B is reachable from vertex A if and only if 1. There is direct
      * edge from vertex C to B 2. and C is reachable from A.
-     * @param sourceVertex
-     *            The source vertex of edge to be added.
-     * @param targetVertex
-     *            The target vertex of edge to be added.
+     * 
+     * @param sourceVertex The source vertex of edge to be added.
+     * @param targetVertex The target vertex of edge to be added.
      * @return true if the
      */
     private boolean isReverseReachable(V sourceVertex, V targetVertex) {
         if (sourceVertex.equals(targetVertex))
-            return true; // finaly reached from source to target!!!
-        List<Edge> edges = incommingEdgeMap.get(sourceVertex);
-        for (int i = 0; i < edges.size(); i++) {
-            boolean isCyclic = isReverseReachable(edges.get(i).sourceVertex,
-                                                  targetVertex);
-            if (isCyclic)
+            return true; // finally reached from source to target!!!
+        for (V v : incomingEdgeMap.get(sourceVertex).keySet()) {
+            if (isReverseReachable(v, targetVertex))
                 return true;
         }
 
@@ -299,155 +265,61 @@ public class Graph<V, E> implements Serializable {
     }
 
     /**
-     * Method to traverse using Depth First algorithm. It removes the vertex
-     * from allVertexSet while visiting each vertex. dfs of connected graph
-     * should result into the allVetrexSet empty.
-     * @param vertex
-     *            The vertex to be visited.
-     * @param allVertexSet
-     *            Set of all nodes not visited yet.
-     */
-    private void dfs(V vertex, Set<V> allVertexSet) {
-        allVertexSet.remove(vertex);
-        List<Edge> edges = new ArrayList<Edge>();
-        edges.addAll(outgoingEdgeMap.get(vertex));
-        edges.addAll(incommingEdgeMap.get(vertex));
-
-        if (edges != null) {
-            for (int i = 0; i < edges.size(); i++) {
-                Edge edge = edges.get(i);
-                if (allVertexSet.contains(edge.targetVertex))
-                    dfs(edge.targetVertex, allVertexSet); // this vertex is
-                // not yet visited.
-                if (allVertexSet.contains(edge.sourceVertex))
-                    dfs(edge.sourceVertex, allVertexSet); // this vertex is
-                // not yet visited.
-            }
-        }
-    }
-
-    /**
-     * Get the edge for the specified target vertex.
-     * @param edges
-     * @param targetVertex
-     * @return the edge if it exists; null otherwise
-     */
-    private Edge getEdgeFromList(List<Edge> edges, V targetVertex,
-                                 boolean isIncommingEdge) {
-        if (edges != null) {
-            for (int i = 0; i < edges.size(); i++) {
-                Edge edge = edges.get(i);
-                if (isIncommingEdge) {
-                    if (edge.getSourceVertex().equals(targetVertex))
-                        return edge;
-                } else {
-                    if (edge.getTargetVertex().equals(targetVertex))
-                        return edge;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * To get the list directly reachable Vertices from the given vertex.
-     * @return List of Vertices directly reachable from the given vertex.
-     *         Returns null if vertex is not present in graph, Returns empty
-     *         list if vertex has no directly reachable node.
-     */
-    public List<V> getDirectSuccessorOf(V vertex) {
-        List<Edge> edges = outgoingEdgeMap.get(vertex);
-        List<V> vertices = null;
-        if (edges != null) {
-            vertices = new ArrayList<V>();
-            Iterator<Edge> iter = edges.iterator();
-            while (iter.hasNext()) {
-                vertices.add(iter.next().targetVertex);
-
-            }
-        }
-        return vertices;
-    }
-
-    /**
-     * To get the list of vertices from which the given vertex is directly
-     * reachable.
-     * @return List of Vertices from which the given vertex is directly
-     *         reachable. Returns null if vertex is not present in graph,
-     *         Returns empty list if vertex has no incomming Edges.
-     */
-    public List<V> getDirectPredecessorOf(V vertex) {
-        List<Edge> edges = incommingEdgeMap.get(vertex);
-        List<V> vertices = null;
-        if (edges != null) {
-            vertices = new ArrayList<V>();
-            Iterator<Edge> iter = edges.iterator();
-            while (iter.hasNext()) {
-                vertices.add(iter.next().sourceVertex);
-            }
-        }
-        return vertices;
-    }
-
-    /**
-     * All possible path between two vertices.
-     * @param fromVertex
-     *            the begining vertex.
-     * @param toVetrex
-     *            the ending vertix.
+     * All possible (acyclic) paths between two vertices. If source and target
+     * are the same, then the resulting path will have no vertices.
+     * 
+     * @param source the begining vertex.
+     * @param target the ending vertix.
      * @return List of all paths, where path is again List of Vertices.
-     * @throws IllegalArgumentException
-     *             when the fromVetrex or toVetrex is not in the graph.
+     * @throws IllegalArgumentException when the fromVetrex or toVetrex is not
+     *             in the graph.
      */
-    public List<List<V>> getReachablePaths(V fromVertex, V toVetrex) {
-        if (!outgoingEdgeMap.containsKey(fromVertex)) {
-            throw new IllegalArgumentException(
-                    "fromVertex is not present in graph!!!");
-        }
-        if (!incommingEdgeMap.containsKey(toVetrex)) {
-            throw new IllegalArgumentException(
-                    "toVetrex is not present in graph!!!");
-        }
-        List<List<V>> paths = new ArrayList<List<V>>();
-        List<Edge> edges = incommingEdgeMap.get(toVetrex);
-        for (int i = 0; i < edges.size(); i++) {
-            Edge edge = edges.get(i);
-            if (fromVertex.equals(edge.sourceVertex)) {
-                List<V> path = new ArrayList<V>();
-                path.add(fromVertex);
-                path.add(toVetrex);
-                paths.add(path);
+    public Set<List<V>> getVertexPaths(V source, V target) {
+        validateVertex(source);
+        validateVertex(target);
+        return getVertexPaths(source, target, new HashSet<V>());
+    }
+
+    // TODO check source == target
+    private Set<List<V>> getVertexPaths(V source, V target, Set<V> verticesToIgnore) {
+        Set<List<V>> res = new HashSet<List<V>>();
+        verticesToIgnore.add(target);
+        for (Map.Entry<V, E> entry : incomingEdgeMap.get(target).entrySet()) {
+            V srcSrc = entry.getKey();
+            if (verticesToIgnore.contains(srcSrc)) {
                 continue;
             }
-
-            List<List<V>> thePaths = getReachablePaths(fromVertex,
-                                                       edge.sourceVertex);
-            if (!thePaths.isEmpty()) {
-                for (int j = 0; j < thePaths.size(); j++) {
-                    List<V> path = thePaths.get(j);
-                    path.add(toVetrex);
-                }
-                paths.addAll(thePaths);
+            if (source.equals(srcSrc)) {
+                List<V> path = new ArrayList<V>();
+                path.add(source);
+                path.add(target);
+                res.add(path);
+                continue;
             }
+            Set<List<V>> thePaths = getVertexPaths(source, srcSrc, verticesToIgnore);
+
+            for (List<V> thePath : thePaths) {
+                thePath.add(target);
+            }
+            res.addAll(thePaths);
         }
-        return paths;
+        verticesToIgnore.remove(target);
+        return res;
     }
 
     /**
      * All possible path Edges between two vertices.
-     * @param fromVertex
-     *            the begining vertex.
-     * @param toVetrex
-     *            the ending vertix.
+     * 
+     * @param fromVertex the begining vertex.
+     * @param toVetrex the ending vertix.
      * @return List of all path Edges, where path is again List of Vertices.
-     * @throws IllegalArgumentException
-     *             when the fromVetrex or toVetrex is not in the graph.
+     * @throws IllegalArgumentException when the fromVetrex or toVetrex is not
+     *             in the graph.
      */
-    public List<List<E>> getReachableEdgePaths(V fromVertex, V toVetrex) {
-        List<List<E>> edgePaths = new ArrayList<List<E>>();
-        List<List<V>> verticesPaths = getReachablePaths(fromVertex, toVetrex);
-        for (int i = 0; i < verticesPaths.size(); i++) {
-            List<V> thePath = verticesPaths.get(i);
+    public Set<List<E>> getEdgePaths(V fromVertex, V toVetrex) {
+        Set<List<E>> edgePaths = new HashSet<List<E>>();
+        Set<List<V>> verticesPaths = getVertexPaths(fromVertex, toVetrex);
+        for (List<V> thePath : verticesPaths) {
             List<E> theEdgePath = new ArrayList<E>();
             for (int j = 1; j < thePath.size(); j++) {
                 theEdgePath.add(getEdge(thePath.get(j - 1), thePath.get(j)));
@@ -457,65 +329,61 @@ public class Graph<V, E> implements Serializable {
         return edgePaths;
     }
 
+    // ///////////////////////////////////////////////////////////
+    /* STRUCTURAL CONSTRAINT CHECKERS */
     /**
-     * To get the List of Vertices having outgoing Edges from given vertex.
-     * @param vertex
-     * @return
-     * @throws IllegalArgumentException
-     *             if the vertex does not exists in graph.
+     * Checks if the graph is weakly connected. Graph will be connected if 1.
+     * after Depth first traversing (without considering edge Direction) through
+     * graph from (the only one)unreachable node, results into
+     * 
+     * @return true if graph is connected; false if graph is disjoint
      */
-    public List<V> getOutgoingVertices(V vertex) {
-        if (!outgoingEdgeMap.containsKey(vertex)) {
-            throw new IllegalArgumentException(
-                    "vertex is not present in graph!!!");
+    public boolean isConnected() {
+        Set<V> vertices = getVertices();
+        if (vertices.isEmpty()) {
+            return false;
         }
-        List<Edge> edges = outgoingEdgeMap.get(vertex);
-        List<V> vertices = new ArrayList<V>();
 
-        for (int i = 0; i < edges.size(); i++) {
-            vertices.add(edges.get(i).targetVertex);
-        }
-        return vertices;
+        dfs(vertices.iterator().next(), vertices);
+        return vertices.isEmpty();
     }
 
     /**
-     * To get List of all vertices present in graph.
-     * @return List of all vertices present in graph.
+     * Method to traverse using Depth First algorithm. It removes the vertex
+     * from allVertexSet while visiting each vertex. dfs of connected graph
+     * should result into the allVetrexSet empty.
+     * 
+     * @param vertex The vertex to be visited.
+     * @param allVertexSet Set of all nodes not visited yet.
      */
-    public Set<V> getVertices() {
-        Set<V> vertices = new HashSet<V>();
-        vertices.addAll(incommingEdgeMap.keySet());
-        return vertices;
-    }
-
-    /**
-     * @return list of all edges in this graph.
-     */
-    public Set<E> getEdges() {
-        Set<E> res = new HashSet<E>();
-        for (List<Edge> edges : incommingEdgeMap.values()) {
-            for (Edge edge : edges) {
-                res.add(edge.edgeObj);
-            }
+    private void dfs(V vertex, Set<V> allVertexSet) {
+        allVertexSet.remove(vertex);
+        Set<V> adjacentVertices = new HashSet<V>();
+        adjacentVertices.addAll(outgoingEdgeMap.get(vertex).keySet());
+        adjacentVertices.addAll(incomingEdgeMap.get(vertex).keySet());
+        // insure against self-edge
+        adjacentVertices.remove(vertex);
+        for (V adjacentVertex : adjacentVertices) {
+            if (allVertexSet.contains(adjacentVertex))
+                dfs(adjacentVertex, allVertexSet);
         }
-        return res;
     }
 
     public boolean isTree() {
         if (!isConnected()) {
             return false;
         }
-        boolean foundRoot = false;
-        for (V vertex : getVertices()) {
-            List<Edge> in = incommingEdgeMap.get(vertex);
+        Set<V> roots = getUnreachableNodeList();
+        if (roots.size() != 1) {
+            return false;
+        }
+        V root = roots.iterator().next();
+        Set<V> vertices = getVertices();
+        vertices.remove(root);
+        for (V vertex : vertices) {
+            Map<V, E> in = incomingEdgeMap.get(vertex);
             if (in.size() > 1) {
                 return false;
-            }
-            if (in.isEmpty()) {
-                if (foundRoot) {
-                    return false;
-                }
-                foundRoot = true;
             }
         }
         return true;
@@ -523,10 +391,9 @@ public class Graph<V, E> implements Serializable {
 
     /**
      * Checks if adding specified edge will cause a new cycle in the graph.
-     * @param src
-     *            src vertex
-     * @param target
-     *            target vertex
+     * 
+     * @param src src vertex
+     * @param target target vertex
      * @return <tt>true</tt> if this edge will cause a new cycle in this
      *         graph;<tt>false</tt> otherwise.
      */
@@ -538,28 +405,6 @@ public class Graph<V, E> implements Serializable {
     }
 
     /**
-     * Checks if adding specified edge will violate the tree constraint "every
-     * node must have atmost one parent".
-     * @param src
-     *            the src vertex
-     * @param target
-     *            the target vertex
-     * @return <tt>true</tt> is adding the specified edge will violate the
-     *         tree constraint; <tt>false</tt> otherwise.
-     */
-    public boolean willViolateTreeConstraint(V src, V target) {
-        if (!containsVertex(target)) {
-            return false;
-        }
-        if (containsEdge(src, target)) {
-            return false;
-        }
-        return !(getDirectPredecessorOf(target).isEmpty() && getReachablePaths(
-                                                                               target,
-                                                                               src).isEmpty());
-    }
-
-    /**
      * @see java.lang.Object#toString()
      */
     @Override
@@ -567,4 +412,41 @@ public class Graph<V, E> implements Serializable {
         return outgoingEdgeMap.toString();
     }
 
+    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+        s.defaultReadObject();
+        incomingEdgeMap = new HashMap<V, Map<V, E>>();
+        for (V v : outgoingEdgeMap.keySet()) {
+            incomingEdgeMap.put(v, new HashMap<V, E>());
+        }
+        for (Map.Entry<V, Map<V, E>> outgoingEdgesEntry : outgoingEdgeMap.entrySet()) {
+            V src = outgoingEdgesEntry.getKey();
+            for (Map.Entry<V, E> outgoingEdge : outgoingEdgesEntry.getValue().entrySet()) {
+                V target = outgoingEdge.getKey();
+                E edge = outgoingEdge.getValue();
+                incomingEdgeMap.get(target).put(src, edge);
+            }
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Graph<V, E> clone() {
+        Graph<V, E> res = null;
+        try {
+            res = (Graph<V, E>) super.clone();
+        } catch (CloneNotSupportedException e) {
+            // can't occur
+        }
+        res.assign(this);
+        return res;
+    }
+
+    public <V1 extends V, E1 extends E> void assign(Graph<V1, E1> graph) {
+        initMaps();
+        for (V1 src : graph.getVertices()) {
+            for (Map.Entry<V1, E1> entry : graph.getOutgoingEdges(src).entrySet()) {
+                putEdge(src, entry.getKey(), entry.getValue());
+            }
+        }
+    }
 }
