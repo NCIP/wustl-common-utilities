@@ -5,10 +5,10 @@
 package edu.wustl.common.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-
-import edu.wustl.common.util.Graph;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -61,9 +61,7 @@ public class GraphTestCase extends TestCase {
      */
     public void testPutEdge2() {
         String edge = graph.putEdge(four, five, fourFive);
-        assertNull(
-                   "Expected null value from putEdge method since edge does not Exist!!!",
-                   edge);
+        assertNull("Expected null value from putEdge method since edge does not Exist!!!", edge);
         edge = graph.getEdge(four, five);
         assertEquals("Unequal edge got from Graph!!!", edge, fourFive);
     }
@@ -72,8 +70,7 @@ public class GraphTestCase extends TestCase {
      * The existing graph is connected graph.
      */
     public void testIsConnected1() {
-        assertTrue("Expected true value from isConnected method!!!",
-                   graph.isConnected());
+        assertTrue("Expected true value from isConnected method!!!", graph.isConnected());
     }
 
     /**
@@ -82,8 +79,7 @@ public class GraphTestCase extends TestCase {
      */
     public void testIsConnected2() {
         graph.putEdge(six, five, sixFive);
-        assertFalse("Expected false value from isConnected method!!!",
-                    graph.isConnected());
+        assertFalse("Expected false value from isConnected method!!!", graph.isConnected());
     }
 
     /**
@@ -92,8 +88,7 @@ public class GraphTestCase extends TestCase {
      */
     public void testIsConnected3() {
         graph.putEdge(five, four, fiveFour);
-        assertTrue("Expected true value from isConnected method!!!",
-                   graph.isConnected());
+        assertTrue("Expected true value from isConnected method!!!", graph.isConnected());
     }
 
     /**
@@ -102,15 +97,13 @@ public class GraphTestCase extends TestCase {
      * UnreachableNodeList will contain 1 & 5
      */
     public void testGetUnreachableList() {
-        List<Integer> actualList = new ArrayList<Integer>();
+        Set<Integer> actualList = new HashSet<Integer>();
         actualList.add(one);
-        assertEquals("incorrect unreachableNodeList!!!",
-                     graph.getUnreachableNodeList(), actualList);
+        assertEquals("incorrect unreachableNodeList!!!", graph.getUnreachableNodeList(), actualList);
 
         actualList.add(five);
         graph.putEdge(five, four, fiveFour);
-        assertEquals("incorrect unreachableNodeList!!!",
-                     graph.getUnreachableNodeList(), actualList);
+        assertEquals("incorrect unreachableNodeList!!!", graph.getUnreachableNodeList(), actualList);
     }
 
     /**
@@ -125,9 +118,9 @@ public class GraphTestCase extends TestCase {
         graph.putEdge(four, five, fourFive);
         graph.putEdge(two, five, "25");
         graph.putEdge(one, four, "14");
-        List<List<Integer>> actualPaths = graph.getReachablePaths(one, five);
+        Set<List<Integer>> actualPaths = graph.getVertexPaths(one, five);
 
-        List<List<Integer>> paths = new ArrayList<List<Integer>>();
+        Set<List<Integer>> paths = new HashSet<List<Integer>>();
         List<Integer> path1 = new ArrayList<Integer>();
         path1.add(one);
         path1.add(three);
@@ -151,10 +144,9 @@ public class GraphTestCase extends TestCase {
 
         assertEquals("Expected paths not found!!!", paths, actualPaths);
 
-        paths = new ArrayList<List<Integer>>();
-        actualPaths = graph.getReachablePaths(five, one);
-        assertEquals("Expected no paths between two vertices!!!", paths,
-                     actualPaths);
+        paths.clear();
+        actualPaths = graph.getVertexPaths(five, one);
+        assertEquals("Expected no paths between two vertices!!!", paths, actualPaths);
     }
 
     /**
@@ -166,18 +158,18 @@ public class GraphTestCase extends TestCase {
      */
     public void testGetReachablePaths2() {
         try {
-            List<List<Integer>> actualPaths = graph.getReachablePaths(one, five);
+            Set<List<Integer>> actualPaths = graph.getVertexPaths(one, five);
             assertTrue("Expected IllegalArgument Exception !!!", false);
         } catch (IllegalArgumentException e) {
         }
-        List<List<Integer>> actualPaths = graph.getReachablePaths(three, two);
-        List<List<Integer>> paths = new ArrayList<List<Integer>>();
-        assertEquals("Expected no paths between two vertices!!!", paths,
-                     actualPaths);
+        Set<List<Integer>> actualPaths = graph.getVertexPaths(three, two);
+        Set<List<Integer>> paths = new HashSet<List<Integer>>();
+        assertEquals("Expected no paths between two vertices!!!", paths, actualPaths);
     }
 
     /**
      * method to display paths
+     * 
      * @param paths
      */
     private void displayPaths(List<List<Integer>> paths) {
@@ -188,7 +180,25 @@ public class GraphTestCase extends TestCase {
 
     public void testIsTree() {
         assertTrue(graph.isTree());
-        graph.putEdge(1, 1, "oneFour");
+        graph.putEdge(1, 1, "11");
         assertFalse(graph.isTree());
+        graph.removeEdge(1, 1);
+        graph.putEdge(2, 4, "24");
+        assertFalse(graph.isTree());
+
+        graph.removeVertex(2);
+        graph.removeVertex(3);
+        graph.removeVertex(4);
+        assertTrue(graph.isTree());
+    }
+
+    public void testSerDSer() {
+        Graph<Integer, String> clone = ObjectCloner.clone(graph);
+        Set<Integer> vertices = graph.getVertices();
+        assertEquals(vertices, clone.getVertices());
+        for (Integer i : vertices) {
+            assertEquals(graph.getOutgoingEdges(i), clone.getOutgoingEdges(i));
+            assertEquals(graph.getIncomingEdges(i), clone.getIncomingEdges(i));
+        }
     }
 }
