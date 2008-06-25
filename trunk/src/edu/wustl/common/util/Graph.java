@@ -223,7 +223,7 @@ public class Graph<V, E> implements Serializable, Cloneable {
 	 *         Returns null if vertex is not present in graph, Returns empty
 	 *         list if vertex has no directly reachable node.
 	 */
-	public Set<V> getChildren(V v) {
+	public Set<V> getOutNeighbours(V v) {
 		return getOutgoingEdges(v).keySet();
 	}
 
@@ -235,7 +235,7 @@ public class Graph<V, E> implements Serializable, Cloneable {
 	 *         reachable. Returns null if vertex is not present in graph,
 	 *         Returns empty list if vertex has no incomming Edges.
 	 */
-	public Set<V> getParents(V v) {
+	public Set<V> getInNeighbours(V v) {
 		return getIncomingEdges(v).keySet();
 	}
 
