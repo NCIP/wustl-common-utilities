@@ -208,6 +208,11 @@ public class Graph<V, E> implements Serializable, Cloneable {
 		return true;
 	}
 
+	public void clear() {
+		incomingEdgeMap.clear();
+		outgoingEdgeMap.clear();
+	}
+
 	// HELPERS
 	void checkNull(V vertex) {
 		if (vertex == null) {
