@@ -1,5 +1,6 @@
 package edu.wustl.common.hibernate;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -17,67 +18,79 @@ import org.hibernate.criterion.Expression;
  * 
  * @author srinath_k
  * 
- * @param <T> The type of object to be inserted/deleted/retrieved/updated.
+ * @param <T>
+ *            The type of object to be inserted/deleted/retrieved/updated.
  */
 public class HibernateDatabaseOperations<T> {
-    private Session session;
+	private Session session;
 
-    private Transaction transaction;
+	private Transaction transaction;
 
-    private final boolean autoCommit;
+	private final boolean autoCommit;
 
-    public HibernateDatabaseOperations(boolean autoCommit) {
-        session = DBUtil.currentSession();
-        transaction = session.beginTransaction();
-        this.autoCommit = autoCommit;
-    }
+	public HibernateDatabaseOperations(boolean autoCommit) {
+		session = DBUtil.currentSession();
+		transaction = session.beginTransaction();
+		this.autoCommit = autoCommit;
+	}
 
-    public HibernateDatabaseOperations() {
-        this(true);
-    }
+	public HibernateDatabaseOperations() {
+		this(true);
+	}
 
-    public void insert(T t) {
-        getSession().save(t);
-        checkCommit();
-    }
+	public void insert(T t) {
+		getSession().save(t);
+		checkCommit();
+	}
 
-    public void update(T t) {
-        getSession().update(t);
-        checkCommit();
-    }
+	public void update(T t) {
+		getSession().update(t);
+		checkCommit();
+	}
 
-    public void delete(T t) {
-        getSession().delete(t);
-        checkCommit();
-    }
+	public void delete(T t) {
+		getSession().delete(t);
+		checkCommit();
+	}
 
-    public List<T> retrieve(String className) {
-        return cast(newCriteria(className).list());
-    }
+	public List<T> retrieve(String className) {
+		return cast(newCriteria(className).list());
+	}
 
-    public List<T> retrieve(String className, String attributeName, Object value) {
-        return cast(newCriteria(className).add(Expression.eq(attributeName, value)).list());
-    }
+	public List<T> retrieve(String className, String attributeName, Object value) {
+		return cast(newCriteria(className).add(
+				Expression.eq(attributeName, value)).list());
+	}
 
-    public void commit() {
-        transaction.commit();
-    }
+	public T retrieveById(String className, Serializable id) {
+		return cast(getSession().get(className, id));
+	}
 
-    private Session getSession() {
-        return session;
-    }
+	public void commit() {
+		transaction.commit();
+	}
 
-    private void checkCommit() {
-        if (autoCommit) {
-            commit();
-        }
-    }
+	private Session getSession() {
+		return session;
+	}
 
-    private Criteria newCriteria(String className) {
-        return getSession().createCriteria(className);
-    }
+	private void checkCommit() {
+		if (autoCommit) {
+			commit();
+		}
+	}
 
-    private <E> List<E> cast(List list) {
-        return (List<E>) list;
-    }
+	private Criteria newCriteria(String className) {
+		return getSession().createCriteria(className);
+	}
+
+	@SuppressWarnings("unchecked")
+	private <E> List<E> cast(List list) {
+		return (List<E>) list;
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T> T cast(Object o) {
+		return (T) o;
+	}
 }
