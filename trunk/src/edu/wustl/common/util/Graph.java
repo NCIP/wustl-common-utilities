@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A weigthed, directed graph. This class can be used to superimpose a graph
+ * A weighted, directed graph. This class can be used to superimpose a graph
  * structure on any set of classes that logically represent vertices and weights
  * e.g. if an application has a class called <tt>City</tt>, then the
  * <tt>Graph</tt> class can be used to create a route map across all cities by
