@@ -155,7 +155,7 @@ public class Graph<V, E> implements Serializable, Cloneable {
 	 * 
 	 * @param vertex
 	 *            the vertex to add to the graph.
-	 * @return <tt>true</tt> if this vertex already existed.
+	 * @return <tt>false</tt> if this vertex already existed.
 	 * @throws NullPointerException
 	 *             if the specified vertex is null.
 	 */
@@ -168,6 +168,23 @@ public class Graph<V, E> implements Serializable, Cloneable {
 			outgoingEdgeMap.put(vertex, new HashMap<V, E>());
 			return true;
 		}
+	}
+
+	/**
+	 * @param vertices
+	 *            the vertices to add to the graph
+	 * @return <tt>true</tt> if atleast one new vertex was added in this call.
+	 */
+	public boolean addVertices(Set<? extends V> vertices) {
+		if (vertices == null) {
+			return false;
+		}
+		boolean modified = false;
+		for (V v : vertices) {
+			if (addVertex(v))
+				modified = true;
+		}
+		return modified;
 	}
 
 	/**
@@ -429,33 +446,6 @@ public class Graph<V, E> implements Serializable, Cloneable {
 		return isReverseReachable(src, target);
 	}
 
-	/**
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return outgoingEdgeMap.toString();
-	}
-
-	private void readObject(ObjectInputStream s) throws IOException,
-			ClassNotFoundException {
-		s.defaultReadObject();
-		incomingEdgeMap = new HashMap<V, Map<V, E>>();
-		for (V v : outgoingEdgeMap.keySet()) {
-			incomingEdgeMap.put(v, new HashMap<V, E>());
-		}
-		for (Map.Entry<V, Map<V, E>> outgoingEdgesEntry : outgoingEdgeMap
-				.entrySet()) {
-			V src = outgoingEdgesEntry.getKey();
-			for (Map.Entry<V, E> outgoingEdge : outgoingEdgesEntry.getValue()
-					.entrySet()) {
-				V target = outgoingEdge.getKey();
-				E edge = outgoingEdge.getValue();
-				incomingEdgeMap.get(target).put(src, edge);
-			}
-		}
-	}
-
 	@Override
 	@SuppressWarnings("unchecked")
 	public Graph<V, E> clone() {
@@ -475,6 +465,50 @@ public class Graph<V, E> implements Serializable, Cloneable {
 			for (Map.Entry<V1, E1> entry : graph.getOutgoingEdges(src)
 					.entrySet()) {
 				putEdge(src, entry.getKey(), entry.getValue());
+			}
+		}
+	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return outgoingEdgeMap.toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Graph)) {
+			return false;
+		}
+		Graph<V, E> other = (Graph<V, E>) obj;
+		return outgoingEdgeMap.equals(other.outgoingEdgeMap);
+	}
+
+	@Override
+	public int hashCode() {
+		return outgoingEdgeMap.hashCode();
+	}
+
+	private void readObject(ObjectInputStream s) throws IOException,
+			ClassNotFoundException {
+		s.defaultReadObject();
+		incomingEdgeMap = new HashMap<V, Map<V, E>>();
+		for (V v : outgoingEdgeMap.keySet()) {
+			incomingEdgeMap.put(v, new HashMap<V, E>());
+		}
+		for (Map.Entry<V, Map<V, E>> outgoingEdgesEntry : outgoingEdgeMap
+				.entrySet()) {
+			V src = outgoingEdgesEntry.getKey();
+			for (Map.Entry<V, E> outgoingEdge : outgoingEdgesEntry.getValue()
+					.entrySet()) {
+				V target = outgoingEdge.getKey();
+				E edge = outgoingEdge.getValue();
+				incomingEdgeMap.get(target).put(src, edge);
 			}
 		}
 	}
