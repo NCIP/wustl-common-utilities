@@ -13,12 +13,14 @@ import org.hibernate.HibernateException;
 import org.hibernate.usertype.ParameterizedType;
 import org.hibernate.usertype.UserType;
 
+import edu.wustl.common.util.CompoundEnum;
+
 public class EnumType implements UserType, ParameterizedType {
-    private static final int[] sqlTypes = new int[]{Types.VARCHAR};
+    private static final int[] sqlTypes = new int[]{Types.INTEGER};
 
     private Class<?> enumClass;
 
-    private Method method;
+    private Object[] values;
 
     public Object assemble(Serializable arg0, Object arg1) throws HibernateException {
         return arg1;
@@ -45,25 +47,23 @@ public class EnumType implements UserType, ParameterizedType {
     }
 
     public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
-        return rs.wasNull() ? null : valueOf(rs.getString(names[0]));
+        return rs.wasNull() ? null : valueOf(rs.getInt(names[0]));
     }
 
-    private Object valueOf(String string) {
-        try {
-            return method.invoke(null, string);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
+    private Object valueOf(int ordinal) {
+        return values[ordinal];
+    }
+
+    private int ordinal(Object obj) {
+        return (Integer) invoke("ordinal", obj);
     }
 
     public void nullSafeSet(PreparedStatement statement, Object value, int index) throws HibernateException,
             SQLException {
         if (value == null) {
-            statement.setNull(index, Types.VARCHAR);
+            statement.setNull(index, Types.INTEGER);
         } else {
-            statement.setString(index, value.toString());
+            statement.setInt(index, ordinal(value));
         }
     }
 
@@ -71,7 +71,7 @@ public class EnumType implements UserType, ParameterizedType {
         return original;
     }
 
-    public Class returnedClass() {
+    public Class<?> returnedClass() {
         return enumClass;
     }
 
@@ -86,11 +86,17 @@ public class EnumType implements UserType, ParameterizedType {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-        if (!enumClass.isEnum()) {
+        if (!(enumClass.isEnum() || CompoundEnum.class.isAssignableFrom(enumClass))) {
             throw new IllegalArgumentException("enum-name " + className + " is not an enum.");
         }
+
+        values = (Object[]) invoke("values", null);
+    }
+
+    private Method getMethod(String name) {
         try {
-            method = enumClass.getMethod("valueOf", String.class);
+            Method method = enumClass.getMethod(name);
+            return method;
         } catch (SecurityException e) {
             throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {
@@ -98,4 +104,13 @@ public class EnumType implements UserType, ParameterizedType {
         }
     }
 
+    private Object invoke(String methodName, Object obj, Object... params) {
+        try {
+            return getMethod(methodName).invoke(obj, params);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
