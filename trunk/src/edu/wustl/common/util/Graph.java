@@ -267,7 +267,7 @@ public class Graph<V, E> implements Serializable, Cloneable {
 	 * 
 	 * @return list of vertices having no incomming Edges.
 	 */
-	public Set<V> getUnreachableNodeList() {
+	public Set<V> getUnreachableVertices() {
 		Set<V> res = new HashSet<V>();
 		for (Map.Entry<V, Map<V, E>> entry : incomingEdgeMap.entrySet()) {
 			if (entry.getValue().isEmpty()) {
@@ -418,7 +418,7 @@ public class Graph<V, E> implements Serializable, Cloneable {
 		if (!isConnected()) {
 			return false;
 		}
-		Set<V> roots = getUnreachableNodeList();
+		Set<V> roots = getUnreachableVertices();
 		if (roots.size() != 1) {
 			return false;
 		}
