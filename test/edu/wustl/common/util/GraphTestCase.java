@@ -99,11 +99,11 @@ public class GraphTestCase extends TestCase {
     public void testGetUnreachableList() {
         Set<Integer> actualList = new HashSet<Integer>();
         actualList.add(one);
-        assertEquals("incorrect unreachableNodeList!!!", graph.getUnreachableNodeList(), actualList);
+        assertEquals("incorrect unreachableNodeList!!!", graph.getUnreachableVertices(), actualList);
 
         actualList.add(five);
         graph.putEdge(five, four, fiveFour);
-        assertEquals("incorrect unreachableNodeList!!!", graph.getUnreachableNodeList(), actualList);
+        assertEquals("incorrect unreachableNodeList!!!", graph.getUnreachableVertices(), actualList);
     }
 
     /**
