@@ -144,6 +144,7 @@ public abstract class CompoundEnum<E extends CompoundEnum<E, T>, T extends Enum<
      * 
      * @return a negative integer, zero, or a positive integer as this object is
      *         less than, equal to, or greater than the specified object.
+     * @see Comparable
      */
     public final int compareTo(E o) {
         CompoundEnum other = (CompoundEnum) o;
@@ -178,6 +179,17 @@ public abstract class CompoundEnum<E extends CompoundEnum<E, T>, T extends Enum<
     @Override
     public final int hashCode() {
         return super.hashCode();
+    }
+
+    /**
+     * Throws <tt>CloneNotSupportedException</tt>. This guarantees that enums
+     * are never cloned, which is necessary to preserve their "singleton"
+     * status.
+     * 
+     * @return (never returns)
+     */
+    protected final Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
     }
 
     public String toString() {
