@@ -3,9 +3,11 @@ package edu.wustl.common.util;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,13 +49,78 @@ public class Graph<V, E> implements Serializable, Cloneable {
         outgoingEdgeMap = new HashMap<V, Map<V, E>>();
     }
 
+    private class VerticesIterator implements Iterator<V> {
+        private Iterator<V> iter = outgoingEdgeMap.keySet().iterator();
+
+        // TODO fail-fast
+        private V current;
+
+        public boolean hasNext() {
+            return iter.hasNext();
+        }
+
+        public V next() {
+            return current = iter.next();
+        }
+
+        public void remove() {
+            if (current == null) {
+                throw new IllegalStateException();
+            }
+            current = null;
+            removeVertex(current);
+        }
+
+    }
+
+    private Iterator<V> newVertexIter() {
+        return new VerticesIterator();
+    }
+
+    private class VerticesSet extends AbstractSet<V> {
+
+        @Override
+        public Iterator<V> iterator() {
+            return newVertexIter();
+        }
+
+        @Override
+        public int size() {
+            return outgoingEdgeMap.size();
+        }
+
+        @Override
+        public boolean add(V o) {
+            return addVertex(o);
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            return outgoingEdgeMap.containsKey(o);
+        }
+
+        @Override
+        public void clear() {
+            Graph.this.clear();
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            if (!contains(o)) {
+                return false;
+            }
+            removeVertex((V) o);
+            return true;
+        }
+    }
+
     /* DATA-RELATED METHODS */
     // ACCESSORS
     /**
      * @return set of all vertices present in graph.
      */
     public Set<V> getVertices() {
-        return copy(incomingEdgeMap.keySet());
+        return new VerticesSet();
     }
 
     /**
@@ -219,10 +286,6 @@ public class Graph<V, E> implements Serializable, Cloneable {
         if (!containsVertex(vertex)) {
             throw new IllegalArgumentException("specified vertex is not present in graph.");
         }
-    }
-
-    private static <T> Set<T> copy(Set<T> set) {
-        return new HashSet<T>(set);
     }
 
     private static <K, V> Map<K, V> copy(Map<K, V> map) {
