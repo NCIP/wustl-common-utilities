@@ -50,9 +50,9 @@ public class Graph<V, E> implements Serializable, Cloneable {
     }
 
     private class VerticesIterator implements Iterator<V> {
+        // TODO fail-fast
         private Iterator<V> iter = outgoingEdgeMap.keySet().iterator();
 
-        // TODO fail-fast
         private V current;
 
         public boolean hasNext() {
@@ -73,8 +73,73 @@ public class Graph<V, E> implements Serializable, Cloneable {
 
     }
 
+    private class EntryIterator implements Iterator<Entry<V, E>> {
+        // TODO fail-fast
+        private Iterator<Map.Entry<V, Map<V, E>>> outerIter = outgoingEdgeMap.entrySet().iterator();
+
+        private Iterator<Map.Entry<V, E>> innerIter = new EmptyIterator<Map.Entry<V, E>>();
+
+        private Entry<V, E> current;
+
+        public boolean hasNext() {
+            return outerIter.hasNext() || innerIter.hasNext();
+        }
+
+        public Entry<V, E> next() {
+            V source = (current != null ? current.getSource() : null);
+            while (!innerIter.hasNext() && outerIter.hasNext()) {
+                Map.Entry<V, Map<V, E>> outerEntry = outerIter.next();
+                source = outerEntry.getKey();
+                innerIter = outerEntry.getValue().entrySet().iterator();
+            }
+            return current = entry(innerIter.next(), source);
+        }
+
+        public void remove() {
+            if (current == null) {
+                throw new IllegalStateException();
+            }
+            removeEdge(current.getSource(), current.getTarget());
+        }
+
+        private Entry<V, E> entry(Map.Entry<V, E> mapEntry, V source) {
+            return new Entry<V, E>(source, mapEntry.getKey(), mapEntry.getValue());
+        }
+    }
+
     private Iterator<V> newVertexIter() {
         return new VerticesIterator();
+    }
+
+    private Iterator<Entry<V, E>> newEntryIter() {
+        return new EntryIterator();
+    }
+
+    public static class Entry<V, E> implements Serializable {
+        private static final long serialVersionUID = 4871557642444241179L;
+
+        private V src, target;
+
+        private E edge;
+
+        private Entry(V src, V target, E edge) {
+            this.src = src;
+            this.target = target;
+            this.edge = edge;
+        }
+
+        public E getEdge() {
+            return edge;
+        }
+
+        public V getSource() {
+            return src;
+        }
+
+        public V getTarget() {
+            return target;
+        }
+
     }
 
     private class VerticesSet extends AbstractSet<V> {
