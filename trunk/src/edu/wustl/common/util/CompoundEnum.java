@@ -57,7 +57,7 @@ import java.io.Serializable;
  *     private static final long serialVersionUID = 7794336702657368626L;
  * 
  *     // list of the primitive enums.
- *     private static final List&lt;IDataType&gt; primtiveValues = new ArrayList&lt;IDataType&gt;();
+ *     private static final List&lt;IDataType&gt; primitiveValues = new ArrayList&lt;IDataType&gt;();
  * 
  *     // list of compound enums; ordering is same as the &quot;values&quot; list
  *     private static final List&lt;AllDataTypes&lt;?&gt;&gt; values = new ArrayList&lt;AllDataTypes&lt;?&gt;&gt;();
@@ -68,7 +68,7 @@ import java.io.Serializable;
  *     // private constructor because this is an enum
  *     private AllDataTypes(T primitiveEnum) {
  *         super(primitiveEnum, nextOrdinal++);
- *         primtiveValues.add(primitiveEnum);
+ *         primitiveValues.add(primitiveEnum);
  *         values.add(this);
  *     }
  * 
@@ -89,7 +89,7 @@ import java.io.Serializable;
  * 
  *     // returns all the primitive enum values in this compound enum.
  *     public static IDataType[] primitiveValues() {
- *         return primtiveValues.toArray(new IDataType[0]);
+ *         return primitiveValues.toArray(new IDataType[0]);
  *     }
  * 
  *     // serialization; ensure unique instance.

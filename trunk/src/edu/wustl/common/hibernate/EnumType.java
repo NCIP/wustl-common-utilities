@@ -22,6 +22,10 @@ public class EnumType implements UserType, ParameterizedType {
 
     private Object[] values;
 
+    private static final Method COMPOUND_ENUM_ORDINAL_METHOD = getMethod("ordinal", CompoundEnum.class);
+
+    private static final Method PRIMITIVE_ENUM_ORDINAL_METHOD = getMethod("ordinal", Enum.class);
+
     public Object assemble(Serializable arg0, Object arg1) throws HibernateException {
         return arg1;
     }
@@ -55,7 +59,15 @@ public class EnumType implements UserType, ParameterizedType {
     }
 
     private int ordinal(Object obj) {
-        return (Integer) invoke("ordinal", obj);
+        Object res;
+        if (obj instanceof CompoundEnum) {
+            res = invoke(COMPOUND_ENUM_ORDINAL_METHOD, obj);
+        } else if (obj instanceof Enum) {
+            res = invoke(PRIMITIVE_ENUM_ORDINAL_METHOD, obj);
+        } else {
+            throw new IllegalArgumentException("obj not an enum type.");
+        }
+        return (Integer) res;
     }
 
     public void nullSafeSet(PreparedStatement statement, Object value, int index) throws HibernateException,
@@ -90,12 +102,13 @@ public class EnumType implements UserType, ParameterizedType {
             throw new IllegalArgumentException("enum-name " + className + " is not an enum.");
         }
 
-        values = (Object[]) invoke("values", null);
+        values = (Object[]) invoke(getMethod("values", enumClass), null);
     }
 
-    private Method getMethod(String name) {
+    private static Method getMethod(String name, Class<?> klass) {
         try {
-            Method method = enumClass.getMethod(name);
+            Method method = klass.getDeclaredMethod(name);
+            method.setAccessible(true);
             return method;
         } catch (SecurityException e) {
             throw new RuntimeException(e);
@@ -104,9 +117,9 @@ public class EnumType implements UserType, ParameterizedType {
         }
     }
 
-    private Object invoke(String methodName, Object obj, Object... params) {
+    private static Object invoke(Method method, Object obj, Object... params) {
         try {
-            return getMethod(methodName).invoke(obj, params);
+            return method.invoke(obj, params);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
