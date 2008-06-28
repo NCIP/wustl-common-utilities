@@ -563,6 +563,7 @@ public class Graph<V, E> implements Serializable, Cloneable {
     @Override
     @SuppressWarnings("unchecked")
     public Graph<V, E> clone() {
+        // TODO maybe clone inner map is required?
         Graph<V, E> res = null;
         try {
             res = (Graph<V, E>) super.clone();
