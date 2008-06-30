@@ -14,12 +14,12 @@
 			</generator>
 		</id>
 
-		<any name="source" id-type="long">
+		<any name="source" id-type="long" cascade="all">
 			<column name="SOURCE_VERTEX_CLASS"></column>
 			<column name="SOURCE_VERTEX_ID"></column>
 		</any>
 
-		<any name="target" id-type="long">
+		<any name="target" id-type="long" cascade="all">
 			<column name="TARGET_VERTEX_CLASS"></column>
 			<column name="TARGET_VERTEX_ID"></column>
 		</any>
