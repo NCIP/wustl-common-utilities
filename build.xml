@@ -14,7 +14,7 @@
 			<fileset dir="${classes.dir}">
 				<include name="**/*" />
 			</fileset>
-		</delete>	
+		</delete>
 	</target>
 
 	<path id="run.classpath">
@@ -24,8 +24,11 @@
 		</fileset>
 		<pathelement location="${output}" />
 	</path>
-	<target name="compile" depends="clean">	
+	<target name="compile" depends="clean">
 		<javac srcdir="src" destdir="${classes.dir}" fork="true" memoryMaximumSize="1200m" includes="**/*.java" debug="on" deprecation="true" classpathref="run.classpath" failonerror="true" nowarn="on" target="1.5" />
+		<copy todir="${classes.dir}">
+			<fileset dir="src" includes="**/*.hbm.xml" />
+		</copy>
 	</target>
 
 	<target name="build.jar" depends="compile">

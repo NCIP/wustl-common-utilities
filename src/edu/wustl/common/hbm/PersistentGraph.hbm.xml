@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false" package="edu.wustl.common.hibernate">
+	<class name="PersistentGraph" table="COMMONS_GRAPH">
+		<cache usage="read-write" />
+
+		<id name="id" column="IDENTIFIER" type="long" length="30"
+			unsaved-value="null">
+			<generator class="native">
+				<param name="sequence">COMMONS_GRAPH_SEQ</param>
+			</generator>
+		</id>
+
+		<set name="vertices" cascade="all-delete-orphan"
+			table="COMMONS_GRAPH_TO_VERTICES">
+			<cache usage="read-write" />
+			<key column="GRAPH_ID" />
+			<many-to-any id-type="long">
+				<column name="VERTEX_CLASS" />
+				<column name="VERTEX_ID" />
+			</many-to-any>
+		</set>
+
+		<set name="entries" cascade="all-delete-orphan"
+			table="COMMONS_GRAPH_TO_ENTRIES">
+			<cache usage="read-write" />
+			<key column="GRAPH_ID" />
+			<many-to-many column="ENTRY_ID" unique="true"
+				class="PersistentGraph$Entry" />
+		</set>
+	</class>
+
+</hibernate-mapping>
