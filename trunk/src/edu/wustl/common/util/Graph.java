@@ -169,6 +169,7 @@ public class Graph<V, E> implements Serializable, Cloneable {
             Graph.this.clear();
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public boolean remove(Object o) {
             if (!contains(o)) {
@@ -558,6 +559,10 @@ public class Graph<V, E> implements Serializable, Cloneable {
             return false;
         }
         return isReverseReachable(src, target);
+    }
+
+    protected Map<V, Map<V, E>> outMap() {
+        return outgoingEdgeMap;
     }
 
     @Override
