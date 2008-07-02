@@ -14,16 +14,16 @@
 			</generator>
 		</id>
 
-		<any name="source" id-type="long" cascade="all">
+		<any name="source" id-type="long" cascade="save-update">
 			<column name="SOURCE_VERTEX_CLASS"></column>
 			<column name="SOURCE_VERTEX_ID"></column>
 		</any>
 
-		<any name="target" id-type="long" cascade="all">
+		<any name="target" id-type="long" cascade="save-update">
 			<column name="TARGET_VERTEX_CLASS"></column>
 			<column name="TARGET_VERTEX_ID"></column>
 		</any>
-		<any name="edge" id-type="long" cascade="all">
+		<any name="edge" id-type="long" cascade="save-update">
 			<column name="EDGE_CLASS"></column>
 			<column name="EDGE_ID"></column>
 		</any>
