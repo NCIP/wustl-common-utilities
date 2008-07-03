@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -62,17 +61,17 @@ public class Graph<V, W> implements Serializable, Cloneable {
      * @return set of all vertices present in graph.
      */
     public Set<V> getVertices() {
-        return Collections.unmodifiableSet(outgoingEdgeMap.keySet());
+        return copy(outgoingEdgeMap.keySet());
     }
 
     public Map<V, W> getOutgoingEdges(V source) {
         validateVertex(source);
-        return Collections.unmodifiableMap(outgoingEdgeMap.get(source));
+        return copy(outgoingEdgeMap.get(source));
     }
 
     public Map<V, W> getIncomingEdges(V target) {
         validateVertex(target);
-        return Collections.unmodifiableMap(incomingEdgeMap.get(target));
+        return copy(incomingEdgeMap.get(target));
     }
 
     /**
@@ -228,6 +227,14 @@ public class Graph<V, W> implements Serializable, Cloneable {
         }
     }
 
+    private static <E> Set<E> copy(Set<E> set) {
+        return new HashSet<E>(set);
+    }
+
+    private static <K, V> Map<K, V> copy(Map<K, V> map) {
+        return new HashMap<K, V>(map);
+    }
+
     // ////////////////////////////////////////////////////////////////////////////////
     /* GRAPH STRUCTURE BASED OPERATIONS */
     /**
@@ -369,7 +376,7 @@ public class Graph<V, W> implements Serializable, Cloneable {
      * @return true if graph is connected; false if graph is disjoint
      */
     public boolean isConnected() {
-        Set<V> vertices = new HashSet<V>(outgoingEdgeMap.keySet());
+        Set<V> vertices = getVertices();
         if (vertices.isEmpty()) {
             return false;
         }
@@ -408,7 +415,7 @@ public class Graph<V, W> implements Serializable, Cloneable {
             return false;
         }
         V root = roots.iterator().next();
-        Set<V> vertices = new HashSet<V>(getVertices());
+        Set<V> vertices = getVertices();
         vertices.remove(root);
         for (V vertex : vertices) {
             Map<V, W> in = incomingEdgeMap.get(vertex);
