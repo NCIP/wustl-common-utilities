@@ -15,7 +15,6 @@ public class GraphTest extends TestCase {
         Graph<City, Integer> g = new Graph<City, Integer>();
         assertFalse(g.addVertices(new HashSet<City>()));
         assertEquals(0, g.getVertices().size());
-        assertEquals(0, g.getEdges().size());
         assertFalse(g.isConnected());
         assertFalse(g.isTree());
     }
@@ -31,7 +30,6 @@ public class GraphTest extends TestCase {
         assertEquals(cities, g.getVertices());
 
         assertEquals(cities.size(), g.getVertices().size());
-        assertEquals(0, g.getEdges().size());
         assertFalse(g.isConnected());
         assertFalse(g.isTree());
     }
@@ -105,7 +103,7 @@ public class GraphTest extends TestCase {
             }
         }
 
-        assertEquals(max*max, graph.getEdges().size());
+        assertEquals(max*max, graph.numEdges());
     }
 
     public void testSelf() {

@@ -408,7 +408,7 @@ public class Graph<V, W> implements Serializable, Cloneable {
             return false;
         }
         V root = roots.iterator().next();
-        Set<V> vertices = getVertices();
+        Set<V> vertices = new HashSet<V>(getVertices());
         vertices.remove(root);
         for (V vertex : vertices) {
             Map<V, W> in = incomingEdgeMap.get(vertex);
