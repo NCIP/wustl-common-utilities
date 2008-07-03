@@ -3,16 +3,13 @@ package edu.wustl.common.util;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.AbstractSet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.lang.builder.HashCodeBuilder;
 
 // TODO
 // path related methods check when src == target
@@ -44,10 +41,6 @@ public class Graph<V, W> implements Serializable, Cloneable {
 
     private HashMap<V, Map<V, W>> outgoingEdgeMap;
 
-    private transient volatile Set<V> verticesSet = null;
-
-    private transient volatile Set<Edge<V, W>> edgesSet = null;
-
     private int numEdges = 0;
 
     public Graph() {
@@ -63,270 +56,23 @@ public class Graph<V, W> implements Serializable, Cloneable {
         outgoingEdgeMap = new HashMap<V, Map<V, W>>();
     }
 
-    // iters
-    private static class Edge<V, E> implements Serializable {
-        private static final long serialVersionUID = 4871557642444241179L;
-
-        private V src, target;
-
-        private E weight;
-
-        private Edge(V src, V target, E edge) {
-            this.src = src;
-            this.target = target;
-            this.weight = edge;
-        }
-
-        public E getWeight() {
-            return weight;
-        }
-
-        public V getSource() {
-            return src;
-        }
-
-        public V getTarget() {
-            return target;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (!(obj instanceof Edge)) {
-                return false;
-            }
-            Edge o = (Edge) obj;
-            return getSource().equals(o.getSource()) && getTarget().equals(o.getTarget())
-                    && (getWeight() == null ? o.getWeight() == null : getWeight().equals(o.getWeight()));
-        }
-
-        @Override
-        public int hashCode() {
-            return new HashCodeBuilder().append(getSource()).append(getTarget()).append(getWeight()).toHashCode();
-        }
-    }
-
-    private class EdgeIterator implements Iterator<Edge<V, W>> {
-        // TODO fail-fast
-        private Iterator<Map.Entry<V, Map<V, W>>> outerIter = outgoingEdgeMap.entrySet().iterator();
-
-        private Iterator<Map.Entry<V, W>> innerIter = new EmptyIterator<Map.Entry<V, W>>();
-
-        private Edge<V, W> current;
-
-        public boolean hasNext() {
-            return outerIter.hasNext() || innerIter.hasNext();
-        }
-
-        public Edge<V, W> next() {
-            V source = (current != null ? current.getSource() : null);
-            while (!innerIter.hasNext() && outerIter.hasNext()) {
-                Map.Entry<V, Map<V, W>> outerEntry = outerIter.next();
-                source = outerEntry.getKey();
-                innerIter = outerEntry.getValue().entrySet().iterator();
-            }
-            return current = edge(innerIter.next(), source);
-        }
-
-        public void remove() {
-            if (current == null) {
-                throw new IllegalStateException();
-            }
-            removeEdge(current.getSource(), current.getTarget());
-        }
-
-        private Edge<V, W> edge(Map.Entry<V, W> mapEntry, V source) {
-            return new Edge<V, W>(source, mapEntry.getKey(), mapEntry.getValue());
-        }
-    }
-
-    private class VertexIterator implements Iterator<V> {
-        // TODO fail-fast
-        private Iterator<V> iter = outgoingEdgeMap.keySet().iterator();
-
-        private V current;
-
-        public boolean hasNext() {
-            return iter.hasNext();
-        }
-
-        public V next() {
-            return current = iter.next();
-        }
-
-        public void remove() {
-            if (current == null) {
-                throw new IllegalStateException();
-            }
-            current = null;
-            removeVertex(current);
-        }
-
-    }
-
-    private class EdgeSet extends AbstractSet<Edge<V, W>> {
-        @Override
-        public Iterator<Edge<V, W>> iterator() {
-            return newEdgeIter();
-        }
-
-        @Override
-        public int size() {
-            return numEdges;
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public boolean contains(Object o) {
-            if (!(o instanceof Edge)) {
-                return false;
-            }
-            Edge<V, W> edge = (Edge<V, W>) o;
-            if (!(containsVertex(edge.getSource()) && containsVertex(edge.getTarget()) && containsEdge(
-                    edge.getSource(), edge.getTarget()))) {
-                return false;
-            }
-            W candidate = getEdge(edge.getSource(), edge.getTarget());
-            return candidate != null && candidate.equals(edge.getWeight());
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public boolean remove(Object o) {
-            if (!contains(o)) {
-                return false;
-            }
-            removeVertex((V) o);
-            return true;
-        }
-    }
-
-    private class VertexSet extends AbstractSet<V> {
-
-        @Override
-        public Iterator<V> iterator() {
-            return newVertexIter();
-        }
-
-        @Override
-        public int size() {
-            return outgoingEdgeMap.size();
-        }
-
-        @Override
-        public boolean add(V o) {
-            return addVertex(o);
-        }
-
-        @Override
-        public boolean contains(Object o) {
-            return outgoingEdgeMap.containsKey(o);
-        }
-
-        @Override
-        public void clear() {
-            Graph.this.clear();
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public boolean remove(Object o) {
-            if (!contains(o)) {
-                return false;
-            }
-            removeVertex((V) o);
-            return true;
-        }
-    }
-
-    private abstract class NeighboursMap extends HashMap<V, W> {
-
-        NeighboursMap(Map<V, W> map) {
-            super(map);
-        }
-    }
-
-    private class InNeighboursMap extends NeighboursMap {
-        private static final long serialVersionUID = 7433687111712329167L;
-
-        private V target;
-
-        InNeighboursMap(V target) {
-            super(incomingEdgeMap.get(target));
-            this.target = target;
-        }
-
-        @Override
-        public W put(V source, W edge) {
-            super.put(source, edge);
-            return putEdge(source, target, edge);
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public W remove(Object source) {
-            super.remove(source);
-            return removeEdge((V) source, target);
-        }
-    }
-
-    private class OutNeighboursMap extends NeighboursMap {
-        private static final long serialVersionUID = -8216471440156359753L;
-
-        private V source;
-
-        OutNeighboursMap(V source) {
-            super(outgoingEdgeMap.get(source));
-            this.source = source;
-        }
-
-        @Override
-        public W put(V target, W edge) {
-            super.put(target, edge);
-            return putEdge(source, target, edge);
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public W remove(Object target) {
-            super.remove(target);
-            return removeEdge(source, (V) target);
-        }
-    }
-
-    private Iterator<V> newVertexIter() {
-        return new VertexIterator();
-    }
-
-    private Iterator<Edge<V, W>> newEdgeIter() {
-        return new EdgeIterator();
-    }
-
     /* DATA-RELATED METHODS */
     // ACCESSORS
     /**
      * @return set of all vertices present in graph.
      */
     public Set<V> getVertices() {
-        Set<V> res = verticesSet;
-        return res != null ? res : (verticesSet = new VertexSet());
-    }
-
-    public Set<Edge<V, W>> getEdges() {
-        Set<Edge<V, W>> res = edgesSet;
-        return res != null ? res : (edgesSet = new EdgeSet());
+        return Collections.unmodifiableSet(outgoingEdgeMap.keySet());
     }
 
     public Map<V, W> getOutgoingEdges(V source) {
         validateVertex(source);
-        return new OutNeighboursMap(source);
+        return Collections.unmodifiableMap(outgoingEdgeMap.get(source));
     }
 
     public Map<V, W> getIncomingEdges(V target) {
         validateVertex(target);
-        return new InNeighboursMap(target);
+        return Collections.unmodifiableMap(incomingEdgeMap.get(target));
     }
 
     /**
