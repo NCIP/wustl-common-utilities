@@ -12,9 +12,6 @@ import java.util.Set;
 
 // TODO
 // path related methods check when src == target
-// entry
-// modcount
-// check Clone; maybe clone inner map also
 
 /**
  * A weighted, directed graph. This class can be used to superimpose a graph
@@ -448,7 +445,6 @@ public class Graph<V, W> implements Serializable, Cloneable {
     @Override
     @SuppressWarnings("unchecked")
     public Graph<V, W> clone() {
-        // TODO maybe clone inner map is required?
         Graph<V, W> res = null;
         try {
             res = (Graph<V, W>) super.clone();
