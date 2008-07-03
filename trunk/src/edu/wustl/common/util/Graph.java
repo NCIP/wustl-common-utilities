@@ -246,12 +246,6 @@ public class Graph<V, W> implements Serializable, Cloneable {
         NeighboursMap(Map<V, W> map) {
             super(map);
         }
-
-        @Override
-        public abstract W put(V key, W value);
-
-        @Override
-        public abstract W remove(Object key);
     }
 
     private class InNeighboursMap extends NeighboursMap {
@@ -266,12 +260,14 @@ public class Graph<V, W> implements Serializable, Cloneable {
 
         @Override
         public W put(V source, W edge) {
+            super.put(source, edge);
             return putEdge(source, target, edge);
         }
 
         @SuppressWarnings("unchecked")
         @Override
         public W remove(Object source) {
+            super.remove(source);
             return removeEdge((V) source, target);
         }
     }
@@ -288,12 +284,14 @@ public class Graph<V, W> implements Serializable, Cloneable {
 
         @Override
         public W put(V target, W edge) {
+            super.put(target, edge);
             return putEdge(source, target, edge);
         }
 
         @SuppressWarnings("unchecked")
         @Override
         public W remove(Object target) {
+            super.remove(target);
             return removeEdge(source, (V) target);
         }
     }
@@ -560,6 +558,9 @@ public class Graph<V, W> implements Serializable, Cloneable {
     public Set<List<V>> getVertexPaths(V source, V target) {
         validateVertex(source);
         validateVertex(target);
+        if (source.equals(target)) {
+            return new HashSet<List<V>>();
+        }
         return getVertexPaths(source, target, new HashSet<V>());
     }
 
