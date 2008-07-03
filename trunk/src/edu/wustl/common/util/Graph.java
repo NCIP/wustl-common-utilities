@@ -12,6 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
+// TODO
+// path related methods check when src == target
+// entry
+// modcount
+// check Clone; maybe clone inner map also
+
 /**
  * A weighted, directed graph. This class can be used to superimpose a graph
  * structure on any set of classes that logically represent vertices and weights
@@ -25,31 +33,116 @@ import java.util.Set;
  * vertex parameter is <tt>null</tt>.
  * 
  * @param <V> the type of vertices
- * @param <E> the type of weights on edges
+ * @param <W> the type of weights on edges
  */
 
-public class Graph<V, E> implements Serializable, Cloneable {
+public class Graph<V, W> implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 2744129191470144562L;
 
-    private transient HashMap<V, Map<V, E>> incomingEdgeMap;
+    private transient HashMap<V, Map<V, W>> incomingEdgeMap;
 
-    private HashMap<V, Map<V, E>> outgoingEdgeMap;
+    private HashMap<V, Map<V, W>> outgoingEdgeMap;
+
+    private transient volatile Set<V> verticesSet = null;
+
+    private transient volatile Set<Edge<V, W>> edgesSet = null;
+
+    private int numEdges = 0;
 
     public Graph() {
         initMaps();
     }
 
-    public Graph(Graph<? extends V, ? extends E> graph) {
+    public Graph(Graph<? extends V, ? extends W> graph) {
         assign(graph);
     }
 
     private void initMaps() {
-        incomingEdgeMap = new HashMap<V, Map<V, E>>();
-        outgoingEdgeMap = new HashMap<V, Map<V, E>>();
+        incomingEdgeMap = new HashMap<V, Map<V, W>>();
+        outgoingEdgeMap = new HashMap<V, Map<V, W>>();
     }
 
-    private class VerticesIterator implements Iterator<V> {
+    // iters
+    private static class Edge<V, E> implements Serializable {
+        private static final long serialVersionUID = 4871557642444241179L;
+
+        private V src, target;
+
+        private E weight;
+
+        private Edge(V src, V target, E edge) {
+            this.src = src;
+            this.target = target;
+            this.weight = edge;
+        }
+
+        public E getWeight() {
+            return weight;
+        }
+
+        public V getSource() {
+            return src;
+        }
+
+        public V getTarget() {
+            return target;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof Edge)) {
+                return false;
+            }
+            Edge o = (Edge) obj;
+            return getSource().equals(o.getSource()) && getTarget().equals(o.getTarget())
+                    && (getWeight() == null ? o.getWeight() == null : getWeight().equals(o.getWeight()));
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder().append(getSource()).append(getTarget()).append(getWeight()).toHashCode();
+        }
+    }
+
+    private class EdgeIterator implements Iterator<Edge<V, W>> {
+        // TODO fail-fast
+        private Iterator<Map.Entry<V, Map<V, W>>> outerIter = outgoingEdgeMap.entrySet().iterator();
+
+        private Iterator<Map.Entry<V, W>> innerIter = new EmptyIterator<Map.Entry<V, W>>();
+
+        private Edge<V, W> current;
+
+        public boolean hasNext() {
+            return outerIter.hasNext() || innerIter.hasNext();
+        }
+
+        public Edge<V, W> next() {
+            V source = (current != null ? current.getSource() : null);
+            while (!innerIter.hasNext() && outerIter.hasNext()) {
+                Map.Entry<V, Map<V, W>> outerEntry = outerIter.next();
+                source = outerEntry.getKey();
+                innerIter = outerEntry.getValue().entrySet().iterator();
+            }
+            return current = edge(innerIter.next(), source);
+        }
+
+        public void remove() {
+            if (current == null) {
+                throw new IllegalStateException();
+            }
+            removeEdge(current.getSource(), current.getTarget());
+        }
+
+        private Edge<V, W> edge(Map.Entry<V, W> mapEntry, V source) {
+            return new Edge<V, W>(source, mapEntry.getKey(), mapEntry.getValue());
+        }
+    }
+
+    private class VertexIterator implements Iterator<V> {
         // TODO fail-fast
         private Iterator<V> iter = outgoingEdgeMap.keySet().iterator();
 
@@ -73,76 +166,44 @@ public class Graph<V, E> implements Serializable, Cloneable {
 
     }
 
-    private class EntryIterator implements Iterator<Entry<V, E>> {
-        // TODO fail-fast
-        private Iterator<Map.Entry<V, Map<V, E>>> outerIter = outgoingEdgeMap.entrySet().iterator();
-
-        private Iterator<Map.Entry<V, E>> innerIter = new EmptyIterator<Map.Entry<V, E>>();
-
-        private Entry<V, E> current;
-
-        public boolean hasNext() {
-            return outerIter.hasNext() || innerIter.hasNext();
+    private class EdgeSet extends AbstractSet<Edge<V, W>> {
+        @Override
+        public Iterator<Edge<V, W>> iterator() {
+            return newEdgeIter();
         }
 
-        public Entry<V, E> next() {
-            V source = (current != null ? current.getSource() : null);
-            while (!innerIter.hasNext() && outerIter.hasNext()) {
-                Map.Entry<V, Map<V, E>> outerEntry = outerIter.next();
-                source = outerEntry.getKey();
-                innerIter = outerEntry.getValue().entrySet().iterator();
+        @Override
+        public int size() {
+            return numEdges;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public boolean contains(Object o) {
+            if (!(o instanceof Edge)) {
+                return false;
             }
-            return current = entry(innerIter.next(), source);
-        }
-
-        public void remove() {
-            if (current == null) {
-                throw new IllegalStateException();
+            Edge<V, W> edge = (Edge<V, W>) o;
+            if (!(containsVertex(edge.getSource()) && containsVertex(edge.getTarget()) && containsEdge(
+                    edge.getSource(), edge.getTarget()))) {
+                return false;
             }
-            removeEdge(current.getSource(), current.getTarget());
+            W candidate = getEdge(edge.getSource(), edge.getTarget());
+            return candidate != null && candidate.equals(edge.getWeight());
         }
 
-        private Entry<V, E> entry(Map.Entry<V, E> mapEntry, V source) {
-            return new Entry<V, E>(source, mapEntry.getKey(), mapEntry.getValue());
+        @SuppressWarnings("unchecked")
+        @Override
+        public boolean remove(Object o) {
+            if (!contains(o)) {
+                return false;
+            }
+            removeVertex((V) o);
+            return true;
         }
     }
 
-    private Iterator<V> newVertexIter() {
-        return new VerticesIterator();
-    }
-
-    private Iterator<Entry<V, E>> newEntryIter() {
-        return new EntryIterator();
-    }
-
-    public static class Entry<V, E> implements Serializable {
-        private static final long serialVersionUID = 4871557642444241179L;
-
-        private V src, target;
-
-        private E edge;
-
-        private Entry(V src, V target, E edge) {
-            this.src = src;
-            this.target = target;
-            this.edge = edge;
-        }
-
-        public E getEdge() {
-            return edge;
-        }
-
-        public V getSource() {
-            return src;
-        }
-
-        public V getTarget() {
-            return target;
-        }
-
-    }
-
-    private class VerticesSet extends AbstractSet<V> {
+    private class VertexSet extends AbstractSet<V> {
 
         @Override
         public Iterator<V> iterator() {
@@ -180,13 +241,94 @@ public class Graph<V, E> implements Serializable, Cloneable {
         }
     }
 
+    private abstract class NeighboursMap extends HashMap<V, W> {
+
+        NeighboursMap(Map<V, W> map) {
+            super(map);
+        }
+
+        @Override
+        public abstract W put(V key, W value);
+
+        @Override
+        public abstract W remove(Object key);
+    }
+
+    private class InNeighboursMap extends NeighboursMap {
+        private static final long serialVersionUID = 7433687111712329167L;
+
+        private V target;
+
+        InNeighboursMap(V target) {
+            super(incomingEdgeMap.get(target));
+            this.target = target;
+        }
+
+        @Override
+        public W put(V source, W edge) {
+            return putEdge(source, target, edge);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public W remove(Object source) {
+            return removeEdge((V) source, target);
+        }
+    }
+
+    private class OutNeighboursMap extends NeighboursMap {
+        private static final long serialVersionUID = -8216471440156359753L;
+
+        private V source;
+
+        OutNeighboursMap(V source) {
+            super(outgoingEdgeMap.get(source));
+            this.source = source;
+        }
+
+        @Override
+        public W put(V target, W edge) {
+            return putEdge(source, target, edge);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public W remove(Object target) {
+            return removeEdge(source, (V) target);
+        }
+    }
+
+    private Iterator<V> newVertexIter() {
+        return new VertexIterator();
+    }
+
+    private Iterator<Edge<V, W>> newEdgeIter() {
+        return new EdgeIterator();
+    }
+
     /* DATA-RELATED METHODS */
     // ACCESSORS
     /**
      * @return set of all vertices present in graph.
      */
     public Set<V> getVertices() {
-        return new VerticesSet();
+        Set<V> res = verticesSet;
+        return res != null ? res : (verticesSet = new VertexSet());
+    }
+
+    public Set<Edge<V, W>> getEdges() {
+        Set<Edge<V, W>> res = edgesSet;
+        return res != null ? res : (edgesSet = new EdgeSet());
+    }
+
+    public Map<V, W> getOutgoingEdges(V source) {
+        validateVertex(source);
+        return new OutNeighboursMap(source);
+    }
+
+    public Map<V, W> getIncomingEdges(V target) {
+        validateVertex(target);
+        return new InNeighboursMap(target);
     }
 
     /**
@@ -198,27 +340,6 @@ public class Graph<V, E> implements Serializable, Cloneable {
      */
     public boolean containsVertex(V vertex) {
         return outgoingEdgeMap.containsKey(vertex);
-    }
-
-    /**
-     * @return list of all edges in this graph.
-     */
-    public Set<E> getEdges() {
-        Set<E> res = new HashSet<E>();
-        for (Map<V, E> edges : outgoingEdgeMap.values()) {
-            res.addAll(edges.values());
-        }
-        return res;
-    }
-
-    public Map<V, E> getOutgoingEdges(V source) {
-        validateVertex(source);
-        return copy(outgoingEdgeMap.get(source));
-    }
-
-    public Map<V, E> getIncomingEdges(V target) {
-        validateVertex(target);
-        return copy(incomingEdgeMap.get(target));
     }
 
     /**
@@ -239,10 +360,18 @@ public class Graph<V, E> implements Serializable, Cloneable {
      * 
      * @return edge object if it exists; null otherwise
      */
-    public E getEdge(V source, V target) {
+    public W getEdge(V source, V target) {
         validateVertex(source);
         validateVertex(target);
         return outgoingEdgeMap.get(source).get(target);
+    }
+
+    public int numEdges() {
+        return numEdges;
+    }
+
+    public int numVertices() {
+        return outgoingEdgeMap.size();
     }
 
     // MODIFIERS
@@ -253,11 +382,13 @@ public class Graph<V, E> implements Serializable, Cloneable {
      * @param targetVertex
      * @return removed edge if edge object is not null; null otherwise
      */
-    public E removeEdge(V source, V target) {
-        validateVertex(source);
-        validateVertex(target);
-        outgoingEdgeMap.get(source).remove(target);
-        return incomingEdgeMap.get(target).remove(source);
+    public W removeEdge(V source, V target) {
+        if (containsEdge(source, target)) {
+            numEdges--;
+            outgoingEdgeMap.get(source).remove(target);
+            return incomingEdgeMap.get(target).remove(source);
+        }
+        return null;
     }
 
     /**
@@ -269,13 +400,12 @@ public class Graph<V, E> implements Serializable, Cloneable {
      * @param edge
      * @return the old edge if it exists; null otherwise
      */
-    public E putEdge(V source, V target, E edge) {
-        // if (edge == null) {
-        // throw new NullPointerException("null edge not allowed.");
-        // }
+    public W putEdge(V source, V target, W edge) {
         addVertex(source);
         addVertex(target);
-
+        if (!containsEdge(source, target)) {
+            numEdges++;
+        }
         outgoingEdgeMap.get(source).put(target, edge);
         return incomingEdgeMap.get(target).put(source, edge);
     }
@@ -292,8 +422,8 @@ public class Graph<V, E> implements Serializable, Cloneable {
         if (containsVertex(vertex))
             return false;
         else {
-            incomingEdgeMap.put(vertex, new HashMap<V, E>());
-            outgoingEdgeMap.put(vertex, new HashMap<V, E>());
+            incomingEdgeMap.put(vertex, new HashMap<V, W>());
+            outgoingEdgeMap.put(vertex, new HashMap<V, W>());
             return true;
         }
     }
@@ -354,10 +484,6 @@ public class Graph<V, E> implements Serializable, Cloneable {
         }
     }
 
-    private static <K, V> Map<K, V> copy(Map<K, V> map) {
-        return new HashMap<K, V>(map);
-    }
-
     // ////////////////////////////////////////////////////////////////////////////////
     /* GRAPH STRUCTURE BASED OPERATIONS */
     /**
@@ -391,7 +517,7 @@ public class Graph<V, E> implements Serializable, Cloneable {
      */
     public Set<V> getUnreachableVertices() {
         Set<V> res = new HashSet<V>();
-        for (Map.Entry<V, Map<V, E>> entry : incomingEdgeMap.entrySet()) {
+        for (Map.Entry<V, Map<V, W>> entry : incomingEdgeMap.entrySet()) {
             if (entry.getValue().isEmpty()) {
                 res.add(entry.getKey());
             }
@@ -441,7 +567,7 @@ public class Graph<V, E> implements Serializable, Cloneable {
     private Set<List<V>> getVertexPaths(V source, V target, Set<V> verticesToIgnore) {
         Set<List<V>> res = new HashSet<List<V>>();
         verticesToIgnore.add(target);
-        for (Map.Entry<V, E> entry : incomingEdgeMap.get(target).entrySet()) {
+        for (Map.Entry<V, W> entry : incomingEdgeMap.get(target).entrySet()) {
             V srcSrc = entry.getKey();
             if (verticesToIgnore.contains(srcSrc)) {
                 continue;
@@ -473,11 +599,11 @@ public class Graph<V, E> implements Serializable, Cloneable {
      * @throws IllegalArgumentException when the fromVetrex or toVetrex is not
      *             in the graph.
      */
-    public Set<List<E>> getEdgePaths(V fromVertex, V toVetrex) {
-        Set<List<E>> edgePaths = new HashSet<List<E>>();
+    public Set<List<W>> getEdgePaths(V fromVertex, V toVetrex) {
+        Set<List<W>> edgePaths = new HashSet<List<W>>();
         Set<List<V>> verticesPaths = getVertexPaths(fromVertex, toVetrex);
         for (List<V> thePath : verticesPaths) {
-            List<E> theEdgePath = new ArrayList<E>();
+            List<W> theEdgePath = new ArrayList<W>();
             for (int j = 1; j < thePath.size(); j++) {
                 theEdgePath.add(getEdge(thePath.get(j - 1), thePath.get(j)));
                 edgePaths.add(theEdgePath);
@@ -496,7 +622,7 @@ public class Graph<V, E> implements Serializable, Cloneable {
      * @return true if graph is connected; false if graph is disjoint
      */
     public boolean isConnected() {
-        Set<V> vertices = getVertices();
+        Set<V> vertices = new HashSet<V>(outgoingEdgeMap.keySet());
         if (vertices.isEmpty()) {
             return false;
         }
@@ -538,7 +664,7 @@ public class Graph<V, E> implements Serializable, Cloneable {
         Set<V> vertices = getVertices();
         vertices.remove(root);
         for (V vertex : vertices) {
-            Map<V, E> in = incomingEdgeMap.get(vertex);
+            Map<V, W> in = incomingEdgeMap.get(vertex);
             if (in.size() > 1) {
                 return false;
             }
@@ -561,17 +687,17 @@ public class Graph<V, E> implements Serializable, Cloneable {
         return isReverseReachable(src, target);
     }
 
-    protected Map<V, Map<V, E>> outMap() {
+    protected Map<V, Map<V, W>> outMap() {
         return outgoingEdgeMap;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Graph<V, E> clone() {
+    public Graph<V, W> clone() {
         // TODO maybe clone inner map is required?
-        Graph<V, E> res = null;
+        Graph<V, W> res = null;
         try {
-            res = (Graph<V, E>) super.clone();
+            res = (Graph<V, W>) super.clone();
         } catch (CloneNotSupportedException e) {
             // can't occur
         }
@@ -579,11 +705,11 @@ public class Graph<V, E> implements Serializable, Cloneable {
         return res;
     }
 
-    public void assign(Graph<? extends V, ? extends E> graph) {
+    public void assign(Graph<? extends V, ? extends W> graph) {
         assign2(graph);
     }
 
-    private <V1 extends V, E1 extends E> void assign2(Graph<V1, E1> graph) {
+    private <V1 extends V, E1 extends W> void assign2(Graph<V1, E1> graph) {
         initMaps();
         for (V1 src : graph.getVertices()) {
             for (Map.Entry<V1, E1> entry : graph.getOutgoingEdges(src).entrySet()) {
@@ -600,6 +726,7 @@ public class Graph<V, E> implements Serializable, Cloneable {
         return outgoingEdgeMap.toString();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -608,7 +735,7 @@ public class Graph<V, E> implements Serializable, Cloneable {
         if (!(obj instanceof Graph)) {
             return false;
         }
-        Graph<V, E> other = (Graph<V, E>) obj;
+        Graph<V, W> other = (Graph<V, W>) obj;
         return outgoingEdgeMap.equals(other.outgoingEdgeMap);
     }
 
@@ -619,15 +746,15 @@ public class Graph<V, E> implements Serializable, Cloneable {
 
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
         s.defaultReadObject();
-        incomingEdgeMap = new HashMap<V, Map<V, E>>();
+        incomingEdgeMap = new HashMap<V, Map<V, W>>();
         for (V v : outgoingEdgeMap.keySet()) {
-            incomingEdgeMap.put(v, new HashMap<V, E>());
+            incomingEdgeMap.put(v, new HashMap<V, W>());
         }
-        for (Map.Entry<V, Map<V, E>> outgoingEdgesEntry : outgoingEdgeMap.entrySet()) {
+        for (Map.Entry<V, Map<V, W>> outgoingEdgesEntry : outgoingEdgeMap.entrySet()) {
             V src = outgoingEdgesEntry.getKey();
-            for (Map.Entry<V, E> outgoingEdge : outgoingEdgesEntry.getValue().entrySet()) {
+            for (Map.Entry<V, W> outgoingEdge : outgoingEdgesEntry.getValue().entrySet()) {
                 V target = outgoingEdge.getKey();
-                E edge = outgoingEdge.getValue();
+                W edge = outgoingEdge.getValue();
                 incomingEdgeMap.get(target).put(src, edge);
             }
         }
