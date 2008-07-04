@@ -8,6 +8,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import edu.wustl.common.util.Graph;
 
+@SuppressWarnings("unused")
 public class PersistentGraph<V, E> extends Graph<V, E> {
     private static final long serialVersionUID = 5607285510168767311L;
 
