@@ -194,10 +194,10 @@ public class Graph<V, W> implements Serializable, Cloneable {
         if (!containsVertex(vertex)) {
             return false;
         }
-        for (V src : incomingEdgeMap.get(vertex).keySet()) {
+        for (V src : getInNeighbours(vertex)) {
             removeEdge(src, vertex);
         }
-        for (V target : outgoingEdgeMap.get(vertex).keySet()) {
+        for (V target : getOutNeighbours(vertex)) {
             removeEdge(vertex, target);
         }
         incomingEdgeMap.remove(vertex);
@@ -436,10 +436,6 @@ public class Graph<V, W> implements Serializable, Cloneable {
             return false;
         }
         return isReverseReachable(src, target);
-    }
-
-    protected Map<V, Map<V, W>> outMap() {
-        return outgoingEdgeMap;
     }
 
     @Override
