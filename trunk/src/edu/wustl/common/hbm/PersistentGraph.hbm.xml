@@ -14,7 +14,7 @@
 			</generator>
 		</id>
 
-		<set name="vertices" cascade="all-delete-orphan"
+		<set name="vertices" cascade="save-update"
 			table="COMMONS_GRAPH_TO_VERTICES">
 			<cache usage="read-write" />
 			<key column="GRAPH_ID" />
@@ -24,7 +24,7 @@
 			</many-to-any>
 		</set>
 
-		<set name="entries" cascade="all-delete-orphan"
+		<set name="entries" cascade="save-update"
 			table="COMMONS_GRAPH_TO_ENTRIES">
 			<cache usage="read-write" />
 			<key column="GRAPH_ID" />
