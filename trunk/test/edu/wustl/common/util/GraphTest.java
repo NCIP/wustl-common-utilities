@@ -321,6 +321,26 @@ public class GraphTest extends TestCase {
         assertEquals(emptyGraph, graph);
     }
 
+    public void testGetUnreachableVertices() {
+        Graph<String, Integer> graph = new Graph<String, Integer>();
+        assertTrue(graph.getUnreachableVertices().isEmpty());
+
+        graph.addVertex("Delhi");
+        assertEquals(asSet("Delhi"), graph.getUnreachableVertices());
+
+        graph.addVertex("Mumbai");
+        assertEquals(asSet("Mumbai", "Delhi"), graph.getUnreachableVertices());
+        
+        graph.putEdge("Delhi", "Mumbai", 200);
+        assertEquals(asSet("Delhi"), graph.getUnreachableVertices());
+        
+        graph.addVertex("Andaman");
+        assertEquals(asSet("Delhi", "Andaman"), graph.getUnreachableVertices());
+        
+        graph.putEdge("Andaman", "Andaman", null);
+        assertEquals(asSet("Delhi", "Andaman"), graph.getUnreachableVertices());
+    }
+
     private Integer integer(int i) {
         return new Integer(i);
     }

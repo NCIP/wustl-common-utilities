@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -266,7 +267,7 @@ public class Graph<V, W> implements Serializable, Cloneable {
     public Set<V> getUnreachableVertices() {
         Set<V> res = new HashSet<V>();
         for (Map.Entry<V, Map<V, W>> entry : incomingEdgeMap.entrySet()) {
-            if (entry.getValue().isEmpty()) {
+            if (entry.getValue().isEmpty() || Collections.singleton(entry.getKey()).equals(entry.getValue().keySet())) {
                 res.add(entry.getKey());
             }
         }
