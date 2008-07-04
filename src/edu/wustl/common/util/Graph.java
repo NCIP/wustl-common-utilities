@@ -459,6 +459,7 @@ public class Graph<V, W> implements Serializable, Cloneable {
     private <V1 extends V, E1 extends W> void assign2(Graph<V1, E1> graph) {
         initMaps();
         for (V1 src : graph.getVertices()) {
+            addVertex(src);
             for (Map.Entry<V1, E1> entry : graph.getOutgoingEdges(src).entrySet()) {
                 putEdge(src, entry.getKey(), entry.getValue());
             }
