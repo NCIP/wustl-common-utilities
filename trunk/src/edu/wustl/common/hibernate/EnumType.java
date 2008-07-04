@@ -16,15 +16,15 @@ import org.hibernate.usertype.UserType;
 import edu.wustl.common.util.CompoundEnum;
 
 public class EnumType implements UserType, ParameterizedType {
-    private static final int[] sqlTypes = new int[]{Types.INTEGER};
+    private static final int[] sqlTypes = new int[]{Types.VARCHAR};
 
     private Class<?> enumClass;
 
-    private Object[] values;
+    private static final Method COMPOUND_ENUM_NAME_METHOD = getMethod("name", CompoundEnum.class);
 
-    private static final Method COMPOUND_ENUM_ORDINAL_METHOD = getMethod("ordinal", CompoundEnum.class);
+    private static final Method PRIMITIVE_ENUM_NAME_METHOD = getMethod("name", Enum.class);
 
-    private static final Method PRIMITIVE_ENUM_ORDINAL_METHOD = getMethod("ordinal", Enum.class);
+    private Method valueOfMethod;
 
     public Object assemble(Serializable arg0, Object arg1) throws HibernateException {
         return arg1;
@@ -51,31 +51,31 @@ public class EnumType implements UserType, ParameterizedType {
     }
 
     public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
-        return rs.wasNull() ? null : valueOf(rs.getInt(names[0]));
+        return rs.wasNull() ? null : valueOf(rs.getString(names[0]));
     }
 
-    private Object valueOf(int ordinal) {
-        return values[ordinal];
+    private Object valueOf(String name) {
+        return invoke(valueOfMethod, null, name);
     }
 
-    private int ordinal(Object obj) {
+    private String name(Object obj) {
         Object res;
         if (obj instanceof CompoundEnum) {
-            res = invoke(COMPOUND_ENUM_ORDINAL_METHOD, obj);
+            res = invoke(COMPOUND_ENUM_NAME_METHOD, obj);
         } else if (obj instanceof Enum) {
-            res = invoke(PRIMITIVE_ENUM_ORDINAL_METHOD, obj);
+            res = invoke(PRIMITIVE_ENUM_NAME_METHOD, obj);
         } else {
             throw new IllegalArgumentException("obj not an enum type.");
         }
-        return (Integer) res;
+        return (String) res;
     }
 
     public void nullSafeSet(PreparedStatement statement, Object value, int index) throws HibernateException,
             SQLException {
         if (value == null) {
-            statement.setNull(index, Types.INTEGER);
+            statement.setNull(index, Types.VARCHAR);
         } else {
-            statement.setInt(index, ordinal(value));
+            statement.setString(index, name(value));
         }
     }
 
@@ -102,12 +102,12 @@ public class EnumType implements UserType, ParameterizedType {
             throw new IllegalArgumentException("enum-name " + className + " is not an enum.");
         }
 
-        values = (Object[]) invoke(getMethod("values", enumClass), null);
+        valueOfMethod = getMethod("valueOf", enumClass, String.class);
     }
 
-    private static Method getMethod(String name, Class<?> klass) {
+    private static Method getMethod(String name, Class<?> klass, Class<?>... paramClasses) {
         try {
-            Method method = klass.getDeclaredMethod(name);
+            Method method = klass.getDeclaredMethod(name, paramClasses);
             method.setAccessible(true);
             return method;
         } catch (SecurityException e) {
