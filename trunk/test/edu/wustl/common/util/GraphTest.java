@@ -1,6 +1,10 @@
 package edu.wustl.common.util;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -9,181 +13,334 @@ import junit.framework.TestCase;
  * @author chandrakant_talele
  */
 public class GraphTest extends TestCase {
-    //vertex = city and edge = length
-    
-    public void testEmptyGraph() {
-        Graph<City, Integer> g = new Graph<City, Integer>();
-        assertFalse(g.addVertices(new HashSet<City>()));
-        assertEquals(0, g.getVertices().size());
-        assertFalse(g.isConnected());
-        assertFalse(g.isTree());
+    // vertex = city and weight = length
+
+    public void testEdgeMethods() {
+        Graph<String, Integer> graph = new Graph<String, Integer>();
+        assertEquals(0, graph.numEdges());
+
+        assertNull(graph.putEdge("Delhi", "Mumbai", 200));
+        assertEquals(1, graph.numEdges());
+        assertEquals(asSet("Delhi", "Mumbai"), graph.getVertices());
+        assertNull(graph.putEdge("Delhi", "Madras", 500));
+        assertEquals(asSet("Delhi", "Mumbai", "Madras"), graph.getVertices());
+        assertEquals(2, graph.numEdges());
+        assertNull(graph.putEdge("Mumbai", "Madras", 300));
+        assertEquals(3, graph.numEdges());
+        assertNull(graph.putEdge("Andaman", "Andaman", null));
+        assertEquals(asSet("Delhi", "Mumbai", "Madras", "Andaman"), graph.getVertices());
+        assertEquals(4, graph.numEdges());
+
+        assertEquals(integer(300), graph.putEdge("Mumbai", "Madras", 400));
+        assertEquals(4, graph.numEdges());
+        assertNull(graph.putEdge("Andaman", "Andaman", null));
+        assertEquals(4, graph.numEdges());
+
+        assertTrue(graph.containsEdge("Delhi", "Mumbai"));
+        assertTrue(graph.containsEdge("Delhi", "Madras"));
+        assertTrue(graph.containsEdge("Mumbai", "Madras"));
+        assertTrue(graph.containsEdge("Andaman", "Andaman"));
+        assertFalse(graph.containsEdge("Madras", "Delhi"));
+        assertFalse(graph.containsEdge("Madras", "Mumbai"));
+        assertFalse(graph.containsEdge("Mumbai", "Delhi"));
+        assertFalse(graph.containsEdge("Mumbai", "Andaman"));
+        assertFalse(graph.containsEdge("Andaman", "Mumbai"));
+        assertFalse(graph.containsEdge("Delhi", "Andaman"));
+        assertFalse(graph.containsEdge("Andaman", "Delhi"));
+        assertFalse(graph.containsEdge("Madras", "Andaman"));
+        assertFalse(graph.containsEdge("Andaman", "Madras"));
+
+        Map<String, Integer> tempM = graph.getOutgoingEdges("Delhi");
+        assertEquals(asMap("Mumbai", 200, "Madras", 500), tempM);
+        tempM.remove("Mumbai"); // doesn't affect graph.
+        assertEquals(asMap("Mumbai", 200, "Madras", 500), graph.getOutgoingEdges("Delhi"));
+        assertEquals(asMap("Madras", 400), graph.getOutgoingEdges("Mumbai"));
+        assertTrue(graph.getOutgoingEdges("Madras").isEmpty());
+        assertEquals(asMap("Andaman", null), graph.getOutgoingEdges("Andaman"));
+
+        assertEquals(asMap("Mumbai", 400, "Delhi", 500), graph.getIncomingEdges("Madras"));
+        assertEquals(asMap("Delhi", 200), graph.getIncomingEdges("Mumbai"));
+        assertTrue(graph.getIncomingEdges("Delhi").isEmpty());
+        assertEquals(asMap("Andaman", null), graph.getIncomingEdges("Andaman"));
+
+        assertEquals(integer(200), graph.getEdge("Delhi", "Mumbai"));
+        assertEquals(integer(500), graph.getEdge("Delhi", "Madras"));
+        assertEquals(integer(400), graph.getEdge("Mumbai", "Madras"));
+        assertNull(graph.getEdge("Andaman", "Andaman"));// null weight
+
+        // no edge
+        assertNull(graph.getEdge("Madras", "Delhi"));
+        assertNull(graph.getEdge("Madras", "Mumbai"));
+        assertNull(graph.getEdge("Mumbai", "Delhi"));
+
+        assertNull(graph.removeEdge("Madras", "Delhi"));
+        assertEquals(4, graph.numEdges());
+        assertNull(graph.removeEdge("Madras", "Mumbai"));
+        assertEquals(4, graph.numEdges());
+        assertNull(graph.removeEdge("Mumbai", "Delhi"));
+        assertEquals(4, graph.numEdges());
+
+        assertNull(graph.removeEdge("Andaman", "Andaman"));
+        assertEquals(3, graph.numEdges());
+        assertFalse(graph.containsEdge("Andaman", "Andaman"));
+        assertNull(graph.getEdge("Andaman", "Andaman"));
+
+        assertEquals(integer(200), graph.removeEdge("Delhi", "Mumbai"));
+        assertEquals(2, graph.numEdges());
+        assertEquals(asMap("Madras", 500), graph.getOutgoingEdges("Delhi"));
+        assertTrue(graph.getIncomingEdges("Mumbai").isEmpty());
+        assertNull(graph.getEdge("Delhi", "Mumbai"));
     }
 
-    public void testOnlyNodes() {
-        Set<City> cities = new HashSet<City>();
-        cities.add(new City("Nasik"));
-        cities.add(new City("Pune"));
-        cities.add(new City("Mumbai"));
+    public void testEdgeMethodsExceptions() throws Exception {
+        Graph<String, Integer> graph = new Graph<String, Integer>();
+        try {
+            graph.containsEdge("Delhi", "Mumbai");
+            fail();
+        } catch (IllegalArgumentException e) {
 
-        Graph<City, Integer> g = new Graph<City, Integer>();
-        assertTrue(g.addVertices(cities));
-        assertEquals(cities, g.getVertices());
+        }
+        try {
+            graph.removeEdge("Delhi", "Mumbai");
+            fail();
+        } catch (IllegalArgumentException e) {
 
-        assertEquals(cities.size(), g.getVertices().size());
-        assertFalse(g.isConnected());
-        assertFalse(g.isTree());
-    }
+        }
+        try {
+            graph.getEdge("Delhi", "Mumbai");
+            fail();
+        } catch (IllegalArgumentException e) {
 
-    public void testPutEdge() {
-        City nsk = new City("Nasik");
-        City pune = new City("Pune");
-        Set<City> cities = new HashSet<City>();
-        cities.add(nsk);
-        cities.add(pune);
+        }
+        graph.putEdge("Delhi", "Mumbai", 200);
+        graph.putEdge("Delhi", "Madras", 500);
+        graph.putEdge("Mumbai", "Madras", 300);
+        assertEquals(3, graph.numEdges());
+        edgeMethodFailure(getEdgeMethod("containsEdge"), graph, "Mumbai", "Pune");
+        assertEquals(3, graph.numEdges());
+        edgeMethodFailure(getEdgeMethod("getEdge"), graph, "Mumbai", "Pune");
+        assertEquals(3, graph.numEdges());
+        edgeMethodFailure(getEdgeMethod("removeEdge"), graph, "Mumbai", "Pune");
+        assertEquals(3, graph.numEdges());
 
-        Graph<City, Integer> g = new Graph<City, Integer>();
-        assertTrue(g.addVertices(cities));
+        try {
+            graph.getOutgoingEdges(null);
+            fail();
+        } catch (NullPointerException e) {
 
-        assertNull(g.putEdge(nsk, pune, 220));
-        assertEquals(220, g.putEdge(nsk, pune, 220).intValue());
-        assertTrue(g.isConnected());
-        assertTrue(g.isTree());
-    }
-
-    public void testPutEdgeAndDisconnectedNode() {
-        City nsk = new City("Nasik");
-        City pune = new City("Pune");
-
-        Set<City> cities = new HashSet<City>();
-        cities.add(nsk);
-        cities.add(pune);
-        cities.add(new City("Mumbai"));
-
-        Graph<City, Integer> g = new Graph<City, Integer>();
-        assertTrue(g.addVertices(cities));
-
-        assertNull(g.putEdge(nsk, pune, 220));
-        assertEquals(220, g.putEdge(nsk, pune, 220).intValue());
-        assertFalse(g.isConnected());
-        assertFalse(g.isTree());
-    }
-
-    public void testFullyConnected() {
-        int max = 6;
-
-        Set<City> cities = new HashSet<City>(max);
-        for (int i = 0; i < max; i++) {
-            cities.add(new City("City:" + i));
         }
 
-        Graph<City, Integer> graph = new Graph<City, Integer>();
-        int j = 0;
-        for (City c1 : cities) {
-            for (City c2 : cities) {
-                Integer res = graph.putEdge(c1, c2, j);
-                assertNull(res);
-                j++;
-            }
-        }
-        assertTrue(graph.isConnected());
-        int p = 100;
-        j = 0;
-        for (City c1 : cities) {
-            for (City c2 : cities) {
-                Integer res = graph.putEdge(c1, c2, p);
-                assertEquals(j, res.intValue());
-                j++;
-                p++;
-            }
-        }
-        for (City c1 : cities) {
-            assertTrue(graph.containsVertex(c1));
-            for (City c2 : cities) {
-                assertTrue(graph.containsEdge(c1, c2));
-            }
-        }
+        try {
+            graph.getIncomingEdges(null);
+            fail();
+        } catch (NullPointerException e) {
 
-        assertEquals(max*max, graph.numEdges());
+        }
+        try {
+            graph.getOutgoingEdges("Pune");
+            fail();
+        } catch (IllegalArgumentException e) {
+
+        }
+        try {
+            graph.getIncomingEdges("Pune");
+            fail();
+        } catch (IllegalArgumentException e) {
+
+        }
     }
 
-    public void testSelf() {
-        City nsk = new City("Nasik");
-        City pune = new City("Pune");
-
-        Graph<City, Integer> g = new Graph<City, Integer>();
-        g.putEdge(nsk, nsk, 0);
-        g.putEdge(pune, pune, 0);
-        g.putEdge(nsk, pune, 220);
-
-        assertEquals(1, g.getIncomingEdges(nsk).size());
-        assertEquals(2, g.getIncomingEdges(pune).size());
-
-        assertEquals(2, g.getOutgoingEdges(nsk).size());
-        assertEquals(1, g.getOutgoingEdges(pune).size());
-
-        assertEquals(1, g.getInNeighbours(nsk).size());
-
+    private Method getEdgeMethod(String name) throws Exception {
+        return Graph.class.getMethod(name, Object.class, Object.class);
     }
 
+    private void edgeMethodFailure(Method method, Graph<?, ?> graph, String validVertex, String invalidVertex)
+            throws IllegalAccessException {
+        try {
+            method.invoke(graph, validVertex, null);
+            fail();
+        } catch (InvocationTargetException e) {
+            checkCause(e, NullPointerException.class);
+        }
+        try {
+            method.invoke(graph, null, validVertex);
+            fail();
+        } catch (InvocationTargetException e) {
+            checkCause(e, NullPointerException.class);
+        }
+        try {
+            method.invoke(graph, null, null);
+            fail();
+        } catch (InvocationTargetException e) {
+            checkCause(e, NullPointerException.class);
+        }
+        try {
+            method.invoke(graph, null, invalidVertex);
+            fail();
+        } catch (InvocationTargetException e) {
+            checkCause(e, NullPointerException.class);
+        }
+        try {
+            method.invoke(graph, invalidVertex, null);
+            fail();
+        } catch (InvocationTargetException e) {
+            checkCause(e, IllegalArgumentException.class);
+        }
+        try {
+            method.invoke(graph, invalidVertex, validVertex);
+            fail();
+        } catch (InvocationTargetException e) {
+            checkCause(e, IllegalArgumentException.class);
+        }
+    }
+
+    private void checkCause(InvocationTargetException i, Class<?> causeClass) {
+        assertEquals(causeClass, i.getCause().getClass());
+    }
+
+    public void testVertexMethods() {
+        Graph<String, Integer> graph = new Graph<String, Integer>();
+        assertEquals(0, graph.numVertices());
+        assertTrue(graph.getVertices().isEmpty());
+        assertFalse(graph.containsVertex("Delhi"));
+        assertTrue(graph.addVertex("Delhi"));
+        assertEquals(1, graph.numVertices());
+        assertTrue(graph.containsVertex("Delhi"));
+        assertFalse(graph.addVertex("Delhi"));
+        assertEquals(1, graph.numVertices());
+
+        assertTrue(graph.addVertex("Mumbai"));
+        assertEquals(2, graph.numVertices());
+        assertFalse(graph.addVertices(asSet("Delhi", "Mumbai")));
+        assertEquals(2, graph.numVertices());
+        assertTrue(graph.addVertices(asSet("Delhi", "Mumbai", "Madras")));
+        assertEquals(3, graph.numVertices());
+
+        Set<String> tempVs = graph.getVertices();
+        assertEquals(asSet("Delhi", "Mumbai", "Madras"), tempVs);
+        tempVs.remove("Madras"); // doesn't affect graph.
+        assertEquals(asSet("Delhi", "Mumbai", "Madras"), graph.getVertices());
+
+        assertTrue(graph.getOutNeighbours("Delhi").isEmpty());
+        assertTrue(graph.getOutNeighbours("Mumbai").isEmpty());
+        assertTrue(graph.getOutNeighbours("Madras").isEmpty());
+        assertTrue(graph.getInNeighbours("Delhi").isEmpty());
+        assertTrue(graph.getInNeighbours("Mumbai").isEmpty());
+        assertTrue(graph.getInNeighbours("Madras").isEmpty());
+
+        graph.putEdge("Delhi", "Mumbai", 200);
+        assertEquals(asSet("Mumbai"), graph.getOutNeighbours("Delhi"));
+        assertEquals(asSet("Delhi"), graph.getInNeighbours("Mumbai"));
+        assertTrue(graph.getOutNeighbours("Madras").isEmpty());
+        assertTrue(graph.getInNeighbours("Madras").isEmpty());
+
+        graph.putEdge("Andaman", "Andaman", null);
+        assertEquals(asSet("Andaman"), graph.getInNeighbours("Andaman"));
+        assertEquals(asSet("Andaman"), graph.getOutNeighbours("Andaman"));
+    }
+
+    public void testRemoveVertex() {
+        Graph<String, Integer> graph = new Graph<String, Integer>();
+        assertFalse(graph.removeVertex("Delhi"));
+        graph.addVertex("Delhi");
+        assertTrue(graph.removeVertex("Delhi"));
+
+        graph.putEdge("Delhi", "Mumbai", 200);
+        graph.putEdge("Delhi", "Madras", 500);
+        graph.putEdge("Mumbai", "Madras", 300);
+        graph.putEdge("Andaman", "Andaman", null);
+
+        Graph<String, Integer> expectedGraph = new Graph<String, Integer>();
+        expectedGraph.putEdge("Delhi", "Mumbai", 200);
+        expectedGraph.putEdge("Delhi", "Madras", 500);
+        expectedGraph.putEdge("Mumbai", "Madras", 300);
+
+        // remove andaman
+        graph.removeVertex("Andaman");
+        assertEquals(expectedGraph, graph);
+
+        // remove madras, check andaman not affected
+        graph.putEdge("Andaman", "Andaman", null);
+        graph.removeVertex("Madras");
+        expectedGraph.clear();
+        expectedGraph.putEdge("Delhi", "Mumbai", 200);
+        expectedGraph.putEdge("Andaman", "Andaman", null);
+        assertEquals(expectedGraph, graph);
+        graph.removeVertex("Andaman");
+
+        // remove mumbai
+        graph.putEdge("Delhi", "Madras", 500);
+        graph.putEdge("Mumbai", "Madras", 300);
+        graph.removeVertex("Mumbai");
+        expectedGraph.clear();
+        expectedGraph.putEdge("Delhi", "Madras", 500);
+        assertEquals(expectedGraph, graph);
+
+        // remove delhi
+        graph.putEdge("Delhi", "Mumbai", 200);
+        graph.putEdge("Mumbai", "Madras", 300);
+        graph.removeVertex("Delhi");
+        expectedGraph.clear();
+        expectedGraph.putEdge("Mumbai", "Madras", 300);
+        assertEquals(expectedGraph, graph);
+    }
+
+    public void testVertexMethodsExceptions() {
+        Graph<String, Integer> graph = new Graph<String, Integer>();
+        try {
+            graph.getOutNeighbours(null);
+            fail();
+        } catch (NullPointerException e) {
+
+        }
+        try {
+            graph.getOutNeighbours("Delhi");
+            fail();
+        } catch (IllegalArgumentException e) {
+
+        }
+        try {
+            graph.getInNeighbours(null);
+            fail();
+        } catch (NullPointerException e) {
+
+        }
+        try {
+            graph.getInNeighbours("Delhi");
+            fail();
+        } catch (IllegalArgumentException e) {
+
+        }
+    }
+
+    public void testClear() {
+        Graph<String, Integer> graph = new Graph<String, Integer>();
+        Graph<String, Integer> emptyGraph = new Graph<String, Integer>();
+        graph.putEdge("Delhi", "Mumbai", 200);
+        graph.clear();
+        assertEquals(emptyGraph, graph);
+    }
+
+    private Integer integer(int i) {
+        return new Integer(i);
+    }
+
+    private Map<Object, Object> asMap(Object... entries) {
+        if (entries.length % 2 != 0) {
+            throw new IllegalArgumentException();
+        }
+        Map<Object, Object> res = new HashMap<Object, Object>();
+        for (int i = 0; i < entries.length - 1; i += 2) {
+            res.put(entries[i], entries[i + 1]);
+        }
+        return res;
+    }
+
+    private static <T> Set<T> asSet(T... elems) {
+        Set<T> res = new HashSet<T>();
+        for (T elem : elems) {
+            res.add(elem);
+        }
+        return res;
+    }
 }
-
-class City {
-    private String name;
-
-    public City(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof City)) {
-            return false;
-        }
-        City city = (City) obj;
-        return name.equals(city.name);
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
-}
-
-//class Route {
-//    private Integer length;
-//
-//    private String label;
-//
-//    public Route(Integer length, String label) {
-//        this.length = length;
-//        this.label = label;
-//    }
-//    @Override
-//    public int hashCode() {
-//        return has;
-//    }
-//
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (obj == this) {
-//            return true;
-//        }
-//        if (!(obj instanceof Edge)) {
-//            return false;
-//        }
-//        Edge e = (Edge) obj;
-//        return id == e.getId() && weight.equals(e.getWeight());
-//    }
-//}
