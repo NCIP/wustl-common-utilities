@@ -30,17 +30,29 @@ import java.io.Serializable;
  * <p>
  * <b>Compound enum implementation mandates:</b>
  * <ol>
- * <li> It is mandatory that a concrete <tt>compoundEnum</tt> implements a
- * static method with the following signature:
+ * <li> It is mandatory that a concrete <tt>compoundEnum</tt> implements
+ * static methods with the following signatures:
+ * <ul>
+ * <li>
  * 
  * <pre>
  * // return all compound enum values
- * public static Object[] values();
+ * public static CompoundEnum[] values();
  * </pre>
  * 
- * This static method will help reflection code to treat a <tt>compoundEnum</tt>
- * and an <tt>enum</tt> in a similar way.<br>
  * </li>
+ * <li>
+ * 
+ * <pre>
+ * // return compound enum with given name
+ * public static CompoundEnum valueOf(String name);
+ * </pre>
+ * 
+ * <br>
+ * The above static methods will help reflection code to treat a
+ * <tt>compoundEnum</tt> and an <tt>enum</tt> in a similar way.<br>
+ * </li>
+ * </ul>
  * <li> It is mandatory for a <tt>compoundEnum</tt> to implement the
  * <tt>readResolve()</tt> method to enusure unique instances (see example
  * below).</li>
@@ -67,7 +79,7 @@ import java.io.Serializable;
  * 
  *     // private constructor because this is an enum
  *     private AllDataTypes(T primitiveEnum) {
- *         super(primitiveEnum, nextOrdinal++);
+ *         super(primitiveEnum, nextOrdinal++, primitiveEnum.name());
  *         primitiveValues.add(primitiveEnum);
  *         values.add(this);
  *     }
@@ -85,6 +97,20 @@ import java.io.Serializable;
  *     // this method is mandated by the CompoundEnum contract.
  *     public static AllDataTypes&lt;?&gt;[] values() {
  *         return values.toArray(new AllDataTypes&lt;?&gt;[0]);
+ *     }
+ * 
+ *     // find compound enum with specified name.
+ *     // this method is mandated by the CompoundEnum contract.
+ *     public static AllDataTypes&lt;?&gt; valueOf(String name) {
+ *         if (name == null) {
+ *             throw new NullPointerException(&quot;name is null.&quot;);
+ *         }
+ *         for (AllDataTypes&lt;?&gt; dataType : values) {
+ *             if (dataType.name().equals(name)) {
+ *                 return dataType;
+ *             }
+ *         }
+ *         throw new IllegalArgumentException(&quot;no compound enum AllDataTypes.&quot; + name);
  *     }
  * 
  *     // returns all the primitive enum values in this compound enum.
@@ -118,9 +144,22 @@ public abstract class CompoundEnum<E extends CompoundEnum<E, T>, T extends Enum<
 
     private int ordinal;
 
-    protected CompoundEnum(T primitiveEnum, int ordinal) {
+    private String name;
+
+    /**
+     * Creates a compound enum with specified name, ordinal and corresponding
+     * primitive enum.
+     */
+    protected CompoundEnum(T primitiveEnum, int ordinal, String name) {
+        if (primitiveEnum == null || name == null) {
+            throw new NullPointerException();
+        }
+        if (name.equals("")) {
+            throw new IllegalArgumentException("enum name should not be empty.");
+        }
         this.primitiveEnum = primitiveEnum;
         this.ordinal = ordinal;
+        this.name = name;
     }
 
     /**
@@ -135,6 +174,13 @@ public abstract class CompoundEnum<E extends CompoundEnum<E, T>, T extends Enum<
      */
     public int ordinal() {
         return ordinal;
+    }
+
+    /**
+     * @return the name of this compound name.
+     */
+    public String name() {
+        return name;
     }
 
     /**
