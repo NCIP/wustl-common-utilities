@@ -2,8 +2,10 @@ package edu.wustl.common.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -323,27 +325,22 @@ public class GraphTest extends TestCase {
 
     public void testGetUnreachableVertices() {
         Graph<String, Integer> graph = newGraph();
-        assertTrue(graph.getUnreachableVertices(false).isEmpty());
+        assertTrue(graph.getUnreachableVertices().isEmpty());
 
         graph.addVertex("Delhi");
-        assertEquals(asSet("Delhi"), graph.getUnreachableVertices(false));
-        assertEquals(asSet("Delhi"), graph.getUnreachableVertices(true));
+        assertEquals(asSet("Delhi"), graph.getUnreachableVertices());
 
         graph.addVertex("Mumbai");
-        assertEquals(asSet("Mumbai", "Delhi"), graph.getUnreachableVertices(false));
-        assertEquals(asSet("Mumbai", "Delhi"), graph.getUnreachableVertices(true));
+        assertEquals(asSet("Mumbai", "Delhi"), graph.getUnreachableVertices());
 
         graph.putEdge("Delhi", "Mumbai", 200);
-        assertEquals(asSet("Delhi"), graph.getUnreachableVertices(false));
-        assertEquals(asSet("Delhi"), graph.getUnreachableVertices(true));
+        assertEquals(asSet("Delhi"), graph.getUnreachableVertices());
 
         graph.addVertex("Andaman");
-        assertEquals(asSet("Delhi", "Andaman"), graph.getUnreachableVertices(false));
-        assertEquals(asSet("Delhi", "Andaman"), graph.getUnreachableVertices(true));
+        assertEquals(asSet("Delhi", "Andaman"), graph.getUnreachableVertices());
 
         graph.putEdge("Andaman", "Andaman", null);
-        assertEquals(asSet("Delhi", "Andaman"), graph.getUnreachableVertices(false));
-        assertEquals(asSet("Delhi"), graph.getUnreachableVertices(true));
+        assertEquals(asSet("Delhi", "Andaman"), graph.getUnreachableVertices());
     }
 
     public void testIsConnected() {
@@ -453,20 +450,52 @@ public class GraphTest extends TestCase {
         graph.putEdge("Delhi", "Madras", 500);
         graph.putEdge("Mumbai", "Madras", 400);
         graph.putEdge("Andaman", "Andaman", null);
-        
+
         Graph<String, Integer> clone = newGraph();
         clone.assign(graph);
         assertEquals(graph, clone);
-        
-        assertEquals(asMap("Mumbai", 200, "Madras", 500), graph.getOutgoingEdges("Delhi"));
-        assertEquals(asMap("Madras", 400), graph.getOutgoingEdges("Mumbai"));
-        assertTrue(graph.getOutgoingEdges("Madras").isEmpty());
-        assertEquals(asMap("Andaman", null), graph.getOutgoingEdges("Andaman"));
 
-        assertEquals(asMap("Mumbai", 400, "Delhi", 500), graph.getIncomingEdges("Madras"));
-        assertEquals(asMap("Delhi", 200), graph.getIncomingEdges("Mumbai"));
-        assertTrue(graph.getIncomingEdges("Delhi").isEmpty());
-        assertEquals(asMap("Andaman", null), graph.getIncomingEdges("Andaman"));
+        assertEquals(asMap("Mumbai", 200, "Madras", 500), clone.getOutgoingEdges("Delhi"));
+        assertEquals(asMap("Madras", 400), clone.getOutgoingEdges("Mumbai"));
+        assertTrue(clone.getOutgoingEdges("Madras").isEmpty());
+        assertEquals(asMap("Andaman", null), clone.getOutgoingEdges("Andaman"));
+
+        assertEquals(asMap("Mumbai", 400, "Delhi", 500), clone.getIncomingEdges("Madras"));
+        assertEquals(asMap("Delhi", 200), clone.getIncomingEdges("Mumbai"));
+        assertTrue(clone.getIncomingEdges("Delhi").isEmpty());
+        assertEquals(asMap("Andaman", null), clone.getIncomingEdges("Andaman"));
+    }
+
+    public void testGetVertexPaths() {
+        Graph<String, Integer> graph = newGraph();
+        graph.putEdge("Delhi", "Mumbai", 200);
+        graph.putEdge("Delhi", "Madras", 500);
+        graph.putEdge("Mumbai", "Madras", 400);
+
+        assertEquals(asSet(asList("Delhi", "Madras"), asList("Delhi", "Mumbai", "Madras")), graph.getVertexPaths(
+                "Delhi", "Madras"));
+        assertEquals(asSet(), graph.getVertexPaths("Delhi", "Delhi"));
+    }
+
+    public void testSerial() {
+        Graph<String, Integer> graph = newGraph();
+        graph.putEdge("Delhi", "Mumbai", 200);
+        graph.putEdge("Delhi", "Madras", 500);
+        graph.putEdge("Mumbai", "Madras", 400);
+        graph.putEdge("Andaman", "Andaman", null);
+
+        Graph<String, Integer> clone = ObjectCloner.clone(graph);
+        assertEquals(graph, clone);
+
+        assertEquals(asMap("Mumbai", 200, "Madras", 500), clone.getOutgoingEdges("Delhi"));
+        assertEquals(asMap("Madras", 400), clone.getOutgoingEdges("Mumbai"));
+        assertTrue(clone.getOutgoingEdges("Madras").isEmpty());
+        assertEquals(asMap("Andaman", null), clone.getOutgoingEdges("Andaman"));
+
+        assertEquals(asMap("Mumbai", 400, "Delhi", 500), clone.getIncomingEdges("Madras"));
+        assertEquals(asMap("Delhi", 200), clone.getIncomingEdges("Mumbai"));
+        assertTrue(clone.getIncomingEdges("Delhi").isEmpty());
+        assertEquals(asMap("Andaman", null), clone.getIncomingEdges("Andaman"));
     }
 
     private Integer integer(int i) {
@@ -490,6 +519,14 @@ public class GraphTest extends TestCase {
 
     private static <T> Set<T> asSet(T... elems) {
         Set<T> res = new HashSet<T>();
+        for (T elem : elems) {
+            res.add(elem);
+        }
+        return res;
+    }
+
+    private static <T> List<T> asList(T... elems) {
+        List<T> res = new ArrayList<T>();
         for (T elem : elems) {
             res.add(elem);
         }
