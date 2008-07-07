@@ -258,16 +258,25 @@ public class Graph<V, W> implements Serializable, Cloneable {
         return getIncomingEdges(v).keySet();
     }
 
+    public int outDegree(V v) {
+        return getOutgoingEdges(v).size();
+    }
+
+    public int inDegree(V v) {
+        return getIncomingEdges(v).size();
+    }
+
     /**
      * This method will return the list of vertices having no incomming Edges.
      * The node having no incoming edges will be treated as Root node.
      * 
      * @return list of vertices having no incomming Edges.
      */
-    public Set<V> getUnreachableVertices() {
+    public Set<V> getUnreachableVertices(boolean excludeSelfLoops) {
         Set<V> res = new HashSet<V>();
         for (Map.Entry<V, Map<V, W>> entry : incomingEdgeMap.entrySet()) {
-            if (entry.getValue().isEmpty() || Collections.singleton(entry.getKey()).equals(entry.getValue().keySet())) {
+            if (entry.getValue().isEmpty()
+                    || (!excludeSelfLoops && Collections.singleton(entry.getKey()).equals(entry.getValue().keySet()))) {
                 res.add(entry.getKey());
             }
         }
@@ -285,15 +294,10 @@ public class Graph<V, W> implements Serializable, Cloneable {
      * @param targetVertex The target vertex of edge to be added.
      * @return true if the
      */
-    private boolean isReverseReachable(V sourceVertex, V targetVertex) {
-        if (sourceVertex.equals(targetVertex))
-            return true; // finally reached from source to target!!!
-        for (V v : incomingEdgeMap.get(sourceVertex).keySet()) {
-            if (isReverseReachable(v, targetVertex))
-                return true;
-        }
-
-        return false;
+    public boolean isReachable(V src, V target) {
+        validateVertex(src);
+        validateVertex(target);
+        return isReachableValidVertices(src, target);
     }
 
     /**
@@ -375,11 +379,9 @@ public class Graph<V, W> implements Serializable, Cloneable {
      */
     public boolean isConnected() {
         Set<V> vertices = getVertices();
-        if (vertices.isEmpty()) {
-            return false;
+        if (!vertices.isEmpty()) {
+            dfs(vertices.iterator().next(), vertices);
         }
-
-        dfs(vertices.iterator().next(), vertices);
         return vertices.isEmpty();
     }
 
@@ -405,10 +407,13 @@ public class Graph<V, W> implements Serializable, Cloneable {
     }
 
     public boolean isTree() {
+        if (getVertices().isEmpty()) {
+            return true;
+        }
         if (!isConnected()) {
             return false;
         }
-        Set<V> roots = getUnreachableVertices();
+        Set<V> roots = getUnreachableVertices(true);
         if (roots.size() != 1) {
             return false;
         }
@@ -434,9 +439,20 @@ public class Graph<V, W> implements Serializable, Cloneable {
      */
     public boolean willCauseNewCycle(V src, V target) {
         if (!(containsVertex(src) && containsVertex(target))) {
-            return false;
+            return src.equals(target);
         }
-        return isReverseReachable(src, target);
+
+        return !containsEdge(src, target) && isReachableValidVertices(target, src);
+    }
+
+    private boolean isReachableValidVertices(V src, V target) {
+        if (src.equals(target))
+            return true; // finally reached from source to target!!!
+        for (V v : getOutNeighbours(src)) {
+            if (!v.equals(src) && isReachableValidVertices(v, target))
+                return true;
+        }
+        return false;
     }
 
     @Override
