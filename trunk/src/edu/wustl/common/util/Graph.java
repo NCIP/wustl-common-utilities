@@ -358,6 +358,16 @@ public class Graph<V, W> implements Serializable, Cloneable {
         return isReachableValidVertices(source, target);
     }
 
+    private boolean isReachableValidVertices(V source, V target) {
+        if (source.equals(target))
+            return true; // finally reached from source to target!!!
+        for (V v : getOutNeighbours(source)) {
+            if (!v.equals(source) && isReachableValidVertices(v, target))
+                return true;
+        }
+        return false;
+    }
+
     /**
      * All possible (acyclic) vertex-paths between two vertices. If
      * <tt>source.equals(target)</tt>, then no paths are returned. A
@@ -427,8 +437,8 @@ public class Graph<V, W> implements Serializable, Cloneable {
             List<W> theEdgePath = new ArrayList<W>();
             for (int j = 1; j < thePath.size(); j++) {
                 theEdgePath.add(getEdge(thePath.get(j - 1), thePath.get(j)));
-                edgePaths.add(theEdgePath);
             }
+            edgePaths.add(theEdgePath);
         }
         return edgePaths;
     }
@@ -439,9 +449,7 @@ public class Graph<V, W> implements Serializable, Cloneable {
      * Checks if the graph is weakly connected. Weakly connected digraph
      * (definition from MathWorld): A directed graph in which it is possible to
      * reach any node starting from any other node by traversing edges in some
-     * direction (i.e., not necessarily in the direction they point). The nodes
-     * in a weakly connected digraph therefore must all have either outdegree or
-     * indegree of at least 1. <br>
+     * direction (i.e., not necessarily in the direction they point).<br>
      * Note that the null graph (no vertices) and the singleton graph (one
      * vertex) are weakly connected.
      * 
@@ -534,16 +542,6 @@ public class Graph<V, W> implements Serializable, Cloneable {
         }
 
         return !containsEdge(source, target) && isReachableValidVertices(target, source);
-    }
-
-    private boolean isReachableValidVertices(V source, V target) {
-        if (source.equals(target))
-            return true; // finally reached from source to target!!!
-        for (V v : getOutNeighbours(source)) {
-            if (!v.equals(source) && isReachableValidVertices(v, target))
-                return true;
-        }
-        return false;
     }
 
     /**
