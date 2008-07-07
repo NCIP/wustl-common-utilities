@@ -16,7 +16,7 @@ public class GraphTest extends TestCase {
     // vertex = city and weight = length
 
     public void testEdgeMethods() {
-        Graph<String, Integer> graph = new Graph<String, Integer>();
+        Graph<String, Integer> graph = newGraph();
         assertEquals(0, graph.numEdges());
 
         assertNull(graph.putEdge("Delhi", "Mumbai", 200));
@@ -93,7 +93,7 @@ public class GraphTest extends TestCase {
     }
 
     public void testEdgeMethodsExceptions() throws Exception {
-        Graph<String, Integer> graph = new Graph<String, Integer>();
+        Graph<String, Integer> graph = newGraph();
         try {
             graph.containsEdge("Delhi", "Mumbai");
             fail();
@@ -199,7 +199,7 @@ public class GraphTest extends TestCase {
     }
 
     public void testVertexMethods() {
-        Graph<String, Integer> graph = new Graph<String, Integer>();
+        Graph<String, Integer> graph = newGraph();
         assertEquals(0, graph.numVertices());
         assertTrue(graph.getVertices().isEmpty());
         assertFalse(graph.containsVertex("Delhi"));
@@ -240,7 +240,7 @@ public class GraphTest extends TestCase {
     }
 
     public void testRemoveVertex() {
-        Graph<String, Integer> graph = new Graph<String, Integer>();
+        Graph<String, Integer> graph = newGraph();
         assertFalse(graph.removeVertex("Delhi"));
         graph.addVertex("Delhi");
         assertTrue(graph.removeVertex("Delhi"));
@@ -250,7 +250,7 @@ public class GraphTest extends TestCase {
         graph.putEdge("Mumbai", "Madras", 300);
         graph.putEdge("Andaman", "Andaman", null);
 
-        Graph<String, Integer> expectedGraph = new Graph<String, Integer>();
+        Graph<String, Integer> expectedGraph = newGraph();
         expectedGraph.putEdge("Delhi", "Mumbai", 200);
         expectedGraph.putEdge("Delhi", "Madras", 500);
         expectedGraph.putEdge("Mumbai", "Madras", 300);
@@ -286,7 +286,7 @@ public class GraphTest extends TestCase {
     }
 
     public void testVertexMethodsExceptions() {
-        Graph<String, Integer> graph = new Graph<String, Integer>();
+        Graph<String, Integer> graph = newGraph();
         try {
             graph.getOutNeighbours(null);
             fail();
@@ -314,35 +314,167 @@ public class GraphTest extends TestCase {
     }
 
     public void testClear() {
-        Graph<String, Integer> graph = new Graph<String, Integer>();
-        Graph<String, Integer> emptyGraph = new Graph<String, Integer>();
+        Graph<String, Integer> graph = newGraph();
+        Graph<String, Integer> emptyGraph = newGraph();
         graph.putEdge("Delhi", "Mumbai", 200);
         graph.clear();
         assertEquals(emptyGraph, graph);
     }
 
     public void testGetUnreachableVertices() {
-        Graph<String, Integer> graph = new Graph<String, Integer>();
-        assertTrue(graph.getUnreachableVertices().isEmpty());
+        Graph<String, Integer> graph = newGraph();
+        assertTrue(graph.getUnreachableVertices(false).isEmpty());
 
         graph.addVertex("Delhi");
-        assertEquals(asSet("Delhi"), graph.getUnreachableVertices());
+        assertEquals(asSet("Delhi"), graph.getUnreachableVertices(false));
+        assertEquals(asSet("Delhi"), graph.getUnreachableVertices(true));
 
         graph.addVertex("Mumbai");
-        assertEquals(asSet("Mumbai", "Delhi"), graph.getUnreachableVertices());
-        
+        assertEquals(asSet("Mumbai", "Delhi"), graph.getUnreachableVertices(false));
+        assertEquals(asSet("Mumbai", "Delhi"), graph.getUnreachableVertices(true));
+
         graph.putEdge("Delhi", "Mumbai", 200);
-        assertEquals(asSet("Delhi"), graph.getUnreachableVertices());
-        
+        assertEquals(asSet("Delhi"), graph.getUnreachableVertices(false));
+        assertEquals(asSet("Delhi"), graph.getUnreachableVertices(true));
+
         graph.addVertex("Andaman");
-        assertEquals(asSet("Delhi", "Andaman"), graph.getUnreachableVertices());
-        
+        assertEquals(asSet("Delhi", "Andaman"), graph.getUnreachableVertices(false));
+        assertEquals(asSet("Delhi", "Andaman"), graph.getUnreachableVertices(true));
+
         graph.putEdge("Andaman", "Andaman", null);
-        assertEquals(asSet("Delhi", "Andaman"), graph.getUnreachableVertices());
+        assertEquals(asSet("Delhi", "Andaman"), graph.getUnreachableVertices(false));
+        assertEquals(asSet("Delhi"), graph.getUnreachableVertices(true));
+    }
+
+    public void testIsConnected() {
+        Graph<String, Integer> graph = newGraph();
+        assertTrue(graph.isConnected());
+
+        graph.addVertex("Delhi");
+        assertTrue(graph.isConnected());
+        graph.putEdge("Delhi", "Delhi", 0);
+        assertTrue(graph.isConnected());
+        graph.removeEdge("Delhi", "Delhi");
+
+        graph.putEdge("Delhi", "Mumbai", 200);
+        assertTrue(graph.isConnected());
+        graph.removeEdge("Delhi", "Mumbai");
+        assertFalse(graph.isConnected());
+
+        graph.putEdge("Mumbai", "Madras", 300);
+        assertFalse(graph.isConnected());
+
+        graph.putEdge("Delhi", "Delhi", null);
+        assertFalse(graph.isConnected());
+
+        graph.putEdge("Delhi", "Pune", 150);
+        assertFalse(graph.isConnected());
+
+        graph.putEdge("Pune", "Mumbai", 80);
+        assertTrue(graph.isConnected());
+        graph.removeEdge("Pune", "Mumbai");
+        assertFalse(graph.isConnected());
+        // check direction is immaterial.
+        graph.putEdge("Mumbai", "Pune", 80);
+        assertTrue(graph.isConnected());
+    }
+
+    public void testIsTree() {
+        Graph<String, Integer> graph = newGraph();
+        assertTrue(graph.isTree());
+
+        graph.addVertex("Delhi");
+        assertTrue(graph.isTree());
+
+        graph.putEdge("Delhi", "Delhi", 0);
+        assertFalse(graph.isTree());
+
+        graph.putEdge("Delhi", "Mumbai", 200);
+        assertFalse(graph.isTree());
+
+        graph.removeEdge("Delhi", "Delhi");
+        assertTrue(graph.isTree());
+
+        graph.removeEdge("Delhi", "Mumbai");
+        assertFalse(graph.isTree());
+
+        graph.putEdge("Delhi", "Mumbai", 200);
+        graph.putEdge("Delhi", "Madras", 500);
+        assertTrue(graph.isTree());
+        graph.putEdge("Mumbai", "Madras", 300);
+        assertFalse(graph.isTree());
+    }
+
+    public void testIsReachable() {
+        Graph<String, Integer> graph = newGraph();
+        graph.addVertex("Delhi");
+
+        assertTrue(graph.isReachable("Delhi", "Delhi"));
+        graph.putEdge("Delhi", "Delhi", null);
+        assertTrue(graph.isReachable("Delhi", "Delhi"));
+
+        graph.addVertex("Mumbai");
+        assertFalse(graph.isReachable("Delhi", "Mumbai"));
+        assertFalse(graph.isReachable("Mumbai", "Delhi"));
+        graph.putEdge("Delhi", "Mumbai", 200);
+        assertTrue(graph.isReachable("Delhi", "Mumbai"));
+        assertFalse(graph.isReachable("Mumbai", "Delhi"));
+
+        graph.putEdge("Mumbai", "Madras", 300);
+        assertTrue(graph.isReachable("Mumbai", "Madras"));
+        assertTrue(graph.isReachable("Delhi", "Madras"));
+        assertFalse(graph.isReachable("Madras", "Delhi"));
+    }
+
+    public void testWillCauseNewCycle() {
+        Graph<String, Integer> graph = newGraph();
+        assertTrue(graph.willCauseNewCycle("Delhi", "Delhi"));
+        assertFalse(graph.willCauseNewCycle("Delhi", "Mumbai"));
+
+        graph.addVertex("Delhi");
+        assertTrue(graph.willCauseNewCycle("Delhi", "Delhi"));
+        assertFalse(graph.willCauseNewCycle("Delhi", "Mumbai"));
+
+        graph.putEdge("Delhi", "Delhi", null);
+        assertFalse(graph.willCauseNewCycle("Delhi", "Delhi"));
+
+        graph.putEdge("Delhi", "Mumbai", 200);
+        assertFalse(graph.willCauseNewCycle("Delhi", "Mumbai"));
+        assertTrue(graph.willCauseNewCycle("Mumbai", "Delhi"));
+
+        graph.putEdge("Mumbai", "Madras", 300);
+        assertFalse(graph.willCauseNewCycle("Delhi", "Madras"));
+        assertTrue(graph.willCauseNewCycle("Madras", "Delhi"));
+    }
+
+    public void testAssign() {
+        Graph<String, Integer> graph = newGraph();
+        graph.putEdge("Delhi", "Mumbai", 200);
+        graph.putEdge("Delhi", "Madras", 500);
+        graph.putEdge("Mumbai", "Madras", 400);
+        graph.putEdge("Andaman", "Andaman", null);
+        
+        Graph<String, Integer> clone = newGraph();
+        clone.assign(graph);
+        assertEquals(graph, clone);
+        
+        assertEquals(asMap("Mumbai", 200, "Madras", 500), graph.getOutgoingEdges("Delhi"));
+        assertEquals(asMap("Madras", 400), graph.getOutgoingEdges("Mumbai"));
+        assertTrue(graph.getOutgoingEdges("Madras").isEmpty());
+        assertEquals(asMap("Andaman", null), graph.getOutgoingEdges("Andaman"));
+
+        assertEquals(asMap("Mumbai", 400, "Delhi", 500), graph.getIncomingEdges("Madras"));
+        assertEquals(asMap("Delhi", 200), graph.getIncomingEdges("Mumbai"));
+        assertTrue(graph.getIncomingEdges("Delhi").isEmpty());
+        assertEquals(asMap("Andaman", null), graph.getIncomingEdges("Andaman"));
     }
 
     private Integer integer(int i) {
         return new Integer(i);
+    }
+
+    private Graph<String, Integer> newGraph() {
+        return new Graph<String, Integer>();
     }
 
     private Map<Object, Object> asMap(Object... entries) {
