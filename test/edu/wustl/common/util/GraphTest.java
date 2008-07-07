@@ -466,15 +466,105 @@ public class GraphTest extends TestCase {
         assertEquals(asMap("Andaman", null), clone.getIncomingEdges("Andaman"));
     }
 
-    public void testGetVertexPaths() {
+    public void testVertexPaths() {
         Graph<String, Integer> graph = newGraph();
         graph.putEdge("Delhi", "Mumbai", 200);
         graph.putEdge("Delhi", "Madras", 500);
         graph.putEdge("Mumbai", "Madras", 400);
+        graph.putEdge("Andaman", "Andaman", null);
 
+        checkPaths(graph);
+
+        graph.putEdge("Madras", "Madras", null);
+        checkPaths(graph);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void checkPaths(Graph<String, Integer> graph) {
         assertEquals(asSet(asList("Delhi", "Madras"), asList("Delhi", "Mumbai", "Madras")), graph.getVertexPaths(
                 "Delhi", "Madras"));
+        assertEquals(asSet(asList("Delhi", "Mumbai")), graph.getVertexPaths("Delhi", "Mumbai"));
+        assertEquals(asSet(asList("Mumbai", "Madras")), graph.getVertexPaths("Mumbai", "Madras"));
         assertEquals(asSet(), graph.getVertexPaths("Delhi", "Delhi"));
+        assertEquals(asSet(), graph.getVertexPaths("Mumbai", "Delhi"));
+        assertEquals(asSet(), graph.getVertexPaths("Madras", "Delhi"));
+        assertEquals(asSet(), graph.getVertexPaths("Madras", "Mumbai"));
+        assertEquals(asSet(), graph.getVertexPaths("Andaman", "Andaman"));
+    }
+
+    public void testVertexPathsFullyConnectedBase() {
+        final int size = 5;
+        Graph<Integer, Integer> graph = fullyConnectedGraph(size);
+
+        Set[][] fullyConnectedPaths = new Set[size][size];
+        for (int i = 0; i < size; i++) {
+            fullyConnectedPaths[i] = new Set[size];
+            for (int j = 0; j < size; j++) {
+                Set<List<Integer>> paths = graph.getVertexPaths(i, j);
+                fullyConnectedPaths[i][j] = paths;
+                int expected;
+                if (i == j) {
+                    expected = 0;
+                } else {
+                    expected = nprSum(size - 2);
+                }
+                assertEquals(expected, paths.size());
+            }
+        }
+
+        graph.removeEdge(0, 1);
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                Set<List<Integer>> paths = graph.getVertexPaths(i, j);
+                Set<List<Integer>> temp = new HashSet<List<Integer>>(fullyConnectedPaths[i][j]);
+                assertTrue(temp.containsAll(paths));
+                temp.removeAll(paths);
+                for (List<Integer> path : temp) {
+                    assertTrue(path.toString().contains("0, 1"));
+                }
+            }
+        }
+
+        graph.removeEdge(3, 4);
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                Set<List<Integer>> paths = graph.getVertexPaths(i, j);
+                Set<List<Integer>> temp = new HashSet<List<Integer>>(fullyConnectedPaths[i][j]);
+                assertTrue(temp.containsAll(paths));
+                temp.removeAll(paths);
+                for (List<Integer> path : temp) {
+                    assertTrue(path.toString().contains("0, 1") || path.toString().contains("3, 4"));
+                }
+            }
+        }
+    }
+
+    private Graph<Integer, Integer> fullyConnectedGraph(int size) {
+        Graph<Integer, Integer> graph = new Graph<Integer, Integer>();
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                graph.putEdge(i, j, null);
+            }
+        }
+        return graph;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void testEdgePaths() {
+        Graph<String, Integer> graph = newGraph();
+        graph.putEdge("Delhi", "Mumbai", 200);
+        graph.putEdge("Delhi", "Madras", 500);
+        graph.putEdge("Mumbai", "Madras", 400);
+        graph.putEdge("Andaman", "Andaman", null);
+
+        assertEquals(asSet(asList(500), asList(200, 400)), graph.getEdgePaths("Delhi", "Madras"));
+        assertEquals(asSet(asList(200)), graph.getEdgePaths("Delhi", "Mumbai"));
+        assertEquals(asSet(asList(400)), graph.getEdgePaths("Mumbai", "Madras"));
+        assertEquals(asSet(), graph.getEdgePaths("Delhi", "Delhi"));
+        assertEquals(asSet(), graph.getEdgePaths("Mumbai", "Delhi"));
+        assertEquals(asSet(), graph.getEdgePaths("Madras", "Delhi"));
+        assertEquals(asSet(), graph.getEdgePaths("Madras", "Mumbai"));
+        assertEquals(asSet(), graph.getEdgePaths("Andaman", "Andaman"));
     }
 
     public void testSerial() {
@@ -531,5 +621,22 @@ public class GraphTest extends TestCase {
             res.add(elem);
         }
         return res;
+    }
+
+    private static int nprSum(int n) {
+        int r = 0;
+        int fn = fact(n);
+        for (int i = 0; i <= n; i++) {
+            r = r + fn / fact(n - i);
+        }
+        return r;
+    }
+
+    private static int fact(int n) {
+        int f = 1;
+        for (int i = 2; i <= n; i++) {
+            f = f * i;
+        }
+        return f;
     }
 }
