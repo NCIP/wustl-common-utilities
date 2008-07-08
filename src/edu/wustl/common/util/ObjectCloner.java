@@ -8,6 +8,13 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+/**
+ * Clones a <tt>Serializable</tt> object by writing out to a stream and
+ * reading it back into a new object.
+ * 
+ * @author srinath_k
+ * 
+ */
 public class ObjectCloner {
     @SuppressWarnings("unchecked")
     public static <T> T clone(T obj) {
