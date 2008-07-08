@@ -15,6 +15,37 @@ import org.hibernate.usertype.UserType;
 
 import edu.wustl.common.util.CompoundEnum;
 
+/**
+ * A <tt>UserType</tt> that can be used to persist <tt>enums</tt> and
+ * {@link CompoundEnum}s.<br>
+ * <b>Mapping example:</b> <br>
+ * Suppose a field <tt>foo</tt> is of type <tt>com.foobar.FooCompoundEnum</tt>;
+ * <tt>FooCompoundEnum extends CompoundEnum</tt>, and obeys the
+ * {@link CompoundEnum} contract.<br>
+ * This field <tt>foo</tt> can be mapped as follows:
+ * 
+ * <pre>
+ *              &lt;property name=&quot;foo&quot; column=&quot;FOO_COL&quot;&gt;
+ *                  &lt;type name=&quot;edu.wustl.common.hibernate.EnumType&quot;&gt;
+ *                      &lt;param name=&quot;enum-name&quot;&gt;
+ *                          com.foobar.FooCompoundEnum
+ *                      &lt;/param&gt;
+ *                  &lt;/type&gt;
+ *              &lt;/property&gt;
+ * </pre>
+ * 
+ * Note that <tt>enum-name</tt> is a parameter that specified the type of the
+ * enum/compoundEnum. The same mapping works if <tt>FooCompoundEnum</tt> is an
+ * <tt>enum</tt> instead of a <tt>compoundEnum</tt>.
+ * <p>
+ * <tt>EnumType</tt> persists the name of the enum/compoundEnum into the
+ * database, and reads back the enum/compoundEnum constant based on the name
+ * (using the <tt>valueOf</tt> method). Thus it is essential that a
+ * compoundEnum obeys the {@link CompoundEnum} contract.
+ * 
+ * @author srinath_k
+ * @see CompoundEnum
+ */
 public class EnumType implements UserType, ParameterizedType {
     private static final int[] sqlTypes = new int[]{Types.VARCHAR};
 
