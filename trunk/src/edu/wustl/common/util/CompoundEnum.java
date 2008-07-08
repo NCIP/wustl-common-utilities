@@ -2,6 +2,8 @@ package edu.wustl.common.util;
 
 import java.io.Serializable;
 
+import edu.wustl.common.hibernate.EnumType;
+
 /**
  * Represents a compound enumeration formed primitive <tt>enum</tt>s. In the
  * following description, the word (primitive) <tt>enum</tt> refers to java's
@@ -49,8 +51,8 @@ import java.io.Serializable;
  * </pre>
  * 
  * <br>
- * The above static methods will help reflection code to treat a
- * <tt>compoundEnum</tt> and an <tt>enum</tt> in a similar way.<br>
+ * The above static methods will help reduce the difference between
+ * <tt>compoundEnum</tt>s and <tt>enum</tt>s.<br>
  * </li>
  * </ul>
  * <li> It is mandatory for a <tt>compoundEnum</tt> to implement the
@@ -127,8 +129,11 @@ import java.io.Serializable;
  * 
  * Note that the typesafe-enum pattern mentioned in Item 21 of "Effective Java"
  * by Joshua Bloch is to be followed to the maximum possible extent while
- * defining compound enums. Thus, compound enums can also have names,
- * constant-specific class bodies etc.
+ * defining compound enums. For example, compound enums can also have
+ * constant-specific class bodies.
+ * <p>
+ * <b>Hibernate note: </b> A <tt>compound enum</tt> field can be persisted
+ * using {@link EnumType}.
  * 
  * @author srinath_k
  * 
@@ -211,6 +216,7 @@ public abstract class CompoundEnum<E extends CompoundEnum<E, T>, T extends Enum<
      * 
      * @return the Class object corresponding to this enum constant's enum type
      */
+    @SuppressWarnings("unchecked")
     public final Class<E> getDeclaringClass() {
         Class clazz = getClass();
         Class zuper = clazz.getSuperclass();
