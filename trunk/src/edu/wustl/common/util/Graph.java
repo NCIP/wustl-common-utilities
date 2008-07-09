@@ -16,11 +16,12 @@ import java.util.Set;
 
 /**
  * A weighted, directed graph that allows self-loops. This class can be used to
- * superimpose a graph structure on any set of classes that logically represent
- * vertices and weights e.g. if an application has a class called <tt>City</tt>,
- * then the <tt>Graph</tt> class can be used to create a route map across all
- * cities by specifying vertices that of type <tt>City</tt> and weights that
- * are of type <tt>Long</tt> (indicating distance).<br>
+ * superimpose a graph structure on any set of objects that logically represent
+ * vertices and weights. For example, if an application has a class called
+ * <tt>City</tt>, then the <tt>Graph</tt> class can be used to create a
+ * route map across all cities by specifying vertices that are of type
+ * <tt>City</tt> and weights that are of type <tt>Long</tt> (indicating
+ * distance).<br>
  * Note that <tt>null</tt> vertices are not allowed. Thus, all methods throw a
  * <tt>NullPointerException</tt> if a specified vertex parameter is
  * <tt>null</tt>. <br>
@@ -31,6 +32,7 @@ import java.util.Set;
  * 
  * @param <V> the type of vertices
  * @param <W> the type of weights on edges
+ * @see Tree
  */
 
 public class Graph<V, W> implements Serializable, Cloneable {
@@ -47,6 +49,13 @@ public class Graph<V, W> implements Serializable, Cloneable {
         initMaps();
     }
 
+    /**
+     * Constructs a new graph containing the same vertices and edges as that of
+     * the specified graph (copy constructor).
+     * 
+     * @param graph the graph whose contents are to be copied
+     * @throws NullPointerException if the specified graph is <tt>null</tt>
+     */
     public Graph(Graph<? extends V, ? extends W> graph) {
         assign(graph);
     }
@@ -568,8 +577,12 @@ public class Graph<V, W> implements Serializable, Cloneable {
      * same as the specified graph.
      * 
      * @param graph the graph instance to be reverse-cloned.
+     * @throws NullPointerException if the specified graph is <tt>null</tt>
      */
     public void assign(Graph<? extends V, ? extends W> graph) {
+        if (graph == null) {
+            throw new NullPointerException();
+        }
         assign2(graph);
     }
 
