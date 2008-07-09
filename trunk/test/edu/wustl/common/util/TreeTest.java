@@ -28,7 +28,7 @@ public class TreeTest extends TestCase {
         tree.setLabel(1, "1");
         assertNull(tree.getLabel(1));
 
-        tree.putChild(1, 2, "12");
+        assertNull(tree.putChild(1, 2, "12"));
         assertTrue(tree.containsNode(1));
         assertTrue(tree.containsNode(2));
         assertEquals(integer(1), tree.getRoot());
@@ -45,46 +45,46 @@ public class TreeTest extends TestCase {
 
         Tree<Integer, String> temp = tree.clone();
 
-        tree.setLabel(2, "21");
+        assertEquals("12", tree.setLabel(2, "21"));
         assertEquals("21", tree.getLabel(2));
 
-        tree.putChild(1, 2, "12");
+        assertEquals("21", tree.putChild(1, 2, "12"));
         assertEquals(temp, tree);
     }
 
-    public void testMakeRoot() {
+    public void testPivot() {
         Tree<Integer, String> tree = newTree(1);
-        assertFalse(tree.makeRoot(1));
+        tree.pivot(1);
         tree.putChild(1, 2, "12");
 
         Tree<Integer, String> orig = tree.clone();
-        assertFalse(tree.makeRoot(1));
+        tree.pivot(1);
 
         Tree<Integer, String> expected = newTree(2);
         expected.putChild(2, 1, "12");
-        assertTrue(tree.makeRoot(2));
+        tree.pivot(2);
         assertEquals(expected, tree);
 
-        assertTrue(tree.makeRoot(1));
+        tree.pivot(1);
         assertEquals(orig, tree);
 
         tree.putChild(1, 3, "13"); // 1(2, 3)
         expected.putChild(1, 3, "13");
-        assertFalse(tree.makeRoot(1));
-        assertTrue(tree.makeRoot(2));
+        tree.pivot(1);
+        tree.pivot(2);
         assertEquals(expected, tree); // 2(1(3))
 
         expected = newTree(3); // 3(1(2))
         expected.putChild(3, 1, "13");
         expected.putChild(1, 2, "12");
-        assertTrue(tree.makeRoot(3));
+        tree.pivot(3);
         assertEquals(expected, tree);
 
         tree = expected.clone();
         expected = newTree(1);
         expected.putChild(1, 2, "12");
         expected.putChild(1, 3, "13");
-        assertTrue(tree.makeRoot(1));
+        tree.pivot(1);
         assertEquals(expected, tree);
     }
 
@@ -101,7 +101,7 @@ public class TreeTest extends TestCase {
         assertEquals(expected, tree);
 
         expected.putChild(2, 3, "32");
-        expected.makeRoot(3);
+        expected.pivot(3);
         tree.setRoot(3, "32");
         assertEquals(expected, tree);
 
@@ -286,30 +286,20 @@ public class TreeTest extends TestCase {
     public void testPaths() {
         Tree<Integer, String> tree = newTree(1);
         assertNull(tree.getNodesPath(1));
-        assertNull(tree.getLabelsPath(1));
         tree.putChild(1, 2, "12");
         assertEquals(asList(1, 2), tree.getNodesPath(2));
-        assertEquals(asList("12"), tree.getLabelsPath(2));
 
         tree.putChild(1, 3, "13");
         assertEquals(asList(1, 2), tree.getNodesPath(2));
-        assertEquals(asList("12"), tree.getLabelsPath(2));
         assertEquals(asList(1, 3), tree.getNodesPath(3));
-        assertEquals(asList("13"), tree.getLabelsPath(3));
         assertNull(tree.getNodesPath(2, 3));
-        assertNull(tree.getLabelsPath(2, 3));
         assertNull(tree.getNodesPath(3, 2));
-        assertNull(tree.getLabelsPath(3, 2));
 
         tree.putChild(2, 4, "24");
         assertEquals(asList(1, 2, 4), tree.getNodesPath(4));
-        assertEquals(asList("12", "24"), tree.getLabelsPath(4));
         assertEquals(asList(2, 4), tree.getNodesPath(2, 4));
-        assertEquals(asList("24"), tree.getLabelsPath(2, 4));
         assertNull(tree.getNodesPath(4, 3));
-        assertNull(tree.getLabelsPath(4, 3));
         assertNull(tree.getNodesPath(3, 4));
-        assertNull(tree.getLabelsPath(3, 4));
     }
 
     private Tree<Integer, String> newTree(Integer root) {
