@@ -492,6 +492,7 @@ public class GraphTest extends TestCase {
         assertEquals(asSet(), graph.getVertexPaths("Andaman", "Andaman"));
     }
 
+    @SuppressWarnings("unchecked")
     public void testVertexPathsFullyConnectedBase() {
         final int size = 5;
         Graph<Integer, Integer> graph = fullyConnectedGraph(size);
