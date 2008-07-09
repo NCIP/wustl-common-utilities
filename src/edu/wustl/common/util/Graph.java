@@ -26,7 +26,8 @@ import java.util.Set;
  * <tt>NullPointerException</tt> if a specified vertex parameter is
  * <tt>null</tt>. <br>
  * Many methods in this class throw an <tt>IllegalArgumentException</tt> if a
- * specified vertex is not present in the graph. <br>
+ * specified vertex is not present in the graph; please refer the methods' docs.
+ * <br>
  * Note that modifications to the collections returned by the methods DO NOT
  * affect the graph.<br>
  * 
@@ -600,7 +601,7 @@ public class Graph<V, W> implements Serializable, Cloneable {
      * Returns a string representation of this graph. The string representation
      * consists of the set of outgoing edges for each vertex.
      * 
-     * @return a String representation of this map.
+     * @return a string representation of this graph.
      */
     @Override
     public String toString() {
@@ -616,8 +617,8 @@ public class Graph<V, W> implements Serializable, Cloneable {
      * vertex <tt>v</tt> in <tt>t1.getVertices()</tt>,
      * <tt> (t1.getOutgoingEdges(v).equals(t2.getOutgoingEdges(v))) </tt>.
      * 
-     * @param o object to be compared for equality with this map.
-     * @return <tt>true</tt> if the specified object is equal to this map.
+     * @param o object to be compared for equality with this graph.
+     * @return <tt>true</tt> if the specified object is equal to this graph.
      */
     @SuppressWarnings("unchecked")
     @Override
