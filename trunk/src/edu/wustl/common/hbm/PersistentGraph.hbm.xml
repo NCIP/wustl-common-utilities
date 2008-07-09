@@ -25,21 +25,21 @@
 		</set>
 
 		<set name="entries" cascade="save-update"
-			table="COMMONS_GRAPH_TO_ENTRIES">
+			table="COMMONS_GRAPH_TO_EDGES">
 			<cache usage="read-write" />
 			<key column="GRAPH_ID" />
-			<many-to-many column="ENTRY_ID" unique="true"
+			<many-to-many column="EDGE_ID" unique="true"
 				class="PersistentGraph$Entry" />
 		</set>
 	</class>
 
-	<class name="PersistentGraph$Entry" table="COMMONS_GRAPH_ENTRY">
+	<class name="PersistentGraph$Edge" table="COMMONS_GRAPH_EDGE">
 		<cache usage="read-write" />
 
 		<id name="id" column="IDENTIFIER" type="long" length="30"
 			unsaved-value="null">
 			<generator class="native">
-				<param name="sequence">COMMONS_GRAPH_ENTRY_SEQ</param>
+				<param name="sequence">COMMONS_GRAPH_EDGE_SEQ</param>
 			</generator>
 		</id>
 
