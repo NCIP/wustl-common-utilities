@@ -263,13 +263,13 @@ public class Graph<V, W> implements Serializable, Cloneable {
     }
 
     // HELPERS
-    final void checkNull(V vertex) {
+    private void checkNull(V vertex) {
         if (vertex == null) {
             throw new NullPointerException("null vertex.");
         }
     }
 
-    final void validateVertex(V vertex) {
+    private void validateVertex(V vertex) {
         checkNull(vertex);
         if (!containsVertex(vertex)) {
             throw new IllegalArgumentException("specified vertex is not present in graph.");
