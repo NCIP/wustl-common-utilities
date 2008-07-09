@@ -34,6 +34,9 @@ public class Tree<N, L> implements Serializable, Cloneable {
 
     private transient N root;
 
+    /**
+     * @param root
+     */
     public Tree(N root) {
         if (root == null) {
             throw new NullPointerException();
@@ -89,9 +92,11 @@ public class Tree<N, L> implements Serializable, Cloneable {
 
     public void putChild(N parent, N child, L label) {
         if (parent.equals(child)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("parent and child are same.");
         }
-        graph.validateVertex(parent);
+        if (!graph.containsVertex(parent)) {
+            throw new IllegalArgumentException("specified parent is not present in tree; must add parent before child.");
+        }
         if (graph.containsVertex(child)) {
             dissociateChild(child);
         }
@@ -113,11 +118,13 @@ public class Tree<N, L> implements Serializable, Cloneable {
         // L label = dissociateChild(child);
         // putChild(child, parent, label);
         N newRoot = child;
+        N parent = getParent(child);
         while (!isRoot(child)) {
-            N parent = getParent(child);
+            N grandParent = getParent(parent);
             L label = graph.removeEdge(parent, child);
             graph.putEdge(child, parent, label);
             child = parent;
+            parent = grandParent;
         }
         this.root = newRoot;
         return true;
@@ -186,23 +193,29 @@ public class Tree<N, L> implements Serializable, Cloneable {
     }
 
     public boolean containsAnyNode(Tree<? extends N, ? extends L> other) {
-        for (N node : other.graph.getVertices()) {
-            if (containsNode(node)) {
-                return true;
-            }
-        }
-        return false;
+        return allNodes().removeAll(other.allNodes());
     }
 
     public List<N> getNodesPath(N node) {
-        return first(graph.getVertexPaths(getRoot(), node));
+        return getNodesPath(getRoot(), node);
     }
 
     public List<L> getLabelsPath(N node) {
-        return first(graph.getEdgePaths(getRoot(), node));
+        return getLabelsPath(getRoot(), node);
+    }
+
+    public List<N> getNodesPath(N node1, N node2) {
+        return first(graph.getVertexPaths(node1, node2));
+    }
+
+    public List<L> getLabelsPath(N node1, N node2) {
+        return first(graph.getEdgePaths(node1, node2));
     }
 
     private static <T> T first(Set<T> set) {
+        if (set.size() > 1) {
+            throw new IllegalStateException();
+        }
         if (set.isEmpty()) {
             return null;
         } else {

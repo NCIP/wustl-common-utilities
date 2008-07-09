@@ -88,6 +88,55 @@ public class TreeTest extends TestCase {
         assertEquals(expected, tree);
     }
 
+    public void testSetRoot() {
+        Tree<Integer, String> tree = newTree(1);
+        Tree<Integer, String> expected = newTree(1);
+        tree.setRoot(1, "12");
+        assertEquals(expected, tree);
+
+        tree.putChild(1, 2, "12");
+        expected = newTree(2);
+        expected.putChild(2, 1, "21");
+        tree.setRoot(2, "21");
+        assertEquals(expected, tree);
+
+        expected.putChild(2, 3, "32");
+        expected.makeRoot(3);
+        tree.setRoot(3, "32");
+        assertEquals(expected, tree);
+
+        expected = newTree(1);
+        expected.putChild(1, 3, "13");
+        expected.putChild(3, 2, "32");
+        tree.setRoot(1, "13");
+        assertEquals(expected, tree);
+
+        tree.putChild(1, 4, "14");
+        expected = newTree(3);
+        expected.putChild(3, 2, "32");
+        expected.putChild(3, 1, "31");
+        expected.putChild(1, 4, "14");
+        tree.setRoot(3, "31");
+        assertEquals(expected, tree);
+
+        Tree<Integer, String> temp = tree.clone();
+        expected = newTree(2);
+        expected.putChild(2, 3, "23");
+        expected.putChild(3, 1, "31");
+        expected.putChild(1, 4, "14");
+        tree.setRoot(2, "23");
+        assertEquals(expected, tree);
+
+        tree = temp;
+        expected = newTree(4);
+        expected.putChild(4, 3, "43");
+        expected.putChild(3, 1, "31");
+        expected.putChild(3, 2, "32");
+        tree.setRoot(4, "43");
+        assertEquals(expected, tree);
+
+    }
+
     public void testSubTree() {
         Tree<Integer, String> tree = newTree(1);
         assertEquals(tree, tree.subTree(1));
@@ -183,7 +232,7 @@ public class TreeTest extends TestCase {
         remaining.putChild(1, 2, "12");
         remaining.putChild(2, 5, "25");
         checkRemoval(tree, 4, removed, remaining);
-        
+
         remaining = newTree(1);
         remaining.putChild(1, 2, "12");
         remaining.putChild(2, 5, "25");
@@ -195,6 +244,72 @@ public class TreeTest extends TestCase {
             Tree<Integer, String> remaining) {
         assertEquals(removed, tree.removeSubTree(nodeToRemove));
         assertEquals(remaining, tree);
+    }
+
+    public void testContainsAnyNode() {
+        Tree<Integer, String> tree1 = newTree(1);
+        Tree<Integer, String> tree2 = newTree(1);
+        checkContainsAnyNode(tree1, tree2);
+        tree2 = newTree(2);
+        checkDoesNotContainsAnyNode(tree1, tree2);
+        tree2.putChild(2, 1, "21");
+        checkContainsAnyNode(tree1, tree2);
+
+        tree1 = newTree(3);
+        checkDoesNotContainsAnyNode(tree1, tree2);
+        tree1.putChild(3, 4, "34");
+        checkDoesNotContainsAnyNode(tree1, tree2);
+        Tree<Integer, String> tempTree1 = tree1.clone();
+
+        tree1.putChild(3, 2, "32");
+        checkContainsAnyNode(tree1, tree2);
+        tree1 = tempTree1;
+        tree1.putChild(3, 1, "31");
+        checkContainsAnyNode(tree1, tree2);
+        tree1 = tempTree1;
+        tree1.putChild(4, 1, "41");
+        checkContainsAnyNode(tree1, tree2);
+        tree1.putChild(3, 2, "32");
+        checkContainsAnyNode(tree1, tree2);
+    }
+
+    private void checkContainsAnyNode(Tree<Integer, String> tree1, Tree<Integer, String> tree2) {
+        assertTrue(tree1.containsAnyNode(tree2));
+        assertTrue(tree2.containsAnyNode(tree1));
+    }
+
+    private void checkDoesNotContainsAnyNode(Tree<Integer, String> tree1, Tree<Integer, String> tree2) {
+        assertFalse(tree1.containsAnyNode(tree2));
+        assertFalse(tree2.containsAnyNode(tree1));
+    }
+
+    public void testPaths() {
+        Tree<Integer, String> tree = newTree(1);
+        assertNull(tree.getNodesPath(1));
+        assertNull(tree.getLabelsPath(1));
+        tree.putChild(1, 2, "12");
+        assertEquals(asList(1, 2), tree.getNodesPath(2));
+        assertEquals(asList("12"), tree.getLabelsPath(2));
+
+        tree.putChild(1, 3, "13");
+        assertEquals(asList(1, 2), tree.getNodesPath(2));
+        assertEquals(asList("12"), tree.getLabelsPath(2));
+        assertEquals(asList(1, 3), tree.getNodesPath(3));
+        assertEquals(asList("13"), tree.getLabelsPath(3));
+        assertNull(tree.getNodesPath(2, 3));
+        assertNull(tree.getLabelsPath(2, 3));
+        assertNull(tree.getNodesPath(3, 2));
+        assertNull(tree.getLabelsPath(3, 2));
+
+        tree.putChild(2, 4, "24");
+        assertEquals(asList(1, 2, 4), tree.getNodesPath(4));
+        assertEquals(asList("12", "24"), tree.getLabelsPath(4));
+        assertEquals(asList(2, 4), tree.getNodesPath(2, 4));
+        assertEquals(asList("24"), tree.getLabelsPath(2, 4));
+        assertNull(tree.getNodesPath(4, 3));
+        assertNull(tree.getLabelsPath(4, 3));
+        assertNull(tree.getNodesPath(3, 4));
+        assertNull(tree.getLabelsPath(3, 4));
     }
 
     private Tree<Integer, String> newTree(Integer root) {
