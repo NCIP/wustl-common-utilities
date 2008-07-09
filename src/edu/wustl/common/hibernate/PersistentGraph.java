@@ -12,7 +12,7 @@ import edu.wustl.common.util.Graph;
 public class PersistentGraph<V, E> extends Graph<V, E> {
     private static final long serialVersionUID = 5607285510168767311L;
 
-    private static class Entry<V, E> implements Serializable {
+    private static class Edge<V, E> implements Serializable {
         private static final long serialVersionUID = -5521651636166250171L;
 
         private V source, target;
@@ -21,11 +21,11 @@ public class PersistentGraph<V, E> extends Graph<V, E> {
 
         private Long id;
 
-        private Entry() {
+        private Edge() {
 
         }
 
-        private Entry(V source, V target, E edge) {
+        private Edge(V source, V target, E edge) {
             this.source = source;
             this.target = target;
             this.edge = edge;
@@ -69,10 +69,10 @@ public class PersistentGraph<V, E> extends Graph<V, E> {
             if (this == obj) {
                 return true;
             }
-            if (!(obj instanceof Entry)) {
+            if (!(obj instanceof Edge)) {
                 return false;
             }
-            Entry<V, E> o = (Entry<V, E>) obj;
+            Edge<V, E> o = (Edge<V, E>) obj;
             return source.equals(o.source) && target.equals(o.target)
                     && (edge == null ? o.edge == null : edge.equals(o.edge));
         }
@@ -85,17 +85,17 @@ public class PersistentGraph<V, E> extends Graph<V, E> {
 
     private Long id;
 
-    private Set<Entry> entries = new HashSet<Entry>();
+    private Set<Edge> edges = new HashSet<Edge>();
 
     private Set<V> vertices = new HashSet<V>();
 
-    private Set<Entry> getEntries() {
-        return entries;
+    private Set<Edge> getEdges() {
+        return edges;
     }
 
-    private void setEntries(Set<Entry> entries) {
-        if (entries != null) {
-            for (Entry<V, E> entry : entries) {
+    private void setEdges(Set<Edge> edges) {
+        if (edges != null) {
+            for (Edge<V, E> entry : edges) {
                 putEdge(entry.source, entry.target, entry.edge);
             }
         }
@@ -120,14 +120,14 @@ public class PersistentGraph<V, E> extends Graph<V, E> {
     @Override
     public E putEdge(V source, V target, E edge) {
         E res = super.putEdge(source, target, edge);
-        entries.add(newEntry(source, target, edge));
+        edges.add(newEdge(source, target, edge));
         return res;
     }
 
     @Override
     public E removeEdge(V source, V target) {
         E edge = super.removeEdge(source, target);
-        entries.remove(newEntry(source, target, edge));
+        edges.remove(newEdge(source, target, edge));
         return edge;
     }
 
@@ -141,7 +141,7 @@ public class PersistentGraph<V, E> extends Graph<V, E> {
         return super.removeVertex(vertex) ? vertices.remove(vertex) : false;
     }
 
-    private Entry<V, E> newEntry(V source, V target, E edge) {
-        return new Entry<V, E>(source, target, edge);
+    private Edge<V, E> newEdge(V source, V target, E edge) {
+        return new Edge<V, E>(source, target, edge);
     }
 }
