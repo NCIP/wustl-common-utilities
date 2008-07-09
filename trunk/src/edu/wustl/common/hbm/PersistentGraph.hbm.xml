@@ -29,7 +29,7 @@
 			<cache usage="read-write" />
 			<key column="GRAPH_ID" />
 			<many-to-many column="EDGE_ID" unique="true"
-				class="PersistentGraph$Entry" />
+				class="PersistentGraph$Edge" />
 		</set>
 	</class>
 
