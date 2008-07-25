@@ -30,13 +30,21 @@ import edu.wustl.common.util.CompoundEnum;
  *                      &lt;param name=&quot;enum-name&quot;&gt;
  *                          com.foobar.FooCompoundEnum
  *                      &lt;/param&gt;
+ *                      &lt;param name=&quot;nullable&quot;&gt;
+ *                          true
+ *                      &lt;/param&gt;
  *                  &lt;/type&gt;
  *              &lt;/property&gt;
  * </pre>
  * 
- * Note that <tt>enum-name</tt> is a parameter that specified the type of the
- * enum/compoundEnum. The same mapping works if <tt>FooCompoundEnum</tt> is an
- * <tt>enum</tt> instead of a <tt>compoundEnum</tt>.
+ * <b><tt>enum-name</tt></b> is a mandatory parameter that specifies the
+ * type of the enum/compoundEnum. The same mapping works if
+ * <tt>FooCompoundEnum</tt> is an <tt>enum</tt> instead of a
+ * <tt>compoundEnum</tt>. <br>
+ * <b><tt>nullable</tt></b> is an optional parameter (default is
+ * <tt>false</tt>). If <tt>nullable = false</tt>, and the value of the
+ * property happens to be <tt>null</tt> during insert/retrieve, a
+ * <tt>HibernateException</tt> is thrown.
  * <p>
  * <tt>EnumType</tt> persists the name of the enum/compoundEnum into the
  * database, and reads back the enum/compoundEnum constant based on the name
@@ -60,6 +68,7 @@ public class EnumType implements UserType, ParameterizedType {
     private boolean nullable = false;
 
     public Object assemble(Serializable cached, Object owner) throws HibernateException {
+        checkNullable();
         return cached;
     }
 
