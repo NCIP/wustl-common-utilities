@@ -1,4 +1,5 @@
 package edu.wustl.common.hibernate;
+
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -25,12 +26,13 @@ import org.xml.sax.InputSource;
  * </p>
  * Copyright: Copyright (c) year Company: Washington University, School of
  * Medicine, St. Louis.
+ * 
  * @author Kapil Kaveeshwar
  * @version 1.00
  */
 public class DBUtil {
     // A factory for DB Session which provides the Connection for client.
-    private static SessionFactory m_sessionFactory;
+    private static final SessionFactory m_sessionFactory;
 
     // ThreadLocal to hold the Session for the current executing thread.
     private static final ThreadLocal<Session> threadLocal = new ThreadLocal<Session>();
@@ -43,8 +45,7 @@ public class DBUtil {
 
         Configuration cfg = new Configuration();
 
-        InputStream inputStream = DBUtil.class.getClassLoader().getResourceAsStream(
-                                                                                    "dbutil.properties");
+        InputStream inputStream = DBUtil.class.getClassLoader().getResourceAsStream("dbutil.properties");
         Properties p = new Properties();
         try {
             p.load(inputStream);
@@ -62,7 +63,7 @@ public class DBUtil {
 
         // if no configuraiton file found, get the default one.
         if (fileNames == null) {
-            fileNames = new String[] { "hibernate.cfg.xml" };
+            fileNames = new String[]{"hibernate.cfg.xml"};
         }
         // get all configuration files
         for (int i = 0; i < fileNames.length; i++) {
@@ -78,25 +79,19 @@ public class DBUtil {
 
     /**
      * This method adds configuration file to Hibernate Configuration.
-     * @param fileName
-     *            name of the file that needs to be added
-     * @param cfg
-     *            Configuration to which this file is added.
+     * 
+     * @param fileName name of the file that needs to be added
+     * @param cfg Configuration to which this file is added.
      */
-    private static void addConfigurationFile(String fileName,
-                                             Configuration cfg,
-                                             EntityResolver entityResolver) {
+    private static void addConfigurationFile(String fileName, Configuration cfg, EntityResolver entityResolver) {
         try {
-            InputStream inputStream = DBUtil.class.getClassLoader().getResourceAsStream(
-                                                                                        fileName);
+            InputStream inputStream = DBUtil.class.getClassLoader().getResourceAsStream(fileName);
             List errors = new ArrayList();
             // hibernate api to read configuration file and convert it to
             // Document(dom4j) object.
             XMLHelper xmlHelper = new XMLHelper();
-            Document document = xmlHelper.createSAXReader(fileName, errors,
-                                                          entityResolver).read(
-                                                                               new InputSource(
-                                                                                       inputStream));
+            Document document = xmlHelper.createSAXReader(fileName, errors, entityResolver).read(
+                    new InputSource(inputStream));
             // convert to w3c Document object.
             DOMWriter writer = new DOMWriter();
             org.w3c.dom.Document doc = writer.write(document);
@@ -111,6 +106,7 @@ public class DBUtil {
 
     /**
      * Follows the singleton pattern and returns only current opened session.
+     * 
      * @return Returns the current db session.
      */
     public static Session currentSession() throws HibernateException {
@@ -145,5 +141,9 @@ public class DBUtil {
 
     public static void closeConnection() throws HibernateException {
         closeSession();
+    }
+
+    public static SessionFactory getSessionFactory() {
+        return m_sessionFactory;
     }
 }

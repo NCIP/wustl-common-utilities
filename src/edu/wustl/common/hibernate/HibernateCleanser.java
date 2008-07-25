@@ -1,24 +1,25 @@
 package edu.wustl.common.hibernate;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hibernate.SessionFactory;
+import org.hibernate.type.BagType;
+import org.hibernate.type.ListType;
+import org.hibernate.type.SetType;
+import org.hibernate.type.Type;
 
 public class HibernateCleanser {
-    private Object obj;
+    private final Object obj;
 
-    private Map<Collection<Object>, Collection<Object>> oldToNew;
+    private final Map<Collection<Object>, Collection<Object>> oldToNew;
 
-    private Set<Object> cleanedObjects;
+    private final Set<Object> cleanedObjects;
 
-    private static final SessionFactory sessionFactory = DBUtil.getSessionFactory();
+    private final Metadata metadata;
 
     public HibernateCleanser(Object obj) {
         this(obj, new HashMap<Collection<Object>, Collection<Object>>(), new HashSet<Object>());
@@ -29,6 +30,7 @@ public class HibernateCleanser {
         this.obj = obj;
         this.oldToNew = oldToNew;
         this.cleanedObjects = cleanedObjects;
+        this.metadata = new Metadata(obj);
     }
 
     public void clean() {
@@ -39,98 +41,56 @@ public class HibernateCleanser {
             return;
         }
         cleanedObjects.add(obj);
-        Class<?> klass = obj.getClass();
-        if (isPrimitive(klass)) {
-            return;
-        }
 
-        while (klass != null) {
-            processClass(klass);
-            klass = klass.getSuperclass();
-            break;
+        processCollections();
+        processAssociations();
+        // TODO superclasses
+        // while (klass != null) {
+        // processClass(klass);
+        // klass = klass.getSuperclass();
+        // break;
+        // }
+    }
+
+    private void processAssociations() {
+        for (String name : metadata.getAssociations()) {
+            // TODO check proxies??
+            recursiveClean(metadata.getValue(name));
         }
     }
 
-    private void processClass(Class<?> klass) {
-        for (Field field : klass.getDeclaredFields()) {
-            processField(field);
+    private void processCollections() {
+        for (String name : metadata.getCollections()) {
+            Collection<Object> newColl = newCollection(name);
+            metadata.setValue(name, newColl);
         }
     }
 
-    private void processField(Field field) {
-        Class<?> fType = field.getType();
-        field.setAccessible(true);
-        if (isPrimitive(fType)) {
-            return;
+    private Collection<Object> newCollection(String name) {
+        Collection<Object> old = (Collection<Object>) metadata.getValue(name);
+        if (oldToNew.containsKey(old)) {
+            return oldToNew.get(old);
         }
-        if (fType.isArray()) {
-            processArray();
-            return;
-        }
-        Object member = getMemberValue(field);
-        if (isCollection(fType)) {
-            Collection<Object> newColl = processCollection((Collection<Object>) member);
-            setMemberValue(field, newColl);
-            return;
-        }
-        recursiveClean(member);
-    }
-
-    private boolean isPrimitive(Class<?> klass) {
-        return klass.getName().startsWith("java.lang") || klass.isPrimitive() || klass.isEnum();
-    }
-
-    private boolean isCollection(Class<?> type) {
-        return Collection.class.isAssignableFrom(type);
-    }
-
-    private Collection<Object> processCollection(Collection<Object> memberColl) {
-        if (oldToNew.containsKey(memberColl)) {
-            return (Collection<Object>) oldToNew.get(memberColl);
-        }
-        Collection<Object> coll = createCollection(memberColl.getClass());
-        oldToNew.put(memberColl, coll);
-        for (Object e : memberColl) {
+        Collection<Object> res = createCollectionForType(metadata.getType(name));
+        oldToNew.put(res, old);
+        for (Object e : old) {
             recursiveClean(e);
-            coll.add(e);
+            res.add(e);
         }
-        return coll;
+        return res;
     }
 
-    private Collection<Object> createCollection(Class<? extends Collection> collType) {
-        if (Set.class.isAssignableFrom(collType)) {
+    private Collection<Object> createCollectionForType(Type collType) {
+        if (collType instanceof SetType) {
             return new HashSet<Object>();
-        } else if (List.class.isAssignableFrom(collType)) {
+        } else if (collType instanceof ListType || collType instanceof BagType) {
             return new ArrayList<Object>();
         }
         throw new UnsupportedOperationException("Collections of type " + collType + " cannot be cleansed.");
     }
 
-    private void processArray() {
-        throw new UnsupportedOperationException("array's are too dirty to be cleansed.");
-    }
-
-    private Object getMemberValue(Field field) {
-        try {
-            return field.get(obj);
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void setMemberValue(Field field, Collection<Object> newColl) {
-        try {
-            field.set(obj, newColl);
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private void recursiveClean(Object childObj) {
         new HibernateCleanser(childObj, oldToNew, cleanedObjects).clean();
     }
+
 }
