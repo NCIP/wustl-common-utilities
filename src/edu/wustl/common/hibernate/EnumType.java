@@ -57,24 +57,26 @@ public class EnumType implements UserType, ParameterizedType {
 
     private Method valueOfMethod;
 
-    public Object assemble(Serializable arg0, Object arg1) throws HibernateException {
-        return arg1;
+    private boolean nullable = false;
+
+    public Object assemble(Serializable cached, Object owner) throws HibernateException {
+        return cached;
     }
 
-    public Object deepCopy(Object arg0) throws HibernateException {
-        return arg0;
+    public Object deepCopy(Object value) throws HibernateException {
+        return value;
     }
 
-    public Serializable disassemble(Object arg0) throws HibernateException {
-        return (Serializable) arg0;
+    public Serializable disassemble(Object value) throws HibernateException {
+        return (Serializable) value;
     }
 
-    public boolean equals(Object arg0, Object arg1) throws HibernateException {
-        return arg0 == arg1;
+    public boolean equals(Object x, Object y) throws HibernateException {
+        return x == y;
     }
 
-    public int hashCode(Object arg0) throws HibernateException {
-        return arg0.hashCode();
+    public int hashCode(Object x) throws HibernateException {
+        return x.hashCode();
     }
 
     public boolean isMutable() {
@@ -82,11 +84,25 @@ public class EnumType implements UserType, ParameterizedType {
     }
 
     public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
-        return rs.wasNull() ? null : valueOf(rs.getString(names[0]));
+        if (rs.wasNull()) {
+            checkNullable();
+            return null;
+        }
+        return valueOf(rs.getString(names[0]));
     }
 
     private Object valueOf(String name) {
         return invoke(valueOfMethod, null, name);
+    }
+
+    public void nullSafeSet(PreparedStatement statement, Object value, int index) throws HibernateException,
+            SQLException {
+        if (value == null) {
+            checkNullable();
+            statement.setNull(index, Types.VARCHAR);
+        } else {
+            statement.setString(index, name(value));
+        }
     }
 
     private String name(Object obj) {
@@ -101,12 +117,9 @@ public class EnumType implements UserType, ParameterizedType {
         return (String) res;
     }
 
-    public void nullSafeSet(PreparedStatement statement, Object value, int index) throws HibernateException,
-            SQLException {
-        if (value == null) {
-            statement.setNull(index, Types.VARCHAR);
-        } else {
-            statement.setString(index, name(value));
+    private void checkNullable() {
+        if (!nullable) {
+            throw new HibernateException("thy boss (the guy who wrote the hbm) decided he can't permit null enums.");
         }
     }
 
@@ -134,6 +147,11 @@ public class EnumType implements UserType, ParameterizedType {
         }
 
         valueOfMethod = getMethod("valueOf", enumClass, String.class);
+
+        String nullableS = properties.getProperty("nullable");
+        if (nullableS != null) {
+            nullable = Boolean.valueOf(nullableS);
+        }
     }
 
     private static Method getMethod(String name, Class<?> klass, Class<?>... paramClasses) {
