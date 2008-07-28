@@ -41,15 +41,13 @@ public class HibernateCleanser {
             return;
         }
         cleanedObjects.add(obj);
-
+        processIdentifier();
         processCollections();
         processAssociations();
-        // TODO superclasses
-        // while (klass != null) {
-        // processClass(klass);
-        // klass = klass.getSuperclass();
-        // break;
-        // }
+    }
+
+    private void processIdentifier() {
+        metadata.nullifyId();
     }
 
     private void processAssociations() {
