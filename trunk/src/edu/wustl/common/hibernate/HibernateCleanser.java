@@ -12,6 +12,14 @@ import org.hibernate.type.ListType;
 import org.hibernate.type.SetType;
 import org.hibernate.type.Type;
 
+/**
+ * Removes all hibernate references from a fully initialized object graph. If
+ * the object graph is not fully initialized (i.e. contains some lazy
+ * uninitialized associations/collections), then DO NOT use this class.
+ * 
+ * @author srinath_k
+ * 
+ */
 public class HibernateCleanser {
     private final Object obj;
 
