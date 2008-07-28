@@ -42,6 +42,9 @@ public class HibernateCleanser {
     }
 
     public void clean() {
+        if (!metadata.present()) {
+            return;
+        }
         if (obj instanceof Collection) {
             throw new IllegalArgumentException("can't clean a collection.");
         }
@@ -78,7 +81,7 @@ public class HibernateCleanser {
             return oldToNew.get(old);
         }
         Collection<Object> res = createCollectionForType(metadata.getType(name));
-        oldToNew.put(res, old);
+        oldToNew.put(old, res);
         for (Object e : old) {
             recursiveClean(e);
             res.add(e);

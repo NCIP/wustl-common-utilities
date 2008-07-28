@@ -29,6 +29,9 @@ public class Metadata {
         associatedValues = new HashSet<String>();
         this.obj = obj;
         classMetadata = getClassMetadata(obj.getClass());
+        if (classMetadata == null) {
+            return;
+        }
         String[] names = classMetadata.getPropertyNames();
         for (int i = 0; i < names.length; i++) {
             String name = names[i];
@@ -51,30 +54,47 @@ public class Metadata {
     }
 
     public Set<String> getAssociations() {
+        checkPresent();
         return associatedValues;
     }
 
     public Set<String> getCollections() {
+        checkPresent();
         return collectionsValues;
     }
 
     public Set<String> getPrimitives() {
+        checkPresent();
         return primitiveValues;
     }
 
     public Object getValue(String name) {
+        checkPresent();
         return classMetadata.getPropertyValue(obj, name, ENTITY_MODE);
     }
 
     public Type getType(String name) {
+        checkPresent();
         return classMetadata.getPropertyType(name);
     }
 
     public void setValue(String name, Object value) {
+        checkPresent();
         classMetadata.setPropertyValue(obj, name, value, ENTITY_MODE);
     }
 
     public void nullifyId() {
+        checkPresent();
         classMetadata.setIdentifier(obj, null, ENTITY_MODE);
+    }
+
+    public boolean present() {
+        return classMetadata != null;
+    }
+
+    private void checkPresent() {
+        if (!present()) {
+            throw new IllegalStateException("metadata not present.");
+        }
     }
 }
