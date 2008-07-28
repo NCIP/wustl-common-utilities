@@ -30,9 +30,6 @@ import edu.wustl.common.util.CompoundEnum;
  *                      &lt;param name=&quot;enum-name&quot;&gt;
  *                          com.foobar.FooCompoundEnum
  *                      &lt;/param&gt;
- *                      &lt;param name=&quot;nullable&quot;&gt;
- *                          true
- *                      &lt;/param&gt;
  *                  &lt;/type&gt;
  *              &lt;/property&gt;
  * </pre>
@@ -41,10 +38,6 @@ import edu.wustl.common.util.CompoundEnum;
  * type of the enum/compoundEnum. The same mapping works if
  * <tt>FooCompoundEnum</tt> is an <tt>enum</tt> instead of a
  * <tt>compoundEnum</tt>. <br>
- * <b><tt>nullable</tt></b> is an optional parameter (default is
- * <tt>false</tt>). If <tt>nullable = false</tt>, and the value of the
- * property happens to be <tt>null</tt> during insert/retrieve, a
- * <tt>HibernateException</tt> is thrown.
  * <p>
  * <tt>EnumType</tt> persists the name of the enum/compoundEnum into the
  * database, and reads back the enum/compoundEnum constant based on the name
@@ -65,10 +58,7 @@ public class EnumType implements UserType, ParameterizedType {
 
     private Method valueOfMethod;
 
-    private boolean nullable = false;
-
     public Object assemble(Serializable cached, Object owner) throws HibernateException {
-        checkNullable();
         return cached;
     }
 
@@ -93,11 +83,7 @@ public class EnumType implements UserType, ParameterizedType {
     }
 
     public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
-        if (rs.wasNull()) {
-            checkNullable();
-            return null;
-        }
-        return valueOf(rs.getString(names[0]));
+        return rs.wasNull() ? null : valueOf(rs.getString(names[0]));
     }
 
     private Object valueOf(String name) {
@@ -107,7 +93,6 @@ public class EnumType implements UserType, ParameterizedType {
     public void nullSafeSet(PreparedStatement statement, Object value, int index) throws HibernateException,
             SQLException {
         if (value == null) {
-            checkNullable();
             statement.setNull(index, Types.VARCHAR);
         } else {
             statement.setString(index, name(value));
@@ -124,12 +109,6 @@ public class EnumType implements UserType, ParameterizedType {
             throw new IllegalArgumentException("obj not an enum type.");
         }
         return (String) res;
-    }
-
-    private void checkNullable() {
-        if (!nullable) {
-            throw new HibernateException("thy boss (the guy who wrote the hbm) decided he can't permit null enums.");
-        }
     }
 
     public Object replace(Object original, Object target, Object owner) throws HibernateException {
@@ -156,11 +135,6 @@ public class EnumType implements UserType, ParameterizedType {
         }
 
         valueOfMethod = getMethod("valueOf", enumClass, String.class);
-
-        String nullableS = properties.getProperty("nullable");
-        if (nullableS != null) {
-            nullable = Boolean.valueOf(nullableS);
-        }
     }
 
     private static Method getMethod(String name, Class<?> klass, Class<?>... paramClasses) {
