@@ -11,6 +11,8 @@ import org.hibernate.type.Type;
 public class Metadata {
     private static final SessionFactory sessionFactory = DBUtil.getSessionFactory();
 
+    private static final EntityMode ENTITY_MODE = EntityMode.POJO;
+
     private final Set<String> primitiveValues;
 
     private final Set<String> collectionsValues;
@@ -61,7 +63,7 @@ public class Metadata {
     }
 
     public Object getValue(String name) {
-        return classMetadata.getPropertyValue(obj, name, EntityMode.POJO);
+        return classMetadata.getPropertyValue(obj, name, ENTITY_MODE);
     }
 
     public Type getType(String name) {
@@ -69,6 +71,10 @@ public class Metadata {
     }
 
     public void setValue(String name, Object value) {
-        classMetadata.setPropertyValue(obj, name, value, EntityMode.POJO);
+        classMetadata.setPropertyValue(obj, name, value, ENTITY_MODE);
+    }
+
+    public void nullifyId() {
+        classMetadata.setIdentifier(obj, null, ENTITY_MODE);
     }
 }
