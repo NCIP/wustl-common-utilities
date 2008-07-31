@@ -87,7 +87,7 @@ public class EnumType implements UserType, ParameterizedType {
     }
 
     private Object valueOf(String name) {
-        return invoke(valueOfMethod, null, name);
+        return name != null ? invoke(valueOfMethod, null, name) : null;
     }
 
     public void nullSafeSet(PreparedStatement statement, Object value, int index) throws HibernateException,
