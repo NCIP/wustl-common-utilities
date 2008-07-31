@@ -28,6 +28,10 @@ public class Metadata {
         collectionsValues = new HashSet<String>();
         associatedValues = new HashSet<String>();
         this.obj = obj;
+        if (obj == null) {
+            classMetadata = null;
+            return;
+        }
         classMetadata = getClassMetadata(obj.getClass());
         if (classMetadata == null) {
             return;
