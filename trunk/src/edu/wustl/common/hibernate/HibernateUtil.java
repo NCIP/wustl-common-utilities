@@ -23,8 +23,12 @@ import org.xml.sax.InputSource;
  * sessions. This class expects a file called "dbutil.properties" to be present
  * in the classpath; this file should contain all the hibernate configuration
  * files to be loaded. A sample "dbutil.properties" file is shown below:<br>
- * hibernate.configuration.files =
- * washuCommonsHibernate.cfg.xml,dehibernate.cfg.xml,metadataHibernate.cfg.xml,queryhibernate.cfg.xml,hibernate.cfg.xml<br>
+ * 
+ * <pre>
+ * hibernate.configuration.files = washuCommonsHibernate.cfg.xml,dehibernate.cfg.xml,metadataHibernate.cfg.xml,queryhibernate.cfg.xml,hibernate.cfg.xml
+ * </pre>
+ * 
+ * <br>
  * The property file contains a single entry with all the configuration files to
  * be loaded; the file names are comma-separated.<br>
  * <b>Note:</b> It is highly recommended that only one of the configuration
