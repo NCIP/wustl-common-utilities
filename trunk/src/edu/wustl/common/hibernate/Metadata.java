@@ -9,7 +9,7 @@ import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.type.Type;
 
 public class Metadata {
-    private static final SessionFactory sessionFactory = DBUtil.getSessionFactory();
+    private static final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
     private static final EntityMode ENTITY_MODE = EntityMode.POJO;
 

@@ -19,18 +19,23 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
 /**
- * <p>
- * Title: DBUtil Class>
- * <p>
- * Description: Utility class provides database specific utilities methods
- * </p>
- * Copyright: Copyright (c) year Company: Washington University, School of
- * Medicine, St. Louis.
+ * Utility for creating a hibernate seesion-factory and managing thread-local
+ * sessions. This class expects a file called "dbutil.properties" to be present
+ * in the classpath; this file should contain all the hibernate configuration
+ * files to be loaded. A sample "dbutil.properties" file is shown below:<br>
+ * hibernate.configuration.files =
+ * washuCommonsHibernate.cfg.xml,dehibernate.cfg.xml,metadataHibernate.cfg.xml,queryhibernate.cfg.xml,hibernate.cfg.xml<br>
+ * The property file contains a single entry with all the configuration files to
+ * be loaded; the file names are comma-separated.<br>
+ * <b>Note:</b> It is highly recommended that only one of the configuration
+ * files contains connection details; if conflicting hibernate configuration
+ * properties are found, then the resulting configuration is undefined. Multiple
+ * configuration files are intended only to logically separate the set of hbm
+ * mappings, caching details etc...
  * 
  * @author Kapil Kaveeshwar
- * @version 1.00
  */
-public class DBUtil {
+public class HibernateUtil {
     // A factory for DB Session which provides the Connection for client.
     private static final SessionFactory m_sessionFactory;
 
@@ -45,7 +50,7 @@ public class DBUtil {
 
         Configuration cfg = new Configuration();
 
-        InputStream inputStream = DBUtil.class.getClassLoader().getResourceAsStream("dbutil.properties");
+        InputStream inputStream = HibernateUtil.class.getClassLoader().getResourceAsStream("dbutil.properties");
         Properties p = new Properties();
         try {
             p.load(inputStream);
@@ -85,7 +90,7 @@ public class DBUtil {
      */
     private static void addConfigurationFile(String fileName, Configuration cfg, EntityResolver entityResolver) {
         try {
-            InputStream inputStream = DBUtil.class.getClassLoader().getResourceAsStream(fileName);
+            InputStream inputStream = HibernateUtil.class.getClassLoader().getResourceAsStream(fileName);
             List errors = new ArrayList();
             // hibernate api to read configuration file and convert it to
             // Document(dom4j) object.
