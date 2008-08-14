@@ -90,6 +90,7 @@ public class HibernateCleanser {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private Collection<Object> newCollection(String name) {
         Collection<Object> old = (Collection<Object>) metadata.getValue(name);
         if (oldToNew.containsKey(old)) {
