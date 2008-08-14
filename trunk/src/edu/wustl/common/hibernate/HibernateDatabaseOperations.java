@@ -10,8 +10,7 @@ import org.hibernate.criterion.Expression;
 
 /**
  * Provides methods for insert/retrieve/delete/update of objects using
- * hibernate. It uses the session provided by
- * {@link HibernateUtil#currentSession()}. <br>
+ * hibernate. <br>
  * <b>Transaction details: </b>A new transaction is begun when an instance of
  * this class is created; all operations on this instance use this transaction.
  * If <tt>autoCommit</tt> is <tt>true</tt> (the default), each
@@ -30,14 +29,17 @@ public class HibernateDatabaseOperations<T> {
 
     private final boolean autoCommit;
 
-    public HibernateDatabaseOperations(boolean autoCommit) {
-        session = HibernateUtil.currentSession();
+    public HibernateDatabaseOperations(Session session, boolean autoCommit) {
+        this.session = session;
         transaction = session.beginTransaction();
         this.autoCommit = autoCommit;
     }
 
-    public HibernateDatabaseOperations() {
-        this(true);
+    /**
+     * autoCommit is set to <tt>true</tt>.
+     */
+    public HibernateDatabaseOperations(Session session) {
+        this(session, true);
     }
 
     public void insert(T t) {

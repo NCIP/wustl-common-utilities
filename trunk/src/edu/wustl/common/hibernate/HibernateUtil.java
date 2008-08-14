@@ -19,7 +19,7 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
 /**
- * Utility for creating a hibernate seesion-factory and managing thread-local
+ * Utility for creating a hibernate session-factory and managing thread-local
  * sessions. This class expects a file called "dbutil.properties" to be present
  * in the classpath; this file should contain all the hibernate configuration
  * files to be loaded. A sample "dbutil.properties" file is shown below:<br>
@@ -34,6 +34,7 @@ import org.xml.sax.InputSource;
  * mappings, caching details etc...
  * 
  * @author Kapil Kaveeshwar
+ * @see HibernateDatabaseOperations
  */
 public class HibernateUtil {
     // A factory for DB Session which provides the Connection for client.
@@ -150,5 +151,9 @@ public class HibernateUtil {
 
     public static SessionFactory getSessionFactory() {
         return m_sessionFactory;
+    }
+
+    public static Session newSession() {
+        return m_sessionFactory.openSession();
     }
 }
