@@ -41,7 +41,11 @@ public class HibernateCleanser {
         this.metadata = new Metadata(obj);
     }
 
-    public void clean() {
+    /**
+     * @param nullifyIds if <tt>true</tt> ids of the objects are set to
+     *            <tt>null</tt>; otherwise the ids are left untouched.
+     */
+    public void clean(boolean nullifyIds) {
         if (!metadata.present()) {
             return;
         }
@@ -52,9 +56,20 @@ public class HibernateCleanser {
             return;
         }
         cleanedObjects.add(obj);
-        processIdentifier();
+        if (nullifyIds) {
+            processIdentifier();
+        }
         processCollections();
         processAssociations();
+    }
+
+    /**
+     * Nullifies ids of all the objects.
+     * 
+     * @see #clean(boolean)
+     */
+    public void clean() {
+        clean(true);
     }
 
     private void processIdentifier() {
