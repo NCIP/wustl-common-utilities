@@ -2,11 +2,15 @@ package edu.wustl.common.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class Collections {
     private Collections() {
@@ -77,5 +81,23 @@ public class Collections {
         for (E e : src) {
             target.add(e);
         }
+    }
+
+    private static <E> Comparator<E> referenceComparator() {
+        return new Comparator<E>() {
+
+            public int compare(E o1, E o2) {
+                return o1 == o2 ? 0 : 1;
+            }
+
+        };
+    }
+
+    public static <E> Set<E> uniqueReferenceSet() {
+        return new TreeSet<E>(referenceComparator());
+    }
+
+    public static <K, V> Map<K, V> uniqueReferenceMap() {
+        return new TreeMap<K, V>(referenceComparator());
     }
 }
