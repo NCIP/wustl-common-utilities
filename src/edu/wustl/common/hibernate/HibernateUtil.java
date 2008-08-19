@@ -49,11 +49,12 @@ public class HibernateUtil {
 
     // Initialize the session Factory in the Static block.
     // Initialize the session Factory in the Static block.
-    private static EntityResolver entityResolver = XMLHelper.DEFAULT_DTD_RESOLVER;
+    private static final EntityResolver entityResolver = XMLHelper.DEFAULT_DTD_RESOLVER;
+
+    private static final Configuration cfg;
 
     static {
-
-        Configuration cfg = new Configuration();
+        cfg = new Configuration();
 
         InputStream inputStream = HibernateUtil.class.getClassLoader().getResourceAsStream("dbutil.properties");
         Properties p = new Properties();
@@ -80,7 +81,7 @@ public class HibernateUtil {
             String fileName = fileNames[i];
             fileName = fileName.trim();
             System.out.println(fileName + ": fileName");
-            addConfigurationFile(fileName, cfg, entityResolver);
+            addConfigurationFile(fileName, cfg);
         }
 
         m_sessionFactory = cfg.buildSessionFactory();
@@ -93,7 +94,7 @@ public class HibernateUtil {
      * @param fileName name of the file that needs to be added
      * @param cfg Configuration to which this file is added.
      */
-    private static void addConfigurationFile(String fileName, Configuration cfg, EntityResolver entityResolver) {
+    private static void addConfigurationFile(String fileName, Configuration cfg) {
         try {
             InputStream inputStream = HibernateUtil.class.getClassLoader().getResourceAsStream(fileName);
             List errors = new ArrayList();
@@ -155,6 +156,14 @@ public class HibernateUtil {
 
     public static SessionFactory getSessionFactory() {
         return m_sessionFactory;
+    }
+
+    /**
+     * Intended to be read-only. Changes to this Configuration do NOT affect the
+     * sessionFactory.
+     */
+    public static Configuration getConfiguration() {
+        return cfg;
     }
 
     public static Session newSession() {
