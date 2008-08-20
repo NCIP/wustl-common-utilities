@@ -19,6 +19,8 @@ import edu.wustl.common.util.IdentityHashSet;
  * the object graph is not fully initialized (i.e. contains some lazy
  * uninitialized associations/collections), then DO NOT use this class.
  * 
+ * TODO maps are not cleansed
+ * 
  * @author srinath_k
  * 
  */
