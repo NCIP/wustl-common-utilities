@@ -3,6 +3,7 @@ package edu.wustl.common.hibernate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,7 +12,7 @@ import org.hibernate.type.ListType;
 import org.hibernate.type.SetType;
 import org.hibernate.type.Type;
 
-import edu.wustl.common.util.Collections;
+import edu.wustl.common.util.IdentityHashSet;
 
 /**
  * Removes all hibernate references from a fully initialized object graph. If
@@ -31,8 +32,7 @@ public class HibernateCleanser {
     private final Metadata metadata;
 
     public HibernateCleanser(Object obj) {
-        this(obj, Collections.<Collection<Object>, Collection<Object>> uniqueReferenceMap(), Collections
-                .<Object> uniqueReferenceSet());
+        this(obj, new IdentityHashMap<Collection<Object>, Collection<Object>>(), new IdentityHashSet<Object>());
     }
 
     private HibernateCleanser(Object obj, Map<Collection<Object>, Collection<Object>> oldToNew,
