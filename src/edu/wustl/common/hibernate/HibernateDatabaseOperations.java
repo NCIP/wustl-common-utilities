@@ -47,7 +47,7 @@ public class HibernateDatabaseOperations<T> {
         checkCommit();
     }
 
-    public void saveOrUpdate(T t) {
+    public void insertOrUpdate(T t) {
         getSession().saveOrUpdate(t);
         checkCommit();
     }
