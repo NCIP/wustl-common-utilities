@@ -42,7 +42,7 @@
 				<exclude name="**/*Test" />
 			</fileset>
 			<manifest>
-				<attribute name="Build-At-Time" value="${TODAY} ${TSTAMP}" />
+				<attribute name="Built-At-Time" value="${TODAY} ${TSTAMP}" />
 			</manifest>
 		</jar>
 	</target>
