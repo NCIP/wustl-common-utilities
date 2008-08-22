@@ -43,5 +43,9 @@
 			</fileset>
 		</jar>
 	</target>
-
+	<target name="build.src.zip">
+		<zip destfile="${build.dir}/washu-commons-src.zip">
+			<fileset dir="src" includes="**/*" />
+		</zip>
+	</target>
 </project>
