@@ -35,12 +35,15 @@
 		<delete>
 			<fileset dir="${build.dir}" includes="**/*" />
 		</delete>
-
+		<tstamp />
 		<jar jarfile="${build.dir}/washu-commons.jar">
 			<fileset dir="${classes.dir}">
 				<include name="**/*" />
 				<exclude name="**/*Test" />
 			</fileset>
+			<manifest>
+				<attribute name="Build-At-Time" value="${TODAY} ${TSTAMP}" />
+			</manifest>
 		</jar>
 	</target>
 	<target name="build.src.zip">
