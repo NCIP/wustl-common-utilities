@@ -83,7 +83,8 @@ public class EnumType implements UserType, ParameterizedType {
     }
 
     public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
-        return rs.wasNull() ? null : valueOf(rs.getString(names[0]));
+        String s = rs.getString(names[0]);
+        return s != null ? valueOf(s) : s;
     }
 
     private Object valueOf(String name) {
