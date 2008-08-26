@@ -10,6 +10,7 @@ import java.util.Properties;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.DOMWriter;
+import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -126,6 +127,7 @@ public class HibernateUtil {
         // Open a new Session, if this Thread has none yet
         if (s == null) {
             s = m_sessionFactory.openSession();
+            s.setFlushMode(FlushMode.COMMIT);
             try {
                 s.connection().setAutoCommit(false);
             } catch (SQLException ex) {
