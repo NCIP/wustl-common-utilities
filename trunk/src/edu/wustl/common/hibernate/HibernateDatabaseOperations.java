@@ -81,7 +81,7 @@ public class HibernateDatabaseOperations<T> {
         return transaction;
     }
 
-    private Session getSession() {
+    public Session getSession() {
         return session;
     }
 
