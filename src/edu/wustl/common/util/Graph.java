@@ -76,6 +76,17 @@ public class Graph<V, W> implements Serializable, Cloneable {
     }
 
     /**
+     * @return set of all the weights in this graph.
+     */
+    public Set<W> getAllWeights() {
+        Set<W> res = new HashSet<W>();
+        for (Map<V, W> val : incomingEdgeMap.values()) {
+            res.addAll(val.values());
+        }
+        return res;
+    }
+
+    /**
      * Returns the outgoing edges from the specified vertex.
      * 
      * @param source the vertex whose outgoing edges are required

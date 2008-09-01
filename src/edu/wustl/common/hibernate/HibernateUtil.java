@@ -126,13 +126,7 @@ public class HibernateUtil {
 
         // Open a new Session, if this Thread has none yet
         if (s == null) {
-            s = m_sessionFactory.openSession();
-            s.setFlushMode(FlushMode.COMMIT);
-            try {
-                s.connection().setAutoCommit(false);
-            } catch (SQLException ex) {
-                throw new HibernateException(ex.getMessage(), ex);
-            }
+            s = newSession();
             threadLocal.set(s);
         }
         return s;
@@ -169,6 +163,13 @@ public class HibernateUtil {
     }
 
     public static Session newSession() {
-        return m_sessionFactory.openSession();
+        Session session = m_sessionFactory.openSession();
+        session.setFlushMode(FlushMode.COMMIT);
+        try {
+            session.connection().setAutoCommit(false);
+        } catch (SQLException ex) {
+            throw new HibernateException(ex.getMessage(), ex);
+        }
+        return session;
     }
 }
