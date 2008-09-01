@@ -6,6 +6,5 @@
 <hibernate-configuration>
 	<session-factory>
 		<mapping resource="edu/wustl/common/hbm/PersistentGraph.hbm.xml" />
-		<mapping resource="edu/wustl/common/hbm/PersistentGraphEntry.hbm.xml" />
 	</session-factory>
 </hibernate-configuration>
