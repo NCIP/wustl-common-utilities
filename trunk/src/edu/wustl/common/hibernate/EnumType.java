@@ -94,7 +94,7 @@ public class EnumType implements UserType, ParameterizedType {
     public void nullSafeSet(PreparedStatement statement, Object value, int index) throws HibernateException,
             SQLException {
         if (value == null) {
-            statement.setNull(index, Types.VARCHAR);
+            statement.setNull(index, sqlTypes[0]);
         } else {
             statement.setString(index, name(value));
         }
