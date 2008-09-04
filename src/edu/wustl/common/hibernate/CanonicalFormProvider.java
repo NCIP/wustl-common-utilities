@@ -7,7 +7,10 @@ import org.hibernate.type.NullableType;
 /**
  * Provide a canonical representation of objects of a certain type. Such a
  * canonical representation can be used while storing the object in a database
- * column.
+ * column. <br>
+ * <b>Note:</b>It is required that implementing classes provide a default
+ * no-arg constructor in order to be used in conjunction with
+ * {@link CanonicalFormProvider}.
  * 
  * @author srinath_k
  * 
