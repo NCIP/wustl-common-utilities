@@ -126,6 +126,9 @@ public class EnumType implements UserType, ParameterizedType {
 
     public void setParameterValues(Properties properties) {
         String className = properties.getProperty("enum-name");
+        if (className == null) {
+            throw new IllegalArgumentException("enum-name not specified for EnumType.");
+        }
         try {
             enumClass = Class.forName(className);
         } catch (ClassNotFoundException e) {
