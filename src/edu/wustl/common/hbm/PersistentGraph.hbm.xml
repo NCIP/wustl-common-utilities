@@ -24,7 +24,7 @@
 			</many-to-any>
 		</set>
 
-		<set name="edges" cascade="save-update"
+		<set name="edges" cascade="all-delete-orphan"
 			table="COMMONS_GRAPH_TO_EDGES">
 			<cache usage="read-write" />
 			<key column="GRAPH_ID" />
