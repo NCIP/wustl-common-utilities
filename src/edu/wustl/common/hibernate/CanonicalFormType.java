@@ -75,7 +75,7 @@ public class CanonicalFormType implements UserType, ParameterizedType {
     }
 
     public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
-        Serializable canonicalForm = (Serializable) rs.getObject(names[0]);
+        Serializable canonicalForm = (Serializable) canonicalFormProvider.canonicalFormType().get(rs, names[0]);
         return canonicalFormProvider.nullSafeFromCanonicalForm(canonicalForm);
     }
 
@@ -85,7 +85,7 @@ public class CanonicalFormType implements UserType, ParameterizedType {
         if (canonicalForm == null) {
             statement.setNull(index, sqlTypes[0]);
         } else {
-            statement.setObject(index, canonicalForm, sqlTypes[0]);
+            canonicalFormProvider.canonicalFormType().set(statement, canonicalForm, index);
         }
     }
 
