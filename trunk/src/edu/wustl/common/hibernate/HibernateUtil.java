@@ -1,12 +1,12 @@
 package edu.wustl.common.hibernate;
 
 import java.io.InputStream;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.DOMWriter;
@@ -54,10 +54,28 @@ public class HibernateUtil {
 
     private static final Configuration cfg;
 
+    private static final Logger logger = Logger.getLogger(HibernateUtil.class);
+    
     static {
         cfg = new Configuration();
+        String[] fileNames = getCfgFiles();
+        // get all configuration files
+        for (int i = 0; i < fileNames.length; i++) {
+            String fileName = fileNames[i];
+            fileName = fileName.trim();
+            logger.info("Loading " + fileName);
+            addConfigurationFile(fileName, cfg);
+        }
+        m_sessionFactory = cfg.buildSessionFactory();
+    }
 
+    private static String[] getCfgFiles() {
         InputStream inputStream = HibernateUtil.class.getClassLoader().getResourceAsStream("dbutil.properties");
+        if (inputStream == null) {
+            // if no configuration file found, get the default one.
+            logger.warn("dbutil.properties not found. Will attempt to load default hibernate.cfg.xml");
+            return new String[]{"hibernate.cfg.xml"};
+        }
         Properties p = new Properties();
         try {
             p.load(inputStream);
@@ -66,27 +84,12 @@ public class HibernateUtil {
             throw new RuntimeException(e);
         }
 
-        String configurationFileNames = p.getProperty("hibernate.configuration.files");
-
-        String[] fileNames = null;
-        if (configurationFileNames != null) {
-            fileNames = configurationFileNames.split(",");
+        String cfgFilesList = p.getProperty("hibernate.configuration.files");
+        if (cfgFilesList == null) {
+            throw new IllegalArgumentException(
+                    "dbutil.properties must contain value for property 'hibernate.configuration.files'");
         }
-
-        // if no configuraiton file found, get the default one.
-        if (fileNames == null) {
-            fileNames = new String[]{"hibernate.cfg.xml"};
-        }
-        // get all configuration files
-        for (int i = 0; i < fileNames.length; i++) {
-            String fileName = fileNames[i];
-            fileName = fileName.trim();
-            System.out.println(fileName + ": fileName");
-            addConfigurationFile(fileName, cfg);
-        }
-
-        m_sessionFactory = cfg.buildSessionFactory();
-
+        return cfgFilesList.split(",");
     }
 
     /**
@@ -140,14 +143,6 @@ public class HibernateUtil {
         threadLocal.set(null);
         if (s != null)
             s.close();
-    }
-
-    public static Connection getConnection() throws HibernateException {
-        return currentSession().connection();
-    }
-
-    public static void closeConnection() throws HibernateException {
-        closeSession();
     }
 
     public static SessionFactory getSessionFactory() {
