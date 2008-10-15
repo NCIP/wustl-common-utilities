@@ -575,7 +575,7 @@ public class GraphTest extends TestCase {
         graph.putEdge("Mumbai", "Madras", 400);
         graph.putEdge("Andaman", "Andaman", null);
 
-        Graph<String, Integer> clone = ObjectCloner.clone(graph);
+        Graph<String, Integer> clone = new ObjectCloner().clone(graph);
         assertEquals(graph, clone);
 
         assertEquals(asMap("Mumbai", 200, "Madras", 500), clone.getOutgoingEdges("Delhi"));
