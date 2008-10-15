@@ -41,6 +41,7 @@ import org.xml.sax.InputSource;
  * @author Kapil Kaveeshwar
  * @see HibernateDatabaseOperations
  */
+@SuppressWarnings("serial")
 public class HibernateUtil {
     // A factory for DB Session which provides the Connection for client.
     private static final SessionFactory m_sessionFactory;
@@ -57,7 +58,13 @@ public class HibernateUtil {
     private static final Logger logger = Logger.getLogger(HibernateUtil.class);
     
     static {
-        cfg = new Configuration();
+        cfg = new Configuration(); 
+//            {@Override
+//            protected void add(Document doc) throws MappingException {
+//                doc.getRootElement().addAttribute("auto-import", "false");
+//                super.add(doc);
+//            }};
+        
         String[] fileNames = getCfgFiles();
         // get all configuration files
         for (int i = 0; i < fileNames.length; i++) {
