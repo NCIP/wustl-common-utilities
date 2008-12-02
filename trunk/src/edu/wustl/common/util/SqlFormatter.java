@@ -2,12 +2,13 @@
 package edu.wustl.common.util;
 import java.io.*;
 
+// generated using javaCC. See the file Sql.jj
+
 public class SqlFormatter implements SqlFormatterConstants {
 
   public static void main(String args[]) throws Exception {
     SqlFormatter formatter = new SqlFormatter(new FileInputStream("in.sql"));
     System.out.println(formatter.format());
-    System.out.println("done.");
   }
 
   public SqlFormatter (String s) {
