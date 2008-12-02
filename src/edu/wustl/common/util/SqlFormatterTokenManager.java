@@ -3,7 +3,7 @@ package edu.wustl.common.util;
 import java.io.*;
 
 /** Token Manager. */
-class SqlFormatterTokenManager implements SqlFormatterConstants
+public class SqlFormatterTokenManager implements SqlFormatterConstants
 {
  StringBuilder res;
   private int indent = 0;
@@ -1194,7 +1194,7 @@ void TokenLexicalActions(Token matchedToken)
       case 17 :
         image.append(jjstrLiteralImages[17]);
         lengthOfMatch = jjstrLiteralImages[17].length();
-        res.append(")"); nesting--; if(nesting < 0) {indent--; SwitchTo(ON_ST);}
+        res.append(")"); nesting--; if(nesting < 0) {indent--; nesting=0; SwitchTo(ON_ST);}
          break;
       case 18 :
         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
@@ -1212,7 +1212,7 @@ void TokenLexicalActions(Token matchedToken)
       case 23 :
         image.append(jjstrLiteralImages[23]);
         lengthOfMatch = jjstrLiteralImages[23].length();
-             res.append(")"); nesting--; if(nesting < 0) indent--;
+             res.append(")"); nesting--; if(nesting < 0) {indent--; nesting=0;}
          break;
       case 24 :
         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
@@ -1230,7 +1230,7 @@ void TokenLexicalActions(Token matchedToken)
       case 30 :
         image.append(jjstrLiteralImages[30]);
         lengthOfMatch = jjstrLiteralImages[30].length();
-             res.append(")"); nesting--; if(nesting < 0) {indent--; SwitchTo(ON_ST);}
+             res.append(")"); nesting--; if(nesting < 0) {indent--; nesting=0; SwitchTo(ON_ST);}
          break;
       case 31 :
         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));

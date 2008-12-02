@@ -111,7 +111,7 @@ TOKEN:
 {
   "(" { indent++; res.append("("+NLI());} : DEFAULT
   |
-  ")"  {res.append(")"); nesting--; if(nesting < 0) {indent--; SwitchTo(ON_ST);} }
+  ")"  {res.append(")"); nesting--; if(nesting < 0) {indent--; nesting=0; SwitchTo(ON_ST);} }
   |
   <_ANY3 : <ANY>> {res.append(image);}
 }
@@ -140,7 +140,7 @@ TOKEN:
 {
 	"(" {res.append("("); nesting++;}
 	|
-	")" {res.append(")"); nesting--; if(nesting < 0) indent--;}
+	")" {res.append(")"); nesting--; if(nesting < 0) {indent--; nesting=0;}}
 	|
 	<_ON2:<ON>> {updateRes(ON);}
 	|
@@ -166,7 +166,7 @@ TOKEN:
 {
 	"(" {res.append("("); nesting++;}
 	|
-	")" {res.append(")"); nesting--; if(nesting < 0) {indent--; SwitchTo(ON_ST);} }
+	")" {res.append(")"); nesting--; if(nesting < 0) {indent--; nesting=0; SwitchTo(ON_ST);} }
 	|
 	<_ANY6 : <ANY>> {res.append(image);}
 }
