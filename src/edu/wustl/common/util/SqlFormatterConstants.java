@@ -29,33 +29,33 @@ public interface SqlFormatterConstants {
   /** RegularExpression Id. */
   int _ANY1 = 9;
   /** RegularExpression Id. */
-  int _FROM1 = 10;
+  int _FROM1 = 13;
   /** RegularExpression Id. */
-  int _ANY2 = 12;
+  int _ANY2 = 14;
   /** RegularExpression Id. */
-  int _INJOIN1 = 13;
+  int _INJOIN1 = 15;
   /** RegularExpression Id. */
-  int _LJOIN1 = 14;
+  int _LJOIN1 = 16;
   /** RegularExpression Id. */
-  int _WHERE1 = 15;
+  int _WHERE1 = 17;
   /** RegularExpression Id. */
-  int _ANY3 = 18;
+  int _ANY3 = 20;
   /** RegularExpression Id. */
-  int _ON1 = 20;
+  int _ON1 = 22;
   /** RegularExpression Id. */
-  int _ANY4 = 21;
+  int _ANY4 = 23;
   /** RegularExpression Id. */
-  int _ON2 = 24;
+  int _ON2 = 26;
   /** RegularExpression Id. */
-  int _ANY5 = 25;
+  int _ANY5 = 27;
   /** RegularExpression Id. */
-  int _INJOIN2 = 26;
+  int _INJOIN2 = 28;
   /** RegularExpression Id. */
-  int _LJOIN2 = 27;
+  int _LJOIN2 = 29;
   /** RegularExpression Id. */
-  int _WHERE2 = 28;
+  int _WHERE2 = 30;
   /** RegularExpression Id. */
-  int _ANY6 = 31;
+  int _ANY6 = 33;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -82,8 +82,10 @@ public interface SqlFormatterConstants {
     "<ANY>",
     "<_SELECT11>",
     "<_ANY1>",
-    "<_FROM1>",
     "\",\"",
+    "\"(\"",
+    "\")\"",
+    "<_FROM1>",
     "<_ANY2>",
     "<_INJOIN1>",
     "<_LJOIN1>",
