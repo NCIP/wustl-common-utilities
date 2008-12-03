@@ -83,17 +83,17 @@ SKIP:
 }
 
 <SELECT_ST>
-SKIP:
-{
-  <_FROM1 : <FROM>> {updateRes(FROM);} : FROM_ST
-}
-
-<SELECT_ST>
 MORE:
 {
 	"," {image.append(NLI());}
 	|
-  <_ANY2 : <ANY>>
+	"(" {nesting++;}
+	|
+	")" {nesting--;}
+	|
+    <_FROM1 : <FROM>> {if(nesting == 0) {updateRes(FROM); SwitchTo(FROM_ST);}}
+	|
+    <_ANY2 : <ANY>>
 }
 
 <FROM_ST>
