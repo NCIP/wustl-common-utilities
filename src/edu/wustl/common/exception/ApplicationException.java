@@ -198,7 +198,10 @@ public class ApplicationException extends Exception
 			this.errorMsg = "";
 			setMsgValues(errorValParam);
 			String[] errorValues = errorValParam.split(ERR_MSG_VALUES_SEPARATOR);
-			errorKey.setMessageValues(errorValues);
+			if(errorKey != null)
+			{
+				errorKey.setMessageValues(errorValues);
+			}
 		}
 	}
 
