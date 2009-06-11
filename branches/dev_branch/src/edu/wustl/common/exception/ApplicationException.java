@@ -284,7 +284,12 @@ public class ApplicationException extends Exception
 	*/
 	 public String getMessage()
 	 {
-	        return errorKey.getMessageWithValues();
+		 String message = "";
+		 if(errorKey != null)
+		 {
+			 message = errorKey.getMessageWithValues();
+		 }
+		 return message;
 	 }
 	 
 
