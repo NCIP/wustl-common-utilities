@@ -442,28 +442,36 @@ public class Validator
 	private boolean isDate(String dtStr)
 	{
 		boolean isDate = true;
-		String dateFormatStr=CommonServiceLocator.getInstance().getDatePattern();
-		SimpleDateFormat dateFormat= new SimpleDateFormat(dateFormatStr,CommonServiceLocator
-				.getInstance().getDefaultLocale());
 		int minYear = Integer.parseInt(CommonServiceLocator.getInstance().getMinYear());
 		int maxYear = Integer.parseInt(CommonServiceLocator.getInstance().getMaxYear());
-		try
+		String dateFormatStr=CommonServiceLocator.getInstance().getDatePattern();
+		
+		String[] dateFormats = dateFormatStr.split(",");
+		for(String dtFormat: dateFormats)
 		{
-			Date date= dateFormat.parse(dtStr);
-			isDate=dtStr.equals(dateFormat.format(date));
+			SimpleDateFormat dateFormat= new SimpleDateFormat(dtFormat,CommonServiceLocator
+					.getInstance().getDefaultLocale());
+			try
+			{
+				Date date= dateFormat.parse(dtStr);
+				isDate=dtStr.equals(dateFormat.format(date));
+				if(isDate)
+				{
+					Calendar gcalendar = new GregorianCalendar();
+			        gcalendar.setTime(date);
+					int year=gcalendar.get(Calendar.YEAR);
+					isDate^=(year < minYear || year > maxYear);
+				}
+			}
+			catch (ParseException exp)
+			{
+				LOGGER.error("Date '" +dtStr+ "' is not valid for format:" + dtFormat);
+				isDate = false;
+			}
 			if(isDate)
 			{
-				Calendar gcalendar = new GregorianCalendar();
-		        gcalendar.setTime(date);
-				gcalendar.setTime(date);
-				int year=gcalendar.get(Calendar.YEAR);
-				isDate^=(year < minYear || year > maxYear);
+				break;
 			}
-		}
-		catch (ParseException exp)
-		{
-			LOGGER.error("Date is not valid:" + dtStr, exp);
-			isDate = false;
 		}
 		if (!isDate)
 		{
@@ -514,25 +522,34 @@ public class Validator
 	public boolean compareDateWithCurrent(String dateToCheck)
 	{
 		boolean result = true;
-		try
+		Date currentDate = Calendar.getInstance().getTime();
+		String pattern=CommonServiceLocator.getInstance().getDatePattern();
+		
+		String[] dateFormats = pattern.split(",");
+		for(String dtFormat: dateFormats)
 		{
-			Date currentDate = Calendar.getInstance().getTime();
-			String pattern=CommonServiceLocator.getInstance().getDatePattern();
-			SimpleDateFormat dateFormat = new SimpleDateFormat(pattern,CommonServiceLocator
+			SimpleDateFormat dateFormat = new SimpleDateFormat(dtFormat,CommonServiceLocator
 					.getInstance().getDefaultLocale());
-			Date toCheck = dateFormat.parse(dateToCheck);
-			int dateCheckResult = currentDate.compareTo(toCheck);
-			if (dateCheckResult < 0)
+			
+			try
 			{
+				Date toCheck = dateFormat.parse(dateToCheck);
+				int dateCheckResult = currentDate.compareTo(toCheck);
+				if (dateCheckResult < 0)
+				{
+					result = false;
+				}
+				if(result)
+				{
+					break;
+				}
+			}
+			catch (Exception exp)
+			{
+				LOGGER.error("Date '" +dateToCheck+ "' is not valid for format:" + dtFormat);
 				result = false;
 			}
 		}
-		catch (Exception exp)
-		{
-			LOGGER.debug(exp.getMessage(), exp);
-			result = false;
-		}
-
 		return result;
 	}
 
@@ -545,30 +562,39 @@ public class Validator
 	public boolean compareDates(String startDate, String endDate)
 	{
 		boolean result = true;
-		try
+		isValidDatePattern(startDate);
+		String pattern=CommonServiceLocator.getInstance().getDatePattern();
+		
+		String[] dateFormats = pattern.split(",");
+		for(String dtFormat: dateFormats)
 		{
-			isValidDatePattern(startDate);
-			String pattern=CommonServiceLocator.getInstance().getDatePattern();
-			SimpleDateFormat dateFormat = new SimpleDateFormat(pattern,CommonServiceLocator
+			SimpleDateFormat dateFormat = new SimpleDateFormat(dtFormat,CommonServiceLocator
 					.getInstance().getDefaultLocale());
-			Date toCheck = dateFormat.parse(startDate);
-			isValidDatePattern(endDate);
-			SimpleDateFormat dF1 = new SimpleDateFormat(pattern,CommonServiceLocator
-					.getInstance().getDefaultLocale());
-			Date maxDate = dF1.parse(endDate);
-			int dateCheckResult = maxDate.compareTo(toCheck);
-			if (dateCheckResult < 0)
+			result = true;
+			try
 			{
+				Date toCheck = dateFormat.parse(startDate);
+				isValidDatePattern(endDate);
+				SimpleDateFormat dF1 = new SimpleDateFormat(dtFormat,CommonServiceLocator
+						.getInstance().getDefaultLocale());
+				Date maxDate = dF1.parse(endDate);
+				int dateCheckResult = maxDate.compareTo(toCheck);
+				if (dateCheckResult < 0)
+				{
+					result = false;
+				}
+				if(result)
+				{
+					break;
+				}
+			}
+			catch (Exception exp)
+			{
+				LOGGER.error("Date '" +startDate+ "' is not valid for format:" + dtFormat);
 				result = false;
 			}
 		}
-		catch (Exception exp)
-		{
-			LOGGER.debug(exp.getMessage(), exp);
-			result = false;
-		}
 		return result;
-
 	}
 
 	/**
