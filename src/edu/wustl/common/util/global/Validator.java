@@ -530,7 +530,7 @@ public class Validator
 		{
 			SimpleDateFormat dateFormat = new SimpleDateFormat(dtFormat,CommonServiceLocator
 					.getInstance().getDefaultLocale());
-			
+			result = true;			
 			try
 			{
 				Date toCheck = dateFormat.parse(dateToCheck);
