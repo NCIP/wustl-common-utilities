@@ -39,6 +39,12 @@ public class Validator
 	 * This is regular expression to check for XXS vulnerable characters e.g <, >, (, ) etc.
 	 * */
 	private static final String REGEX_XSS_VULNERABLE = "[()<>]";
+	
+	/**
+	 * This is regular expression to check for SQL injection characters e.g =,*, etc
+	 * */
+	private static final String REGEX_SQLINJECTION_VULNERABLE = "[()<>'=\\*]";
+
 	/**
 	 * This is regular expression to validate email id.
 	 */
@@ -911,4 +917,21 @@ public class Validator
 		}
 		return isXssVulnerable;
 	}
+	
+	/**
+     * This method check for xxs vulnerable characters like <, >, (, ) etc.
+     * @param String for which xss vulnerable character [ (,),< or > ] to be checked.
+     * @return true if the string contains any xss vulnerable character else false.
+     */
+    public static boolean isXssSQLVulnerable(String value){
+    	boolean isXssVulnerable=false;
+    	if(value!=null)
+    	{
+    		Pattern p = Pattern.compile(REGEX_SQLINJECTION_VULNERABLE);
+    		Matcher m = p.matcher(value);
+    		isXssVulnerable= m.find();
+    	}
+    	return isXssVulnerable;
+    }
+    
 }
