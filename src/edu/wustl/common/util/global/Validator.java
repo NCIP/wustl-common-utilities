@@ -567,8 +567,40 @@ public class Validator
 	 */
 	public boolean compareDates(String startDate, String endDate)
 	{
-		boolean result = true;
-		isValidDatePattern(startDate);
+		boolean result = false;
+		try
+		{
+			boolean isDate1 = isValidDatePattern(startDate);
+			boolean isDate2 = isValidDatePattern(endDate);	
+			if(isDate1 && isDate2)
+			{
+				Date toCheck = getDateFromStr(startDate);
+				Date maxDate = getDateFromStr(endDate);
+				int dateCheckResult = maxDate.compareTo(toCheck);
+				if (dateCheckResult >= 0)
+				{
+					result = true;
+				}
+			}
+		}
+		catch (Exception exp)
+		{
+			LOGGER.error("Date is not valid");
+			result = false;
+		}
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param dateAsStr Date as String 
+	 * @return Date object if Date is in format specified in properties file.
+	 * @throws Exception if date in valid format.
+	 */
+	public static Date getDateFromStr(String dateAsStr) throws Exception
+	{
+		Date date=null;
+		boolean result = false;
 		String pattern=CommonServiceLocator.getInstance().getDatePattern();
 		
 		String[] dateFormats = pattern.split(",");
@@ -576,31 +608,27 @@ public class Validator
 		{
 			SimpleDateFormat dateFormat = new SimpleDateFormat(dtFormat,CommonServiceLocator
 					.getInstance().getDefaultLocale());
-			result = true;
 			try
 			{
-				Date toCheck = dateFormat.parse(startDate);
-				isValidDatePattern(endDate);
-				SimpleDateFormat dF1 = new SimpleDateFormat(dtFormat,CommonServiceLocator
-						.getInstance().getDefaultLocale());
-				Date maxDate = dF1.parse(endDate);
-				int dateCheckResult = maxDate.compareTo(toCheck);
-				if (dateCheckResult < 0)
+				Date toCheck = dateFormat.parse(dateAsStr);
+				if (dateFormat.format(toCheck).equals(dateAsStr))
 				{
-					result = false;
-				}
-				if(result)
-				{
+					result = true;
+					date=toCheck;
 					break;
 				}
 			}
 			catch (Exception exp)
 			{
-				LOGGER.error("Date '" +startDate+ "' is not valid for format:" + dtFormat);
+				LOGGER.error("Date '" +dateAsStr+ "' is not valid for format:" + dtFormat);
 				result = false;
 			}
 		}
-		return result;
+		if(!result)
+		{
+			throw new Exception(dateAsStr+" is not in valid date format.");
+		}
+		return date;
 	}
 
 	/**
