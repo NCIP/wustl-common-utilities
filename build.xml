@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="washu-commons" basedir="." default="build.jar">
+	<property file="washu-commons.properties"/>
 	<property name="workarea.dir" location="workarea" />
 	<property name="classes.dir" location="${workarea.dir}/classes" />
 	<property name="src.dir" location="src" />
@@ -7,6 +8,12 @@
 	<target name="clean">
 		<delete includeemptydirs="true" dir="${workarea.dir}" />
 	</target>
+	
+	<loadfile property="dist.revision" srcFile="./.svn/entries">  
+				<filterchain>  
+					<headfilter lines="1" skip="4"/>
+				</filterchain>  
+	</loadfile>
 
 	<path id="compile.classpath">
 		<pathelement location="conf" />
@@ -22,14 +29,19 @@
 
 	<target name="build.jar" depends="compile">
 		<tstamp />
-		<jar jarfile="${workarea.dir}/washu-commons.jar" basedir="${classes.dir}">
+		<jar jarfile="${workarea.dir}/washu-commons-${wc.jar.version}.jar" basedir="${classes.dir}">
 			<manifest>
-				<attribute name="Built-At" value="${TODAY} ${TSTAMP}" />
+				<section name="${wc.jar.details}">
+					<attribute name="Version" value="${wc.jar.version}"/>
+					<attribute name="Built-By" value="${wc.jar.creator}" />   	   			   	   					
+					<attribute name="Build-on" value="${TODAY} ${TSTAMP}" />
+					<attribute name="SVN-URL" value="${dist.revision}" />
+			  	</section>   	   					
 			</manifest>
 		</jar>
 	</target>
 	<target name="build.src.zip">
-		<zip destfile="${build.dir}/washu-commons-src.zip">
+		<zip destfile="${build.dir}/washu-commons-${wc.jar.version}-src.zip">
 			<fileset dir="src" includes="**/*" />
 			<manifest>
 				<attribute name="Built-At" value="${TODAY} ${TSTAMP}" />
