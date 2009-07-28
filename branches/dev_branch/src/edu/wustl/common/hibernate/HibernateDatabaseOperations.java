@@ -77,6 +77,11 @@ public class HibernateDatabaseOperations<T> {
         getTransaction().commit();
         transaction = session.beginTransaction();
     }
+    
+    public void commitAll()
+    {
+        getTransaction().commit();
+    }
 
     private Transaction getTransaction() {
         return transaction;
