@@ -29,11 +29,19 @@
 		</jar>
 	</target>
 	<target name="build.src.zip">
-		<zip destfile="${build.dir}/washu-commons-src.zip">
-			<fileset dir="src" includes="**/*" />
-			<manifest>
-				<attribute name="Built-At" value="${TODAY} ${TSTAMP}" />
-			</manifest>
-		</zip>
+		<echo>Creating Washu-commons Zip file...</echo>
+				<property name="zip.dir" value="${workarea.dir}/washu-commons-src" />
+				<property name="zip.file" value="${workarea.dir}/washu-commons-src.zip" />
+					<delete file="${zip.file}" />
+					<delete dir="${zip.dir}" />
+					<mkdir dir="${zip.dir}" />
+
+					<copy todir="${zip.dir}" overwrite="true">
+							  <fileset dir="${src.dir}">
+							  	<include name = "edu/wustl/common/**/**/*.java"/>
+							  </fileset>
+					</copy>
+				<zip destfile="${zip.file}" basedir="${zip.dir}" />
+				<delete dir="${zip.dir}" />
 	</target>
 </project>
