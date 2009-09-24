@@ -48,4 +48,22 @@
 			</manifest>
 		</zip>
 	</target>
+	
+	<property file="mail.properties"></property>
+	
+	<target name="testSendMailWithAuthentication" depends="compile" 
+				description="Sends the Mail after authentication of the sender">
+				<java classname="edu.wustl.common.util.global.SendEmail">
+					<arg id="host" value="${email.mailServer}"/>
+					<arg id="from" value="${email.sendEmailFrom.emailAddress}"/>
+					<arg id="passwd" value="${email.sendEmailFrom.emailPassword}"/>
+					<arg id="toAddress1" value="${email.sendEmailTo.emailAddress1}"/>
+					<arg id="toAddress2" value="${email.sendEmailTo.emailAddress2}"/>
+					<classpath>
+						<pathelement location="${workarea.dir}/classes"/>
+					</classpath>
+					<classpath refid="compile.classpath">
+					</classpath>
+				</java>
+		</target>
 </project>

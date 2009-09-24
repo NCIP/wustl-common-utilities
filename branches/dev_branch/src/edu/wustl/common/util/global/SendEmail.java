@@ -93,7 +93,6 @@ public class SendEmail
 	 */
 	public boolean sendMail(EmailDetails emailDetails)
 	{
-		System.out.println("Inside SendMail method...");
 		boolean sendStatus;
 		Session session = getEmailSession();
 		try
@@ -109,7 +108,7 @@ public class SendEmail
 			{
 				trans.close();
 			}*/
-			System.out.println(this.host + this.from + this.emailPassword);
+			//System.out.println(this.host + this.from + this.emailPassword);
 			Transport.send(msg);
 			sendStatus = true;
 		}
@@ -149,16 +148,25 @@ public class SendEmail
 	}
 
 	/**
+	 * Provided email password for authentication.
 	 * @return Default mail Session.
 	 */
 	private Session getEmailSession()
 	{
+		Session session = null ;
 		Properties props = new Properties();
 		props.put("mail.smtp.host", host);
-		props.put("mail.smtp.auth", Boolean.valueOf(true)) ;
-		Authenticator auth = new MailAuthenticator(this.from,this.emailPassword) ;
-		//Session session = Session.getDefaultInstance(props, null);
-		Session session = Session.getInstance(props, auth);
+		//props.put("mail.smtp.port", "465");
+		if( (this.emailPassword==null) || ("".equals(this.emailPassword)))
+		{
+			session = Session.getDefaultInstance(props, null);
+		}
+		else
+		{
+			props.put("mail.smtp.auth", Boolean.valueOf(true)) ;
+			Authenticator auth = new MailAuthenticator(this.from,this.emailPassword) ;
+			session = Session.getInstance(props, auth);
+		}
 		session.setDebug(false);
 		return session;
 	}
@@ -245,10 +253,9 @@ public class SendEmail
 	 * This is the main method to check whether Email sent successfully or not.
 	 * @param args Arguments that are passed to the main method.
 	 */
-	/*public static void main(String[] args)
+	public static void main(String[] args)
 	{
 		LoggerConfig.configureLogger(System.getProperty("user.dir"));
-		System.out.println("Inside SendEmail");
 		EmailDetails emailDetails = new EmailDetails() ;
 		String[] toAddress = {args[3],args[4]} ;
 		emailDetails.setToAddress(toAddress);
@@ -275,5 +282,5 @@ public class SendEmail
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}*/
+	}
 }
