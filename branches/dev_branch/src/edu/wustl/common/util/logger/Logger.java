@@ -11,7 +11,9 @@
 
 package edu.wustl.common.util.logger;
 
+
 import org.apache.log4j.Level;
+
 
 /**
  * This is an utility class which provides functions to get logger objects.
@@ -30,7 +32,10 @@ public final class Logger
 	 * org.apache.log4j.Logger instance.
 	 */
 	private org.apache.log4j.Logger logger;
-
+	/**
+	 * String constant.
+	 */
+	private final static String FQCN = Logger.class.getName() ;
 	/**
 	 * Logger class should not get instantiated from outside. Hence the constructor is private.
 	 * @param apacheLogger org.apache.log4j.Logger instance.
@@ -63,7 +68,8 @@ public final class Logger
 	{
 		if (logger.isEnabledFor(Level.DEBUG))
 		{
-			logger.debug(message);
+			//logger.debug(message);
+			logger.log(FQCN, Level.DEBUG, message, null) ;
 		}
 	}
 
@@ -77,7 +83,8 @@ public final class Logger
 	{
 		if (logger.isEnabledFor(Level.DEBUG))
 		{
-			logger.debug(message, throwable);
+			//logger.debug(message, throwable);
+			logger.log(FQCN, Level.DEBUG, message, throwable) ;
 		}
 	}
 
@@ -95,7 +102,8 @@ public final class Logger
 	{
 		if (logger.isEnabledFor(Level.ERROR))
 		{
-			logger.error(message);
+			//logger.error(message);
+			logger.log(FQCN, Level.ERROR, message, null) ;
 		}
 	}
 
@@ -109,7 +117,8 @@ public final class Logger
 	{
 		if (logger.isEnabledFor(Level.ERROR))
 		{
-			logger.error(message, throwable);
+			//logger.error(message, throwable);
+			logger.log(FQCN, Level.ERROR, message, throwable) ;
 		}
 	}
 
@@ -126,7 +135,8 @@ public final class Logger
 	{
 		if (logger.isEnabledFor(Level.FATAL))
 		{
-			logger.fatal(message);
+			//logger.fatal(message);
+			logger.log(FQCN, Level.FATAL, message, null) ;
 		}
 	}
 
@@ -140,7 +150,8 @@ public final class Logger
 	{
 		if (logger.isEnabledFor(Level.FATAL))
 		{
-			logger.fatal(message, throwable);
+			//logger.fatal(message, throwable);
+			logger.log(FQCN, Level.FATAL, message, throwable) ;
 		}
 	}
 
@@ -157,7 +168,8 @@ public final class Logger
 	{
 		if (logger.isEnabledFor(Level.INFO))
 		{
-			logger.info(message);
+			//logger.info(message);
+			logger.log(FQCN, Level.INFO, message, null) ;
 		}
 	}
 
@@ -171,7 +183,8 @@ public final class Logger
 	{
 		if (logger.isEnabledFor(Level.INFO))
 		{
-			logger.info(message, throwable);
+			//logger.info(message, throwable);
+			logger.log(FQCN, Level.INFO, message, throwable) ;
 		}
 	}
 
@@ -183,7 +196,8 @@ public final class Logger
 	{
 		if (logger.isEnabledFor(Level.WARN))
 		{
-			logger.warn(message);
+			//logger.warn(message);
+			logger.log(FQCN, Level.WARN, message, null) ;
 		}
 	}
 
@@ -196,7 +210,8 @@ public final class Logger
 	{
 		if (logger.isEnabledFor(Level.WARN))
 		{
-			logger.warn(message, throwable);
+			//logger.warn(message, throwable);
+			logger.log(FQCN, Level.WARN, message, throwable) ;
 		}
 	}
 
