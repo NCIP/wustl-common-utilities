@@ -16,13 +16,13 @@ import edu.wustl.common.util.logger.Logger;
 
 public class CommonUtilities
 {
-	
+
 
 	/**
 	 * LOGGER -Generic Logger.
 	 */
 	private static final Logger LOGGER = Logger.getCommonLogger(CommonUtilities.class);
-	
+
 	/**
 	 * Parses the string format of date in the given format and returns the Data object.
 	 * @param date the string containing date.
@@ -51,7 +51,7 @@ public class CommonUtilities
 		}
 		return dateObj;
 	}
-	
+
 	/**
 	 * Parses the fully qualified class name and returns only the class name.
 	 * @param qualifiedName The fully qualified class name.
@@ -72,7 +72,7 @@ public class CommonUtilities
 		return className;
 	}
 
-	
+
 	/**
 	 * Parses the string format of date in the given format and returns the Data object.
 	 * @param date the string containing date.
@@ -134,7 +134,7 @@ public class CommonUtilities
 		}
 		return datePattern;
 	}
-	
+
 	/**
 	 * This method creates Accessor Method Name.
 	 * @param attr attribute
@@ -222,16 +222,20 @@ public class CommonUtilities
 		Method method = null;
 		for (int i = 0; i < methods.length; i++)
 		{
-			if (methods[i].getName().equals(methodName))
-			{
-				method = methods[i];
-				break;
-			}
+			if(!methods[i].getName().equals(methodName))
+            {
+                continue;
+            }
+            method = methods[i];
+            if(!"java.lang.Object".equals(method.getParameterTypes()[0].getName()))
+            {
+                break;
+            }
 		}
 		return method;
 	}
 
-	
+
 
 	/**
 	 * This method gets Array String of Object Array.
@@ -333,7 +337,7 @@ public class CommonUtilities
 		return newObjectArr;
 	}
 
-	
+
 
 	/**
 	 * This method removes null values from given list.
@@ -353,7 +357,7 @@ public class CommonUtilities
 		return nullFreeList;
 	}
 
-	
+
 
 	/**
 	 * Returns name of FormBean specified in struts-config.xml for passed Object of FormBean.
@@ -409,7 +413,7 @@ public class CommonUtilities
 		return retValue;
 	}
 
-	
+
 
 	/**
 	 * This method converts collection to Long Array.
@@ -487,7 +491,7 @@ public class CommonUtilities
 		return value;
 	}
 
-	
+
 	/**
 	 * @param str String to be converted to Proper case.
 	 * @return The String in Proper case.
@@ -572,7 +576,7 @@ public class CommonUtilities
 		}
 		return calendar;
 	}
-	
+
 	/**
 	 * This method replace string.
 	 * This method is used in AutoCompleteTag.java and SimpleQueryInterfaceForm.java(SimpleQuery)
@@ -616,7 +620,7 @@ public class CommonUtilities
 		attributeName.setCharAt(0, Character.toLowerCase(attributeName.charAt(0)));
 		return attributeName.toString();
 	}
-	
+
 	/**
 	 * For MSR changes.
 	 * @return All Privileges.
