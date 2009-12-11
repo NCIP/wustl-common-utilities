@@ -640,4 +640,14 @@ public class CommonUtilities
 		allPrivileges.addAll(list4);
 		return allPrivileges;
 	}
+	/**
+	 * gets unique key for name,barcode etc...
+	 * @return string
+	 */
+	public static String getUniqueKey()
+	{
+		Date date = new Date();
+		String uniqueKey = String.valueOf(date.getTime());
+		return uniqueKey;
+	}
 }
