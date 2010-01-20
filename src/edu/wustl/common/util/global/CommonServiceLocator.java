@@ -82,6 +82,12 @@ public final class CommonServiceLocator
 	 * e.g. yyyy-MM-dd-HH24.mm.ss.SSS
 	 */
 	private String timeStampPattern;
+
+	/**
+	 * Path the request should be redirected to in case of XSS validation failures.
+	 */
+	private String xssFailurePath;
+
 	/**
 	 *No argument constructor.
 	 *Here all the properties are set
@@ -120,12 +126,30 @@ public final class CommonServiceLocator
 			setTimeStampPattern(props);
 			setMinYear(props);
 			setMaxYear(props);
+			setXSSFailurePath(props);
 			stream.close();
 		}
 		catch (IOException exception)
 		{
 			logger.fatal("Not able to load properties file",exception);
 		}
+	}
+
+	/**
+	 * Set XSS failure path.
+	 * @param props Properties.
+	 */
+	private void setXSSFailurePath(final Properties props)
+    {
+	    xssFailurePath = props.getProperty("xss.failure.redirect.path");
+    }
+
+	/**
+	 * @return the XSS failure Path.
+	 */
+	public String getXSSFailurePath()
+	{
+	    return xssFailurePath;
 	}
 	/**
 	 * @return the application name.
