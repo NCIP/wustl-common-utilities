@@ -1,0 +1,519 @@
+  [taskdef] Could not load definitions from resource net/sf/antcontrib/antcontrib.properties. It could not be found.
+
+validate:pre:build:
+     [echo] Checking for existence of GLOBUS_LOCATION envrironment variable.
+     [echo] wscore.relative.dir = ws-core-4.0.3
+     [echo] GLOBUS_LOCATION not set, downloading and installing http://gforge.nci.nih.gov/svnroot/commonlibrary/trunk/techstack-2006/os-independent/ws-core-enum-4.0.3.zip
+     [echo] c:/apps/clinportal_prototype-webapp/ws-core-4.0.3 already exists.
+
+clean:
+   [delete] Deleting directory D:\clinportal_BDA\clinportal_prototype\software\target\dist
+   [delete] Deleting directory D:\clinportal_BDA\clinportal_prototype\software\target\temp
+
+init:
+     [echo]  ______   ______   _______ 
+     [echo] (____  \ (______) (_______)
+     [echo]  ____)  ) _     _  _______ 
+     [echo] |  __  ( | |   | ||  ___  |
+     [echo] | |__)  )| |__/ / | |   | |
+     [echo] |______/ |_____/  |_|   |_|
+    [mkdir] Created dir: D:\clinportal_BDA\clinportal_prototype\software\target\dist
+    [mkdir] Created dir: D:\clinportal_BDA\clinportal_prototype\software\target\dist\exploded
+    [mkdir] Created dir: D:\clinportal_BDA\clinportal_prototype\software\target\dist\exploded\clinportal_prototype-api
+    [mkdir] Created dir: D:\clinportal_BDA\clinportal_prototype\software\target\dist\exploded\clinportal_prototype-webapp
+    [mkdir] Created dir: D:\clinportal_BDA\clinportal_prototype\software\target\dist\exploded\common
+    [mkdir] Created dir: D:\clinportal_BDA\clinportal_prototype\software\target\dist\exploded\tools
+    [mkdir] Created dir: D:\clinportal_BDA\clinportal_prototype\software\target\temp
+
+build:clinportal_prototype-api:
+
+build:clinportal_prototype-webapp:
+Trying to override old definition of task shellscript
+Trying to override old definition of task propertycopy
+Trying to override old definition of task pathtofileset
+Trying to override old definition of task remoteant
+Trying to override old definition of task runtarget
+Trying to override old definition of task assert
+Trying to override old definition of task propertyregex
+Trying to override old definition of task math
+Trying to override old definition of task trycatch
+Trying to override old definition of task antserver
+Trying to override old definition of task antcallback
+Trying to override old definition of task compilewithwalls
+Trying to override old definition of task outofdate
+Trying to override old definition of task osfamily
+Trying to override old definition of task stopwatch
+Trying to override old definition of task throw
+Trying to override old definition of task antclipse
+Trying to override old definition of task urlencode
+Trying to override old definition of task timestampselector
+Trying to override old definition of task foreach
+Trying to override old definition of task if
+Trying to override old definition of task propertyselector
+Trying to override old definition of task sortlist
+Trying to override old definition of task antfetch
+Trying to override old definition of task post
+Trying to override old definition of task forget
+Trying to override old definition of task limit
+Trying to override old definition of task switch
+Trying to override old definition of task var
+Trying to override old definition of task inifile
+Trying to override old definition of task verifydesign
+
+init:
+     [echo]  ./binaries/tempClinPortal 
+
+compile:
+
+unpack_cacore_war:
+    [unwar] Expanding: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportalcsm.war into D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\tempClinPortal\clinportalcsm
+
+common_build_war:
+
+copydeletedjars:
+     [echo] deleting unneccesary jars from ./binaries/tempClinPortal/clinportalcsm
+   [delete] Deleting: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\MANIFEST.MF
+     [echo] creating ClinPortal war file 
+      [war] error while reading original manifest in file: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\build\clinportal.warerror in opening zip file
+      [war] Building war: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\build\clinportal.war
+      [war] Warning: selected war files include a second WEB-INF/web.xml which will be ignored.
+The duplicate entry is at D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\tempClinPortal\temp_war\WEB-INF\web.xml
+The file that will be used is D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\src\conf\web.xml
+      [war] Accessibility.jsp already added, skipping
+      [war] ApplicationSupport.jsp already added, skipping
+      [war] Classes.jsp already added, skipping
+      [war] ContactUs.jsp already added, skipping
+      [war] Criteria.jsp already added, skipping
+      [war] Disclaimer.jsp already added, skipping
+      [war] Happy.jsp already added, skipping
+      [war] Packages.jsp already added, skipping
+      [war] PrivacyNotice.jsp already added, skipping
+      [war] Result.jsp already added, skipping
+      [war] WEB-INF/applicationContext.xml already added, skipping
+      [war] WEB-INF/classes/ehcache.xml already added, skipping
+      [war] WEB-INF/hibernate-configuration-3.0.dtd already added, skipping
+      [war] WEB-INF/hibernate-mapping-3.0.dtd already added, skipping
+      [war] WEB-INF/httpinvoker-servlet.xml already added, skipping
+      [war] WEB-INF/lib/c3p0-0.9.0.jar already added, skipping
+      [war] WEB-INF/lib/clm.jar already added, skipping
+      [war] WEB-INF/lib/commons-beanutils.jar already added, skipping
+      [war] WEB-INF/lib/commons-collections-3.2.jar already added, skipping
+      [war] WEB-INF/lib/hibernate3.jar already added, skipping
+      [war] WEB-INF/lib/jaxen-core.jar already added, skipping
+      [war] WEB-INF/lib/jaxen-jdom.jar already added, skipping
+      [war] WEB-INF/lib/jaxrpc.jar already added, skipping
+      [war] WEB-INF/lib/jdom.jar already added, skipping
+      [war] WEB-INF/lib/jmi.jar already added, skipping
+      [war] WEB-INF/lib/jmiutils.jar already added, skipping
+      [war] WEB-INF/lib/mail.jar already added, skipping
+      [war] WEB-INF/lib/mdrapi.jar already added, skipping
+      [war] WEB-INF/lib/mof.jar already added, skipping
+      [war] WEB-INF/lib/ojdbc14.jar already added, skipping
+      [war] WEB-INF/lib/saxpath.jar already added, skipping
+      [war] WEB-INF/lib/xalan.jar already added, skipping
+      [war] WEB-INF/lib/xercesImpl.jar already added, skipping
+      [war] WEB-INF/lib/xml-apis.jar already added, skipping
+      [war] WEB-INF/server-config.wsdd already added, skipping
+      [war] images/bannerHome.gif already added, skipping
+      [war] images/contentTitleRepeat.gif already added, skipping
+      [war] images/footer_firstgov.gif already added, skipping
+      [war] images/footer_hhs.gif already added, skipping
+      [war] images/footer_nci.gif already added, skipping
+      [war] images/footer_nih.gif already added, skipping
+      [war] images/ftrMenuSeparator.gif already added, skipping
+      [war] images/ftrMenuSeparatorSolid.gif already added, skipping
+      [war] images/hdrCaArray.gif already added, skipping
+      [war] images/imageHolder.gif already added, skipping
+      [war] images/mainMenuSeparator.gif already added, skipping
+      [war] images/shim.gif already added, skipping
+      [war] images/subMenuArrow.gif already added, skipping
+      [war] index.html already added, skipping
+      [war] script.js already added, skipping
+      [war] styleSheet.css already added, skipping
+     [echo] clinportal.war file created 
+
+build_client_jar:
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\clinportal_caCORE_Client\lib
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\catissue_de_integration_client\lib
+
+installable_build_war:
+
+create_zip:
+   [delete] Deleting: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1.zip
+    [mkdir] Created dir: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1
+     [copy] Copying 12 files to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1\clinportal-properties
+     [copy] Copying 5 files to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1\lib
+     [copy] Copying 11 files to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1\catissuexmi
+     [copy] Copying 90 files to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1\db\db-install
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1\images
+     [copy] Copying 51 files to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1\catissue_de_integration_client
+     [copy] Copying 72 files to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1\clinportal_caCORE_Client
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1
+     [copy] Copying 5 files to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1\DE_conf
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1
+      [zip] Building zip: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1.zip
+   [delete] Deleting directory D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1\clinportal_Installable_v1.3.1
+   [delete] Deleting directory D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportal_Installable_v1.3.1
+
+deploy_db:
+
+assertfordb:
+
+validate_all_database_connection:
+
+validate_clinportal_database_connection:
+     [echo] oracle.jdbc.driver.OracleDriver
+     [echo] ps5301
+     [echo] clinportal
+     [echo] clinportal
+     [echo] 1521
+     [echo] orcl
+      [sql] Executing commands
+      [sql] Executing commands
+      [sql] 2 of 2 SQL statements executed successfully
+
+validate_integrated_catissue_database_connection:
+
+validate_catissue_database_connection:
+
+validate_csm_database_connection:
+     [echo] email.adminstartive.emailaddress can be left blank.
+     [echo] email.sendEmailFrom.emailAddress can be left blank.
+     [echo] email.mailServer can be left blank.
+
+firstUser:
+
+oracleFirstUser:
+     [echo] Encoding Password...
+    [unwar] Expanding: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\build\clinportal.war into D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\tempClinPortal\clinportal
+
+create_temp_loggger_properties_file:
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\src\conf
+     [java] log4j:ERROR setFile(null,true) call failed.
+     [java] java.io.FileNotFoundException: @@jbosshome@@\log\clinportal.log (The system cannot find the path specified)
+     [java] 	at java.io.FileOutputStream.openAppend(Native Method)
+     [java] 	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+     [java] 	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+     [java] 	at org.apache.log4j.FileAppender.setFile(FileAppender.java:273)
+     [java] 	at org.apache.log4j.RollingFileAppender.setFile(RollingFileAppender.java:156)
+     [java] 	at org.apache.log4j.FileAppender.activateOptions(FileAppender.java:152)
+     [java] 	at org.apache.log4j.config.PropertySetter.activate(PropertySetter.java:247)
+     [java] 	at org.apache.log4j.config.PropertySetter.setProperties(PropertySetter.java:123)
+     [java] 	at org.apache.log4j.config.PropertySetter.setProperties(PropertySetter.java:87)
+     [java] 	at org.apache.log4j.PropertyConfigurator.parseAppender(PropertyConfigurator.java:645)
+     [java] 	at org.apache.log4j.PropertyConfigurator.parseCategory(PropertyConfigurator.java:603)
+     [java] 	at org.apache.log4j.PropertyConfigurator.configureRootCategory(PropertyConfigurator.java:500)
+     [java] 	at org.apache.log4j.PropertyConfigurator.doConfigure(PropertyConfigurator.java:406)
+     [java] 	at org.apache.log4j.PropertyConfigurator.doConfigure(PropertyConfigurator.java:307)
+     [java] 	at org.apache.log4j.PropertyConfigurator.configure(PropertyConfigurator.java:315)
+     [java] 	at edu.wustl.common.util.logger.LoggerConfig.configureLogger(LoggerConfig.java:76)
+     [java] 	at edu.wustl.common.util.global.PasswordManager.<clinit>(PasswordManager.java:43)
+     [echo] 
+						Encoded Password Ojq2/dwL6gm8j2uyHEABIQ==
+				
+     [echo] Modifying ClinPortal SQL file for user information...
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\tempClinPortal
+     [copy] Copying 1 file to D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\db\db-install\Oracle
+   [delete] Deleting directory D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\tempClinPortal
+
+deploy_db_oracle:
+     [echo] Initializing Oracle Database for ClinPortal Application...
+      [sql] Executing resource: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\db\db-install\Oracle\clinportal.sql
+      [sql] Executing resource: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\db\db-install\Oracle\InitDB_CreateTable.sql
+      [sql] Executing resource: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\db\db-install\Common\initializeDB_Insert_Common.sql
+
+BUILD FAILED
+
+D:\clinportal_BDA\clinportal_prototype\software\build\build.xml:299: The following error occurred while executing this line:
+D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\deploy.xml:965: The following error occurred while executing this line:
+D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\deploy.xml:1020: java.io.FileNotFoundException: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\db\db-install\Common\initializeDB_Insert_Common.sql (The system cannot find the file specified)
+	at org.apache.tools.ant.ProjectHelper.addLocationToBuildException(ProjectHelper.java:508)
+	at org.apache.tools.ant.taskdefs.Ant.execute(Ant.java:418)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:288)
+	at sun.reflect.GeneratedMethodAccessor18.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.Target.execute(Target.java:357)
+	at org.apache.tools.ant.Target.performTasks(Target.java:385)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1337)
+	at org.apache.tools.ant.Project.executeTarget(Project.java:1306)
+	at org.apache.tools.ant.helper.DefaultExecutor.executeTargets(DefaultExecutor.java:41)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1189)
+	at org.apache.tools.ant.Main.runBuild(Main.java:758)
+	at org.apache.tools.ant.Main.startAnt(Main.java:217)
+	at org.apache.tools.ant.launch.Launcher.run(Launcher.java:257)
+	at org.apache.tools.ant.launch.Launcher.main(Launcher.java:104)
+Caused by: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\deploy.xml:965: The following error occurred while executing this line:
+D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\deploy.xml:1020: java.io.FileNotFoundException: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\db\db-install\Common\initializeDB_Insert_Common.sql (The system cannot find the file specified)
+	at org.apache.tools.ant.ProjectHelper.addLocationToBuildException(ProjectHelper.java:508)
+	at org.apache.tools.ant.taskdefs.Ant.execute(Ant.java:418)
+	at org.apache.tools.ant.taskdefs.CallTarget.execute(CallTarget.java:105)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:288)
+	at sun.reflect.GeneratedMethodAccessor18.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.taskdefs.Sequential.execute(Sequential.java:62)
+	at net.sf.antcontrib.logic.IfTask$ElseIf.execute(IfTask.java:144)
+	at net.sf.antcontrib.logic.IfTask.execute(IfTask.java:211)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.TaskAdapter.execute(TaskAdapter.java:154)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:288)
+	at sun.reflect.GeneratedMethodAccessor18.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.Target.execute(Target.java:357)
+	at org.apache.tools.ant.Target.performTasks(Target.java:385)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1337)
+	at org.apache.tools.ant.helper.SingleCheckExecutor.executeTargets(SingleCheckExecutor.java:38)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1189)
+	at org.apache.tools.ant.taskdefs.Ant.execute(Ant.java:416)
+	... 16 more
+Caused by: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\deploy.xml:1020: java.io.FileNotFoundException: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\db\db-install\Common\initializeDB_Insert_Common.sql (The system cannot find the file specified)
+	at org.apache.tools.ant.taskdefs.SQLExec.execute(SQLExec.java:460)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:288)
+	at sun.reflect.GeneratedMethodAccessor18.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.Target.execute(Target.java:357)
+	at org.apache.tools.ant.Target.performTasks(Target.java:385)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1337)
+	at org.apache.tools.ant.helper.SingleCheckExecutor.executeTargets(SingleCheckExecutor.java:38)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1189)
+	at org.apache.tools.ant.taskdefs.Ant.execute(Ant.java:416)
+	... 44 more
+Caused by: java.io.FileNotFoundException: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\db\db-install\Common\initializeDB_Insert_Common.sql (The system cannot find the file specified)
+	at java.io.FileInputStream.open(Native Method)
+	at java.io.FileInputStream.<init>(FileInputStream.java:106)
+	at org.apache.tools.ant.types.resources.FileResource.getInputStream(FileResource.java:185)
+	at org.apache.tools.ant.taskdefs.SQLExec$Transaction.runTransaction(SQLExec.java:773)
+	at org.apache.tools.ant.taskdefs.SQLExec$Transaction.access$000(SQLExec.java:706)
+	at org.apache.tools.ant.taskdefs.SQLExec.execute(SQLExec.java:449)
+	... 56 more
+--- Nested Exception ---
+D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\deploy.xml:965: The following error occurred while executing this line:
+D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\deploy.xml:1020: java.io.FileNotFoundException: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\db\db-install\Common\initializeDB_Insert_Common.sql (The system cannot find the file specified)
+	at org.apache.tools.ant.ProjectHelper.addLocationToBuildException(ProjectHelper.java:508)
+	at org.apache.tools.ant.taskdefs.Ant.execute(Ant.java:418)
+	at org.apache.tools.ant.taskdefs.CallTarget.execute(CallTarget.java:105)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:288)
+	at sun.reflect.GeneratedMethodAccessor18.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.taskdefs.Sequential.execute(Sequential.java:62)
+	at net.sf.antcontrib.logic.IfTask$ElseIf.execute(IfTask.java:144)
+	at net.sf.antcontrib.logic.IfTask.execute(IfTask.java:211)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.TaskAdapter.execute(TaskAdapter.java:154)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:288)
+	at sun.reflect.GeneratedMethodAccessor18.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.Target.execute(Target.java:357)
+	at org.apache.tools.ant.Target.performTasks(Target.java:385)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1337)
+	at org.apache.tools.ant.helper.SingleCheckExecutor.executeTargets(SingleCheckExecutor.java:38)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1189)
+	at org.apache.tools.ant.taskdefs.Ant.execute(Ant.java:416)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:288)
+	at sun.reflect.GeneratedMethodAccessor18.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.Target.execute(Target.java:357)
+	at org.apache.tools.ant.Target.performTasks(Target.java:385)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1337)
+	at org.apache.tools.ant.Project.executeTarget(Project.java:1306)
+	at org.apache.tools.ant.helper.DefaultExecutor.executeTargets(DefaultExecutor.java:41)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1189)
+	at org.apache.tools.ant.Main.runBuild(Main.java:758)
+	at org.apache.tools.ant.Main.startAnt(Main.java:217)
+	at org.apache.tools.ant.launch.Launcher.run(Launcher.java:257)
+	at org.apache.tools.ant.launch.Launcher.main(Launcher.java:104)
+Caused by: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\deploy.xml:1020: java.io.FileNotFoundException: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\db\db-install\Common\initializeDB_Insert_Common.sql (The system cannot find the file specified)
+	at org.apache.tools.ant.taskdefs.SQLExec.execute(SQLExec.java:460)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:288)
+	at sun.reflect.GeneratedMethodAccessor18.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.Target.execute(Target.java:357)
+	at org.apache.tools.ant.Target.performTasks(Target.java:385)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1337)
+	at org.apache.tools.ant.helper.SingleCheckExecutor.executeTargets(SingleCheckExecutor.java:38)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1189)
+	at org.apache.tools.ant.taskdefs.Ant.execute(Ant.java:416)
+	... 44 more
+Caused by: java.io.FileNotFoundException: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\db\db-install\Common\initializeDB_Insert_Common.sql (The system cannot find the file specified)
+	at java.io.FileInputStream.open(Native Method)
+	at java.io.FileInputStream.<init>(FileInputStream.java:106)
+	at org.apache.tools.ant.types.resources.FileResource.getInputStream(FileResource.java:185)
+	at org.apache.tools.ant.taskdefs.SQLExec$Transaction.runTransaction(SQLExec.java:773)
+	at org.apache.tools.ant.taskdefs.SQLExec$Transaction.access$000(SQLExec.java:706)
+	at org.apache.tools.ant.taskdefs.SQLExec.execute(SQLExec.java:449)
+	... 56 more
+--- Nested Exception ---
+D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\deploy.xml:1020: java.io.FileNotFoundException: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\db\db-install\Common\initializeDB_Insert_Common.sql (The system cannot find the file specified)
+	at org.apache.tools.ant.taskdefs.SQLExec.execute(SQLExec.java:460)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:288)
+	at sun.reflect.GeneratedMethodAccessor18.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.Target.execute(Target.java:357)
+	at org.apache.tools.ant.Target.performTasks(Target.java:385)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1337)
+	at org.apache.tools.ant.helper.SingleCheckExecutor.executeTargets(SingleCheckExecutor.java:38)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1189)
+	at org.apache.tools.ant.taskdefs.Ant.execute(Ant.java:416)
+	at org.apache.tools.ant.taskdefs.CallTarget.execute(CallTarget.java:105)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:288)
+	at sun.reflect.GeneratedMethodAccessor18.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.taskdefs.Sequential.execute(Sequential.java:62)
+	at net.sf.antcontrib.logic.IfTask$ElseIf.execute(IfTask.java:144)
+	at net.sf.antcontrib.logic.IfTask.execute(IfTask.java:211)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.TaskAdapter.execute(TaskAdapter.java:154)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:288)
+	at sun.reflect.GeneratedMethodAccessor18.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.Target.execute(Target.java:357)
+	at org.apache.tools.ant.Target.performTasks(Target.java:385)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1337)
+	at org.apache.tools.ant.helper.SingleCheckExecutor.executeTargets(SingleCheckExecutor.java:38)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1189)
+	at org.apache.tools.ant.taskdefs.Ant.execute(Ant.java:416)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:288)
+	at sun.reflect.GeneratedMethodAccessor18.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.Target.execute(Target.java:357)
+	at org.apache.tools.ant.Target.performTasks(Target.java:385)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1337)
+	at org.apache.tools.ant.Project.executeTarget(Project.java:1306)
+	at org.apache.tools.ant.helper.DefaultExecutor.executeTargets(DefaultExecutor.java:41)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1189)
+	at org.apache.tools.ant.Main.runBuild(Main.java:758)
+	at org.apache.tools.ant.Main.startAnt(Main.java:217)
+	at org.apache.tools.ant.launch.Launcher.run(Launcher.java:257)
+	at org.apache.tools.ant.launch.Launcher.main(Launcher.java:104)
+Caused by: java.io.FileNotFoundException: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\db\db-install\Common\initializeDB_Insert_Common.sql (The system cannot find the file specified)
+	at java.io.FileInputStream.open(Native Method)
+	at java.io.FileInputStream.<init>(FileInputStream.java:106)
+	at org.apache.tools.ant.types.resources.FileResource.getInputStream(FileResource.java:185)
+	at org.apache.tools.ant.taskdefs.SQLExec$Transaction.runTransaction(SQLExec.java:773)
+	at org.apache.tools.ant.taskdefs.SQLExec$Transaction.access$000(SQLExec.java:706)
+	at org.apache.tools.ant.taskdefs.SQLExec.execute(SQLExec.java:449)
+	... 56 more
+--- Nested Exception ---
+java.io.FileNotFoundException: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\db\db-install\Common\initializeDB_Insert_Common.sql (The system cannot find the file specified)
+	at java.io.FileInputStream.open(Native Method)
+	at java.io.FileInputStream.<init>(FileInputStream.java:106)
+	at org.apache.tools.ant.types.resources.FileResource.getInputStream(FileResource.java:185)
+	at org.apache.tools.ant.taskdefs.SQLExec$Transaction.runTransaction(SQLExec.java:773)
+	at org.apache.tools.ant.taskdefs.SQLExec$Transaction.access$000(SQLExec.java:706)
+	at org.apache.tools.ant.taskdefs.SQLExec.execute(SQLExec.java:449)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:288)
+	at sun.reflect.GeneratedMethodAccessor18.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.Target.execute(Target.java:357)
+	at org.apache.tools.ant.Target.performTasks(Target.java:385)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1337)
+	at org.apache.tools.ant.helper.SingleCheckExecutor.executeTargets(SingleCheckExecutor.java:38)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1189)
+	at org.apache.tools.ant.taskdefs.Ant.execute(Ant.java:416)
+	at org.apache.tools.ant.taskdefs.CallTarget.execute(CallTarget.java:105)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:288)
+	at sun.reflect.GeneratedMethodAccessor18.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.taskdefs.Sequential.execute(Sequential.java:62)
+	at net.sf.antcontrib.logic.IfTask$ElseIf.execute(IfTask.java:144)
+	at net.sf.antcontrib.logic.IfTask.execute(IfTask.java:211)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.TaskAdapter.execute(TaskAdapter.java:154)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:288)
+	at sun.reflect.GeneratedMethodAccessor18.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.Target.execute(Target.java:357)
+	at org.apache.tools.ant.Target.performTasks(Target.java:385)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1337)
+	at org.apache.tools.ant.helper.SingleCheckExecutor.executeTargets(SingleCheckExecutor.java:38)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1189)
+	at org.apache.tools.ant.taskdefs.Ant.execute(Ant.java:416)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:288)
+	at sun.reflect.GeneratedMethodAccessor18.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+	at org.apache.tools.ant.Task.perform(Task.java:348)
+	at org.apache.tools.ant.Target.execute(Target.java:357)
+	at org.apache.tools.ant.Target.performTasks(Target.java:385)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1337)
+	at org.apache.tools.ant.Project.executeTarget(Project.java:1306)
+	at org.apache.tools.ant.helper.DefaultExecutor.executeTargets(DefaultExecutor.java:41)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1189)
+	at org.apache.tools.ant.Main.runBuild(Main.java:758)
+	at org.apache.tools.ant.Main.startAnt(Main.java:217)
+	at org.apache.tools.ant.launch.Launcher.run(Launcher.java:257)
+	at org.apache.tools.ant.launch.Launcher.main(Launcher.java:104)

@@ -1,0 +1,15 @@
+  [taskdef] Could not load definitions from resource net/sf/antcontrib/antcontrib.properties. It could not be found.
+
+BUILD FAILED
+
+Target "checkstyle" does not exist in the project "build-bda-template". 
+	at org.apache.tools.ant.Project.tsort(Project.java:1850)
+	at org.apache.tools.ant.Project.topoSort(Project.java:1758)
+	at org.apache.tools.ant.Project.topoSort(Project.java:1721)
+	at org.apache.tools.ant.Project.executeTarget(Project.java:1306)
+	at org.apache.tools.ant.helper.DefaultExecutor.executeTargets(DefaultExecutor.java:41)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1189)
+	at org.apache.tools.ant.Main.runBuild(Main.java:758)
+	at org.apache.tools.ant.Main.startAnt(Main.java:217)
+	at org.apache.tools.ant.launch.Launcher.run(Launcher.java:257)
+	at org.apache.tools.ant.launch.Launcher.main(Launcher.java:104)
