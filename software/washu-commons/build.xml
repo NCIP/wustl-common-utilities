@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="washu-commons" basedir="." default="build.jar">
-	<property file="washu-commons.properties"/>
+	<property file="./src/conf/washu-commons.properties"/>
 	<property name="workarea.dir" location="workarea" />
-	<property name="classes.dir" location="${workarea.dir}/classes" />
-	<property name="src.dir" location="src" />
+	<property name="build.dir" location="build" />
+	<property name="classes.dir" location="${build.dir}/classes" />
+	<property name="src.dir" location="./src/java" />
 	<property name="hbm.dir" value="${src.dir}/edu/wustl/common/hbm" />
 	<target name="clean">
-		<delete includeemptydirs="true" dir="${workarea.dir}" />
+		
+		<delete includeemptydirs="true" dir="${build.dir}" />
 	</target>
 	
 	<loadfile property="dist.revision" srcFile="./.svn/entries">  
@@ -16,7 +18,7 @@
 	</loadfile>
 
 	<path id="compile.classpath">
-		<pathelement location="conf" />
+		<pathelement location="./src/conf" />
 		<fileset dir="lib" includes="**/*.jar" />
 	</path>
 	<target name="compile" depends="clean">
@@ -29,7 +31,7 @@
 
 	<target name="build.jar" depends="compile">
 		<tstamp />
-		<jar jarfile="${workarea.dir}/washu-commons-${wc.jar.version}.jar" basedir="${classes.dir}">
+		<jar jarfile="${build.dir}/washu-commons-${wc.jar.version}.jar" basedir="${classes.dir}">
 			<manifest>
 				<section name="${wc.jar.details}">
 					<attribute name="Version" value="${wc.jar.version}"/>
@@ -40,6 +42,11 @@
 			</manifest>
 		</jar>
 	</target>
+	
+	<target name="dist" depends="build.jar">
+			
+	</target>
+	
 	<target name="build.src.zip">
 		<zip destfile="${build.dir}/washu-commons-${wc.jar.version}-src.zip">
 			<fileset dir="src" includes="**/*" />
@@ -49,7 +56,7 @@
 		</zip>
 	</target>
 	
-	<property file="mail.properties"></property>
+	<property file="./src/conf/mail.properties"></property>
 	
 	<target name="testSendMailWithAuthentication" depends="compile" 
 				description="Sends the Mail after authentication of the sender">
