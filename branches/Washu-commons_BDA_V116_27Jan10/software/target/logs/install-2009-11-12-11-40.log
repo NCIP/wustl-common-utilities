@@ -1,0 +1,77 @@
+  [taskdef] Could not load definitions from resource net/sf/antcontrib/antcontrib.properties. It could not be found.
+
+validate:pre:build:
+     [echo] Checking for existence of GLOBUS_LOCATION envrironment variable.
+     [echo] wscore.relative.dir = ws-core-4.0.3
+     [echo] GLOBUS_LOCATION not set, downloading and installing http://gforge.nci.nih.gov/svnroot/commonlibrary/trunk/techstack-2006/os-independent/ws-core-enum-4.0.3.zip
+     [echo] c:/apps/clinportal_prototype-webapp/ws-core-4.0.3 already exists.
+
+clean:
+   [delete] Deleting directory D:\clinportal_BDA\clinportal_prototype\software\target\dist
+   [delete] Deleting directory D:\clinportal_BDA\clinportal_prototype\software\target\temp
+
+init:
+     [echo]  ______   ______   _______ 
+     [echo] (____  \ (______) (_______)
+     [echo]  ____)  ) _     _  _______ 
+     [echo] |  __  ( | |   | ||  ___  |
+     [echo] | |__)  )| |__/ / | |   | |
+     [echo] |______/ |_____/  |_|   |_|
+    [mkdir] Created dir: D:\clinportal_BDA\clinportal_prototype\software\target\dist
+    [mkdir] Created dir: D:\clinportal_BDA\clinportal_prototype\software\target\dist\exploded
+    [mkdir] Created dir: D:\clinportal_BDA\clinportal_prototype\software\target\dist\exploded\clinportal_prototype-api
+    [mkdir] Created dir: D:\clinportal_BDA\clinportal_prototype\software\target\dist\exploded\clinportal_prototype-webapp
+    [mkdir] Created dir: D:\clinportal_BDA\clinportal_prototype\software\target\dist\exploded\common
+    [mkdir] Created dir: D:\clinportal_BDA\clinportal_prototype\software\target\dist\exploded\tools
+    [mkdir] Created dir: D:\clinportal_BDA\clinportal_prototype\software\target\temp
+
+build:clinportal_prototype-api:
+
+build:clinportal_prototype-webapp:
+Trying to override old definition of task shellscript
+Trying to override old definition of task propertycopy
+Trying to override old definition of task pathtofileset
+Trying to override old definition of task remoteant
+Trying to override old definition of task runtarget
+Trying to override old definition of task assert
+Trying to override old definition of task propertyregex
+Trying to override old definition of task math
+Trying to override old definition of task trycatch
+Trying to override old definition of task antserver
+Trying to override old definition of task antcallback
+Trying to override old definition of task compilewithwalls
+Trying to override old definition of task outofdate
+Trying to override old definition of task osfamily
+Trying to override old definition of task stopwatch
+Trying to override old definition of task throw
+Trying to override old definition of task antclipse
+Trying to override old definition of task urlencode
+Trying to override old definition of task timestampselector
+Trying to override old definition of task foreach
+Trying to override old definition of task if
+Trying to override old definition of task propertyselector
+Trying to override old definition of task sortlist
+Trying to override old definition of task antfetch
+Trying to override old definition of task post
+Trying to override old definition of task forget
+Trying to override old definition of task limit
+Trying to override old definition of task switch
+Trying to override old definition of task var
+Trying to override old definition of task inifile
+Trying to override old definition of task verifydesign
+
+init:
+     [echo]  ./binaries/tempClinPortal 
+
+compile:
+
+unpack_cacore_war:
+    [unwar] Expanding: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\clinportalcsm.war into D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\binaries\tempClinPortal\clinportalcsm
+
+common_build_war:
+
+copydeletedjars:
+     [echo] deleting unneccesary jars from ./binaries/tempClinPortal/clinportalcsm
+   [delete] Deleting: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\MANIFEST.MF
+     [echo] creating ClinPortal war file 
+      [war] Building war: D:\clinportal_BDA\clinportal_prototype\software\clinportal_prototype\build\clinportal.war

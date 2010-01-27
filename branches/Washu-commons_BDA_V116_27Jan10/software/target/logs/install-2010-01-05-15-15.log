@@ -1,0 +1,48 @@
+
+validate:pre:build:
+     [echo] Checking for existence of GLOBUS_LOCATION envrironment variable.
+     [echo] wscore.relative.dir = ws-core-4.0.3
+     [echo] GLOBUS_LOCATION not set, downloading and installing http://gforge.nci.nih.gov/svnroot/commonlibrary/trunk/techstack-2006/os-independent/ws-core-enum-4.0.3.zip
+     [echo] c:/apps/washu-commons-webapp/ws-core-4.0.3 already exists.
+
+clean:
+   [delete] Deleting directory D:\washu-commons_BDA\washu-commons\software\target\dist
+   [delete] Deleting directory D:\washu-commons_BDA\washu-commons\software\target\temp
+
+init:
+     [echo]  ______   ______   _______ 
+     [echo] (____  \ (______) (_______)
+     [echo]  ____)  ) _     _  _______ 
+     [echo] |  __  ( | |   | ||  ___  |
+     [echo] | |__)  )| |__/ / | |   | |
+     [echo] |______/ |_____/  |_|   |_|
+    [mkdir] Created dir: D:\washu-commons_BDA\washu-commons\software\target\dist
+    [mkdir] Created dir: D:\washu-commons_BDA\washu-commons\software\target\dist\exploded
+    [mkdir] Created dir: D:\washu-commons_BDA\washu-commons\software\target\dist\exploded\washu-commons-api
+    [mkdir] Created dir: D:\washu-commons_BDA\washu-commons\software\target\dist\exploded\washu-commons-webapp
+    [mkdir] Created dir: D:\washu-commons_BDA\washu-commons\software\target\dist\exploded\common
+    [mkdir] Created dir: D:\washu-commons_BDA\washu-commons\software\target\dist\exploded\tools
+    [mkdir] Created dir: D:\washu-commons_BDA\washu-commons\software\target\temp
+
+build:washu-commons-api:
+
+build:washu-commons-webapp:
+
+clean:
+   [delete] Deleting directory D:\washu-commons_BDA\washu-commons\software\washu-commons\build
+
+compile:
+    [mkdir] Created dir: D:\washu-commons_BDA\washu-commons\software\washu-commons\build\classes
+    [javac] Compiling 47 source files to D:\washu-commons_BDA\washu-commons\software\washu-commons\build\classes
+    [javac] Note: Some input files use unchecked or unsafe operations.
+    [javac] Note: Recompile with -Xlint:unchecked for details.
+     [copy] Copying 1 file to D:\washu-commons_BDA\washu-commons\software\washu-commons\build\classes
+
+build.jar:
+      [jar] Building jar: D:\washu-commons_BDA\washu-commons\software\washu-commons\build\washu-commons-1.1.2.jar
+
+dist:
+
+build:all:
+
+BUILD SUCCESSFUL
