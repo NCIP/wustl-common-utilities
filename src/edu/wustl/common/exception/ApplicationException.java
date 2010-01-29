@@ -1,6 +1,7 @@
 
 package edu.wustl.common.exception;
 
+import edu.wustl.common.util.global.Validator;
 import edu.wustl.common.util.logger.Logger;
 
 /**
@@ -285,12 +286,14 @@ public class ApplicationException extends Exception
 	 public String getMessage()
 	 {
 		 String message = "";
-		 if(errorKey != null)
+		 if(customizedMsg != null && Validator.isEmpty(customizedMsg))
+		 {
+			 message = customizedMsg;
+		 }
+		 else if(errorKey != null)
 		 {
 			 message = errorKey.getMessageWithValues();
 		 }
 		 return message;
 	 }
-	 
-
 }
