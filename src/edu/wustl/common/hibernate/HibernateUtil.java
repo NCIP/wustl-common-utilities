@@ -24,11 +24,11 @@ import org.xml.sax.InputSource;
  * sessions. This class expects a file called "dbutil.properties" to be present
  * in the classpath; this file should contain all the hibernate configuration
  * files to be loaded. A sample "dbutil.properties" file is shown below:<br>
- * 
+ *
  * <pre>
  * hibernate.configuration.files = washuCommonsHibernate.cfg.xml,dehibernate.cfg.xml,metadataHibernate.cfg.xml,queryhibernate.cfg.xml,hibernate.cfg.xml
  * </pre>
- * 
+ *
  * <br>
  * The property file contains a single entry with all the configuration files to
  * be loaded; the file names are comma-separated.<br>
@@ -37,7 +37,7 @@ import org.xml.sax.InputSource;
  * properties are found, then the resulting configuration is undefined. Multiple
  * configuration files are intended only to logically separate the set of hbm
  * mappings, caching details etc...
- * 
+ *
  * @author Kapil Kaveeshwar
  * @see HibernateDatabaseOperations
  */
@@ -56,15 +56,15 @@ public class HibernateUtil {
     private static final Configuration cfg;
 
     private static final Logger logger = Logger.getLogger(HibernateUtil.class);
-    
+
     static {
-        cfg = new Configuration(); 
+        cfg = new Configuration();
 //            {@Override
 //            protected void add(Document doc) throws MappingException {
 //                doc.getRootElement().addAttribute("auto-import", "false");
 //                super.add(doc);
 //            }};
-        
+
         String[] fileNames = getCfgFiles();
         // get all configuration files
         for (int i = 0; i < fileNames.length; i++) {
@@ -77,7 +77,7 @@ public class HibernateUtil {
     }
 
     private static String[] getCfgFiles() {
-        InputStream inputStream = HibernateUtil.class.getClassLoader().getResourceAsStream("dbutil.properties");
+        InputStream inputStream = HibernateUtil.class.getClassLoader().getResourceAsStream("queryDbutil.properties");
         if (inputStream == null) {
             // if no configuration file found, get the default one.
             logger.warn("dbutil.properties not found. Will attempt to load default hibernate.cfg.xml");
@@ -101,7 +101,7 @@ public class HibernateUtil {
 
     /**
      * This method adds configuration file to Hibernate Configuration.
-     * 
+     *
      * @param fileName name of the file that needs to be added
      * @param cfg Configuration to which this file is added.
      */
@@ -128,7 +128,7 @@ public class HibernateUtil {
 
     /**
      * Follows the singleton pattern and returns only current opened session.
-     * 
+     *
      * @return Returns the current db session.
      */
     public static Session currentSession() throws HibernateException {
