@@ -48,7 +48,7 @@ public class ApplicationException extends Exception
 	 */
 	public static final String ERR_MSG_VALUES_SEPARATOR = ":";
 
-	
+
 	/**
 	 * complete customized error message.
 	 */
@@ -82,15 +82,15 @@ public class ApplicationException extends Exception
 		this.errorKey = errorKey;
 		setErrorMsg(msgValues);
 	}
-	
+
 	public ApplicationException(ErrorKey errorKey, Exception exception, String msgValues,String customizedMsg)
 	{
 		this(errorKey, exception, msgValues);
 		this.customizedMsg = customizedMsg;
-		
+
 	}
 
-	
+
 	/**
 	 * Protected constructor which only child classes can use to reuse
 	 * properties of another exception object.
@@ -286,7 +286,7 @@ public class ApplicationException extends Exception
 	 public String getMessage()
 	 {
 		 String message = "";
-		 if(customizedMsg != null && Validator.isEmpty(customizedMsg))
+		 if(customizedMsg != null && !Validator.isEmpty(customizedMsg))
 		 {
 			 message = customizedMsg;
 		 }
