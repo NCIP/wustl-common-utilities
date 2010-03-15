@@ -10,11 +10,31 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+/**
+ * Finds all classes that belong to specified packages.
+ * 
+ * (Code is modification of source that was found at
+ * http://forums.sun.com/thread.jspa?threadID=341935&start=15. See comment by
+ * jonthefathead on Jul 26, 2007 5:42 PM).
+ * 
+ * @author srinath_k
+ */
 public class ClassesInPackages {
 
-    public static List<Class<?>> classesInPackages(boolean oneOnly, String... packageNames) {
+    /**
+     * @param oneOnly specifies whether to look only in one resource (true) or
+     *            ALL resources (false) of the {@link ClassLoader} (determines
+     *            whether {@link ClassLoader#getResource(String)} or
+     *            {@link ClassLoader#getResources(String)}, respectively, is to
+     *            be called)
+     * @param packageNames packages whose classes are needed.
+     * @return all classes in specified packages.
+     */
+    public static List<Class<?>> classesInPackages(boolean oneResourceOnly, String... packageNames) {
         try {
-            return findAllClassLocations(oneOnly, packageNames);
+            List<Class<?>> res = new LinkedList<Class<?>>();
+            findAllClassLocations(oneResourceOnly, res, packageNames);
+            return res;
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
@@ -22,14 +42,17 @@ public class ClassesInPackages {
         }
     }
 
+    /**
+     * Calls {@link ClassesInPackages#classesInPackages(boolean, String[])} with
+     * <code>oneResourceOnly = true</code>
+     */
     public static List<Class<?>> classesInPackages(String... packageNames) {
         return classesInPackages(true, packageNames);
     }
 
-    private static List<Class<?>> findAllClassLocations(boolean oneOnly, String... packageNames)
+    private static void findAllClassLocations(boolean oneOnly, List<Class<?>> res, String[] packageNames)
             throws ClassNotFoundException, IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        List<Class<?>> classes = new LinkedList<Class<?>>();
 
         for (String packageName : packageNames) {
             String path = packageName.replace('.', '/');
@@ -38,7 +61,7 @@ public class ClassesInPackages {
                 if (resource == null) {
                     throw new ClassNotFoundException("No resource for " + path);
                 }
-                classes.addAll(getClasses(resource, packageName));
+                searchResource(packageName, resource, res);
             } else {
                 Enumeration<URL> resources = classLoader.getResources(path);
                 if (resources == null || !resources.hasMoreElements()) {
@@ -47,34 +70,30 @@ public class ClassesInPackages {
 
                 while (resources.hasMoreElements()) {
                     URL resource = resources.nextElement();
-                    classes.addAll(getClasses(resource, packageName));
+                    searchResource(packageName, resource, res);
                 }
             }
         }
-
-        return classes;
     }
 
-    private static List<Class<?>> getClasses(URL resource, String packageName) throws IOException,
+    private static void searchResource(String packageName, URL resource, List<Class<?>> res) throws IOException,
             ClassNotFoundException {
-        List<Class<?>> classes = new LinkedList<Class<?>>();
         if (resource.getProtocol().equalsIgnoreCase("FILE")) {
-            classes.addAll(loadDirectory(packageName, resource.getFile()));
+            loadDirectory(packageName, resource.getFile(), res);
         } else if (resource.getProtocol().equalsIgnoreCase("JAR")) {
-            classes.addAll(loadJar(packageName, resource));
+            loadJar(packageName, resource, res);
         } else {
             throw new ClassNotFoundException("Unknown protocol on class resource: " + resource.toExternalForm());
         }
-        return classes;
     }
 
-    private static List<Class<?>> loadJar(String packageName, URL resource) throws IOException, ClassNotFoundException {
+    private static void loadJar(String packageName, URL resource, List<Class<?>> res) throws IOException,
+            ClassNotFoundException {
         JarURLConnection conn = (JarURLConnection) resource.openConnection();
         JarFile jarFile = conn.getJarFile();
         Enumeration<JarEntry> entries = jarFile.entries();
         String packagePath = packageName.replace('.', '/');
 
-        List<Class<?>> classes = new LinkedList<Class<?>>();
         while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
             if ((entry.getName().startsWith(packagePath) || entry.getName()
@@ -87,31 +106,28 @@ public class ClassesInPackages {
                 className = className.replace('/', '.');
 
                 className = className.substring(0, className.length() - ".class".length());
-                classes.add(Class.forName(className));
+                res.add(Class.forName(className));
             }
         }
-        return classes;
 
     }
 
-    private static List<Class<?>> loadDirectory(String packageName, String fullPath) throws IOException,
+    private static void loadDirectory(String packageName, String fullPath, List<Class<?>> res) throws IOException,
             ClassNotFoundException {
         File directory = new File(fullPath);
-        List<Class<?>> classes = new LinkedList<Class<?>>();
         if (!directory.isDirectory())
             throw new IOException("Invalid directory " + directory.getAbsolutePath());
 
         File[] files = directory.listFiles();
         for (File file : files) {
             if (file.isDirectory())
-                classes.addAll(loadDirectory(packageName + '.' + file.getName(), file.getAbsolutePath()));
+                loadDirectory(packageName + '.' + file.getName(), file.getAbsolutePath(), res);
             else if (file.getName().endsWith(".class")) {
                 String simpleName = file.getName();
                 simpleName = simpleName.substring(0, simpleName.length() - ".class".length());
                 String className = String.format("%s.%s", packageName, simpleName);
-                classes.add(Class.forName(className));
+                res.add(Class.forName(className));
             }
         }
-        return classes;
     }
 }
