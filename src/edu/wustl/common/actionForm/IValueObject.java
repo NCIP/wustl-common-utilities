@@ -2,13 +2,14 @@
 package edu.wustl.common.actionForm;
 
 import edu.wustl.common.domain.AbstractDomainObject;
+import edu.wustl.common.domain.UIRepOfDomain;
 
 /**
  * This provides the interface / API to set values of domain object to form object.
  * @author sachin_lale
  *
  */
-public interface IValueObject
+public interface IValueObject extends UIRepOfDomain
 {
 
 	/**
