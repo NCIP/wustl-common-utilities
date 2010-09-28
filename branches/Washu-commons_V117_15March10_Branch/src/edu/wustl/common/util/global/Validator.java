@@ -60,7 +60,7 @@ public class Validator
 	 * @param aEmailAddress String containing the email address to be checked.
 	 * @return Returns true if its a valid email address, else returns false.
 	 * */
-	public boolean isValidEmailAddress(String aEmailAddress)
+	public static boolean isValidEmailAddress(String aEmailAddress)
 	{
 		boolean result = true;
 		try
@@ -87,7 +87,7 @@ public class Validator
 	 * @param ssn Social Security Number to check
 	 * @return boolean depending on the value of ssn.
 	 */
-	public boolean isValidSSN(String ssn)
+	public static boolean isValidSSN(String ssn)
 	{
 		boolean result = true;
 		try
@@ -125,7 +125,7 @@ public class Validator
 	 * @param alphaString The string whose characters are to be checked.
 	 * @return false if the String contains any digit else returns true.
 	 * */
-	public boolean isAlpha(String alphaString)
+	public static boolean isAlpha(String alphaString)
 	{
 		boolean isAlpha = true;
 		int index = 0;
@@ -146,7 +146,7 @@ public class Validator
 	 * @param numString The string whose characters are to be checked.
 	 * @return false if the String contains any alphabet else returns true.
 	 * */
-	public boolean isNumeric(String numString)
+	public static boolean isNumeric(String numString)
 	{
 		boolean isNumeric = true;
 		try
@@ -174,7 +174,7 @@ public class Validator
 	 * Depending on the value of the positiveCheck will check for positive values
 	 *
 	 */
-	public boolean isNumeric(String numString, int positiveCheck)
+	public static boolean isNumeric(String numString, int positiveCheck)
 	{
 		return isPositiveNumeric(numString, positiveCheck);
 	}
@@ -189,7 +189,7 @@ public class Validator
 	 * Depending on the value of the positiveCheck will check for positive values
 	 *
 	 */
-	public boolean isPositiveNumeric(String numString, int positiveCheck)
+	public static boolean isPositiveNumeric(String numString, int positiveCheck)
 	{
 		boolean isPosNum = true;
 		Double value = convertToNumber(numString);
@@ -209,7 +209,7 @@ public class Validator
 	 * @param value value
 	 * @return isPosNum
 	 */
-	private boolean checkForPositive(int positiveCheck, Double value)
+	private static boolean checkForPositive(int positiveCheck, Double value)
 	{
 		boolean isPosNum = true;
 		if (positiveCheck > 0 && value.longValue() <= 0)
@@ -231,7 +231,7 @@ public class Validator
 	 * @return Long representation of numString if its convertible else returns null
 	 *
 	 */
-	public Long convertToLong(String numString)
+	public static Long convertToLong(String numString)
 	{
 		Long longValue = null;
 		try
@@ -251,7 +251,7 @@ public class Validator
 	 * @param numString Number as a string.
 	 * @return Double number.
 	 */
-	public Double convertToNumber(String numString)
+	public static Double convertToNumber(String numString)
 	{
 		Double value = null;
 		try
@@ -272,7 +272,7 @@ public class Validator
 	 * @return boolean True if the string contains double number or
 	 *  false if any non numeric character is present.
 	 */
-	public boolean isDouble(String dblString)
+	public static boolean isDouble(String dblString)
 	{
 		boolean isDouble = true;
 		try
@@ -296,7 +296,7 @@ public class Validator
 	 * @param positiveCheck Boolean value indicating whether to check for positive values only or not.
 	 * @return Boolean indicating the given string value is double or not.
 	 */
-	public boolean isDouble(String dblString, boolean positiveCheck)
+	public static boolean isDouble(String dblString, boolean positiveCheck)
 	{
 		boolean isDouble = true;
 		try
@@ -325,7 +325,7 @@ public class Validator
 	 * @param option option
 	 * @return option valid or not
 	 */
-	public boolean isValidOption(String option)
+	public static boolean isValidOption(String option)
 	{
 		boolean isValidOption = false;
 		if (option != null
@@ -342,7 +342,7 @@ public class Validator
 	 * @param emailAddress email Address
 	 * @return valid or not
 	 */
-	private boolean isValidEmailId(String emailAddress)
+	private static boolean isValidEmailId(String emailAddress)
 	{
 		boolean result = true;
 		try
@@ -364,7 +364,7 @@ public class Validator
 	 * @param ignoreList ignore delimiter List
 	 * @return delimiter string Excluding Given list
 	 */
-	public String delimiterExcludingGiven(String ignoreList)
+	public static String delimiterExcludingGiven(String ignoreList)
 	{
 		String spChars = "!@#$%^&*()=+\\|{[ ]}\'\";:/?.>,<`~ -_";
 		StringBuffer specialChars = new StringBuffer(spChars);
@@ -398,7 +398,7 @@ public class Validator
 	 * @param checkDate date value
 	 * @return valid or not.
 	 */
-	private boolean isValidDatePattern(String checkDate)
+	private static boolean isValidDatePattern(String checkDate)
 	{
 		boolean result = true;
 		try
@@ -445,7 +445,7 @@ public class Validator
 	 * @param dtStr check date value
 	 * @return isDate valid or not.
 	 */
-	private boolean isDate(String dtStr)
+	private static boolean isDate(String dtStr)
 	{
 		boolean isDate = true;
 		int minYear = Integer.parseInt(CommonServiceLocator.getInstance().getMinYear());
@@ -491,7 +491,7 @@ public class Validator
 	 * @param checkDate date value
 	 * @return result valid or not
 	 */
-	public boolean checkDate(String checkDate)
+	public static boolean checkDate(String checkDate)
 	{
 		boolean result = true;
 		try
@@ -525,7 +525,7 @@ public class Validator
 	 * @param dateToCheck date value to check
 	 * @return result true or false
 	 */
-	public boolean compareDateWithCurrent(String dateToCheck)
+	public static boolean compareDateWithCurrent(String dateToCheck)
 	{
 		boolean result = true;
 		Date currentDate = Calendar.getInstance().getTime();
@@ -565,7 +565,7 @@ public class Validator
 	 * @param endDate end date
 	 * @return result true or false
 	 */
-	public boolean compareDates(String startDate, String endDate)
+	public static boolean compareDates(String startDate, String endDate)
 	{
 		boolean result = false;
 		try
@@ -638,7 +638,7 @@ public class Validator
 	 * @param checkFutureDate boolean value
 	 * @return string error-key in property file
 	 */
-	public String validateDate(String strDate, boolean checkFutureDate)
+	public static String validateDate(String strDate, boolean checkFutureDate)
 	{
 		String returnString = "";
 		if (isEmpty(strDate))
@@ -661,7 +661,7 @@ public class Validator
 	 * @param strDate Date as String.
 	 * @return error key if any.
 	 */
-	private String chkDateFormat(String strDate)
+	private static String chkDateFormat(String strDate)
 	{
 		String returnString ="";
 		if (!isValidDatePattern(strDate) || !isDate(strDate))
@@ -676,7 +676,7 @@ public class Validator
 	 * @param value operator
 	 * @return Returns TRUE if operator is valid else return FALSE
 	 */
-	public boolean isOperator(String value)
+	public static boolean isOperator(String value)
 	{
 		boolean isOperator = true;
 		if (value == null || value.equals(CommonConstants.ANY) || value.equals("-1"))
@@ -691,7 +691,7 @@ public class Validator
 	 * @param value value
 	 * @return Returns TRUE if value is valid else return FALSE
 	 */
-	public boolean isValue(String value)
+	public static boolean isValue(String value)
 	{
 		boolean isValue = true;
 		//Purposefully not checked for value==null.
@@ -711,7 +711,7 @@ public class Validator
 	 * @param zipCode zipcode
 	 * @return Returns true if zip code is valid else returns false.
 	 */
-	public boolean isValidZipCode(String zipCode)
+	public static boolean isValidZipCode(String zipCode)
 	{
 		boolean result = false;
 		try
@@ -735,7 +735,7 @@ public class Validator
 	 * @param phoneNumber phoneNumber
 	 * @return Returns true if Phone/Fax number is valid else returns false.
 	 */
-	public boolean isValidPhoneNumber(String phoneNumber)
+	public static boolean isValidPhoneNumber(String phoneNumber)
 	{
 		boolean result = false;
 		try
@@ -760,7 +760,7 @@ public class Validator
 	 * @param pattern the pattern in which it is to be validated.
 	 * @return true if the time is in invalid pattern else returns false.
 	 */
-	public boolean isValidTime(String time, String pattern)
+	public static boolean isValidTime(String time, String pattern)
 	{
 		boolean isValid = true;
 
@@ -889,7 +889,7 @@ public class Validator
 	 * @param delimiter delimiter
 	 * @return true if contains SpecialCharacters else false.
 	 */
-	public boolean containsSpecialCharacters(String mainString, String delimiter)
+	public static boolean containsSpecialCharacters(String mainString, String delimiter)
 	{
 		boolean hasSpChars = false;
 		try
@@ -921,7 +921,7 @@ public class Validator
 	 * @param endDate end Date.
 	 * @return return difference between to dates in days.
 	 */
-	public long getDateDiff(Date startDate, Date endDate)
+	public static long getDateDiff(Date startDate, Date endDate)
 	{
 		long time1 = startDate.getTime();
 		long time2 = endDate.getTime();
