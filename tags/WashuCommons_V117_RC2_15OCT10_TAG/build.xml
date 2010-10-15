@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="washu-commons" basedir="." default="build.jar">
+	<property file="washu-commons.properties"/>
+	<property name="workarea.dir" location="workarea" />
+	<property name="classes.dir" location="${workarea.dir}/classes" />
+	<property name="src.dir" location="src" />
+	<property name="hbm.dir" value="${src.dir}/edu/wustl/common/hbm" />
+	<target name="clean">
+		<delete includeemptydirs="true" dir="${workarea.dir}" />
+	</target>
+	
+	<loadfile property="dist.revision" srcFile="./.svn/entries">  
+				<filterchain>  
+					<headfilter lines="1" skip="4"/>
+				</filterchain>  
+	</loadfile>
+
+	<path id="compile.classpath">
+		<pathelement location="conf" />
+		<fileset dir="lib" includes="**/*.jar" />
+	</path>
+	<target name="compile" depends="clean">
+		<mkdir dir="${classes.dir}" />
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" fork="true" memoryMaximumSize="1200m" includes="**/*.java" debug="on" deprecation="true" classpathref="compile.classpath" failonerror="true" nowarn="on" target="1.5" />
+		<copy todir="${classes.dir}">
+			<fileset dir="${src.dir}" includes="**/*.hbm.xml" />
+		</copy>
+	</target>
+
+	<target name="build.jar" depends="compile">
+		<tstamp />
+		<jar jarfile="${workarea.dir}/washu-commons-${wc.jar.version}.jar" basedir="${classes.dir}">
+			<manifest>
+				<section name="${wc.jar.details}">
+					<attribute name="Version" value="${wc.jar.version}"/>
+					<attribute name="Built-By" value="${wc.jar.creator}" />   	   			   	   					
+					<attribute name="Build-on" value="${TODAY} ${TSTAMP}" />
+					<attribute name="SVN-URL" value="${dist.revision}" />
+			  	</section>   	   					
+			</manifest>
+		</jar>
+	</target>
+	<target name="build.src.zip">
+		<zip destfile="${build.dir}/washu-commons-${wc.jar.version}-src.zip">
+			<fileset dir="src" includes="**/*" />
+			<manifest>
+				<attribute name="Built-At" value="${TODAY} ${TSTAMP}" />
+			</manifest>
+		</zip>
+	</target>
+	
+	<property file="mail.properties"></property>
+	
+	<target name="testSendMailWithAuthentication" depends="compile" 
+				description="Sends the Mail after authentication of the sender">
+				<java classname="edu.wustl.common.util.global.SendEmail">
+					<arg id="host" value="${email.mailServer}"/>
+					<arg id="from" value="${email.sendEmailFrom.emailAddress}"/>
+					<arg id="passwd" value="${email.sendEmailFrom.emailPassword}"/>
+					<arg id="toAddress1" value="${email.sendEmailTo.emailAddress1}"/>
+					<arg id="toAddress2" value="${email.sendEmailTo.emailAddress2}"/>
+					<classpath>
+						<pathelement location="${workarea.dir}/classes"/>
+					</classpath>
+					<classpath refid="compile.classpath">
+					</classpath>
+				</java>
+		</target>
+</project>
