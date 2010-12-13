@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="washu-commons" default="build.jar" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<property file="washu-commons.properties"/>
+	<property name="base.dir" value="." />
+	<property name="src.dir" value="${base.dir}/src/java" />
+	<property name="software.dir" value=".."/>
+	<property name="lib.dir" value="${base.dir}/src/lib" />
+	<property name="local-ivy-repo.dir" value="${software.dir}/local-ivy-repo"/>
+	<property name="temp.src.classes.dir" value="${software.dir}/target/temp/src/classes"/>
+	<property name="dist.dir" value="${software.dir}/target/dist"/>
+
+	<target name="clean">
+		<delete includeemptydirs="true" dir="${temp.src.classes.dir}" />
+	</target>
+
+	<loadfile property="dist.revision" srcFile="./.svn/entries">
+				<filterchain>
+					<headfilter lines="1" skip="4"/>
+				</filterchain>
+	</loadfile>
+
+	<path id="compile.classpath">
+		<fileset dir="${lib.dir}">
+					<include name="*.jar" />
+		</fileset>
+	</path>
+	<target name="compile" depends="clean">
+		<mkdir dir="${temp.src.classes.dir}" />
+		<javac srcdir="${src.dir}" destdir="${temp.src.classes.dir}" fork="true" memoryMaximumSize="1200m" includes="**/*.java" debug="on" deprecation="true" classpathref="compile.classpath" failonerror="true" nowarn="on" target="1.5" />
+		<copy todir="${temp.src.classes.dir}">
+			<fileset dir="${src.dir}" includes="**/*.hbm.xml" />
+		</copy>
+	</target>
+	<target name="dist" depends="build.jar,build.src.zip"/>
+
+	<target name="build.jar" depends="compile">
+		<tstamp />
+
+		<jar jarfile="${local-ivy-repo.dir}/washu-commons-${wc.jar.version}.jar" basedir="${temp.src.classes.dir}">
+			<manifest>
+				<section name="${wc.jar.details}">
+					<attribute name="Version" value="${wc.jar.version}"/>
+					<attribute name="Built-By" value="${wc.jar.creator}" />
+					<attribute name="Build-on" value="${TODAY} ${TSTAMP}" />
+					<attribute name="SVN-URL" value="${dist.revision}" />
+			  	</section>
+			</manifest>
+		</jar>
+	</target>
+	<target name="build.src.zip">
+		<mkdir dir="${dist.dir}" />
+		<zip destfile="${dist.dir}/washu-commons-${wc.jar.version}-src.zip">
+			<fileset dir="${src.dir}" includes="**/*" />
+<!--
+			<manifest>
+				<attribute name="Built-At" value="${TODAY} ${TSTAMP}" />
+			</manifest>
+-->
+		</zip>
+	</target>
+	<property file="mail.properties"></property>
+	<target name="testSendMailWithAuthentication" depends="compile"
+				description="Sends the Mail after authentication of the sender">
+				<java classname="edu.wustl.common.util.global.SendEmail">
+					<arg id="host" value="${email.mailServer}"/>
+					<arg id="from" value="${email.sendEmailFrom.emailAddress}"/>
+					<arg id="passwd" value="${email.sendEmailFrom.emailPassword}"/>
+					<arg id="toAddress1" value="${email.sendEmailTo.emailAddress1}"/>
+					<arg id="toAddress2" value="${email.sendEmailTo.emailAddress2}"/>
+
+					<classpath refid="compile.classpath">
+					</classpath>
+				</java>
+	</target>
+</project>
