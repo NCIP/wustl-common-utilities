@@ -7,8 +7,6 @@
 	<property name="lib.dir" value="${base.dir}/src/lib" />
 	<property name="local-ivy-repo.dir" value="${software.dir}/local-ivy-repo"/>
 	<property name="temp.src.classes.dir" value="${software.dir}/target/temp/src/classes"/>
-	<property name="dist.dir" value="${software.dir}/target/dist"/>
-
 	<property file="${software.dir}/washu-commons/src/conf/washu-commons.properties"/>
 	<target name="clean">
 		<delete includeemptydirs="true" dir="${temp.src.classes.dir}" />
@@ -49,15 +47,9 @@
 		</jar>
 	</target>
 	<target name="build.src.zip">
-		<mkdir dir="${dist.dir}" />
-		<zip destfile="${dist.dir}/washu-commons-${wc.jar.version}-src.zip">
+		<copy todir="${dist.dir}">
 			<fileset dir="${src.dir}" includes="**/*" />
-<!--
-			<manifest>
-				<attribute name="Built-At" value="${TODAY} ${TSTAMP}" />
-			</manifest>
--->
-		</zip>
+		</copy>
 	</target>
 	<property file="${software.dir}/washu-commons/src/conf/mail.properties"></property>
 	<target name="testSendMailWithAuthentication" depends="compile"
