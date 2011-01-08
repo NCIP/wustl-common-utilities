@@ -58,7 +58,10 @@ public abstract class AbstractDomainObject implements Serializable,Identifiable
 	 * @param valueObject The IValueObject.
 	 * @throws AssignDataException Assign Data Exception.
 	 */
-	public abstract void setAllValues(IValueObject valueObject)throws AssignDataException;
+	public void setAllValues(IValueObject valueObject)throws AssignDataException
+	{
+	 throw new UnsupportedOperationException();
+	 }
 
 	/**
 	 * Returns the unique system identifier assigned to the domain object.
