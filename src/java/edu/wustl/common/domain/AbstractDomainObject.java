@@ -85,4 +85,55 @@ public abstract class AbstractDomainObject implements Serializable,Identifiable
 	{
 		return getId().toString();
 	}
+
+	private String facilityId;
+
+	/**
+	 * Gets the facility id.
+	 *
+	 * @return the facility id
+	 */
+	public String getFacilityId()
+	{
+		return facilityId;
+	}
+
+	/**
+	 * Sets the facility id.
+	 *
+	 * @param facilityId the new facility id
+	 */
+	public void setFacilityId(String facilityId)
+	{
+		this.facilityId = facilityId;
+	}
+
+	private Boolean adminuser;
+
+	private String roleId;
+
+
+	public Boolean getAdminuser()
+	{
+		return adminuser;
+	}
+
+
+	public void setAdminuser(Boolean adminuser)
+	{
+		this.adminuser = adminuser;
+	}
+
+
+	public String getRoleId()
+	{
+		return roleId;
+	}
+
+
+	public void setRoleId(String roleId)
+	{
+		this.roleId = roleId;
+	}
+
 }
