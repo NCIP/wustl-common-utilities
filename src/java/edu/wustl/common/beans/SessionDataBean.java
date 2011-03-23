@@ -9,60 +9,51 @@
 
 package edu.wustl.common.beans;
 
+import java.io.Serializable;
+
 /**
- *<p>Title: </p>
- *<p>Description:  </p>
- *<p>Copyright: (c) Washington University, School of Medicine 2005</p>
- *<p>Company: Washington University, School of Medicine, St. Louis.</p>
- *@author Poornima Govindrao
- *@version 1.0
+ * <p>Title: </p>
+ * <p>Description:  </p>
+ * <p>Copyright: (c) Washington University, School of Medicine 2005</p>
+ * <p>Company: Washington University, School of Medicine, St. Louis.</p>
+ *
+ * @author Poornima Govindrao
+ * @version 1.0
  */
 
-public class SessionDataBean
+public class SessionDataBean implements Serializable
 {
 
-	/**
-	 * Specifies first Name.
-	 */
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
+
+	/** Specifies first Name. */
 	private String firstName;
 
-	/**
-	 * Specifies last Name.
-	 */
+	/** Specifies last Name. */
 	private String lastName;
 
-	/**
-	 * Specifies csm User Id.
-	 */
+	/** Specifies csm User Id. */
 	private String csmUserId;
 
-	/**
-	 * Specifies user Name.
-	 */
+	/** Specifies user Name. */
 	private String userName;
 
-	/**
-	 * Specifies ip Address.
-	 */
+	/** Specifies ip Address. */
 	private String ipAddress;
 
-	/**
-	 * Specifies user Id.
-	 */
+	/** Specifies user Id. */
 	private Long userId = null;
 
-	/**
-	 * Specifies security Required.
-	 */
+	/** Specifies security Required. */
 	private boolean securityRequired = Boolean.FALSE;
 
-	/**
-	 * Specifies is Admin.
-	 */
+	/** Specifies is Admin. */
 	private boolean isAdminUser = false;
 
 	/**
 	 * This method returns isAdminUser.
+	 *
 	 * @return isAdminUser
 	 */
 	public boolean isAdmin()
@@ -80,6 +71,7 @@ public class SessionDataBean
 	}
 
 	/**
+	 * Gets the user name.
 	 * @return Returns the userName.
 	 */
 	public String getUserName()
@@ -88,6 +80,7 @@ public class SessionDataBean
 	}
 
 	/**
+	 * Sets the user name.
 	 * @param userName The userName to set.
 	 */
 	public void setUserName(String userName)
@@ -96,6 +89,7 @@ public class SessionDataBean
 	}
 
 	/**
+	 * Gets the csm user id.
 	 * @return Returns the csmUserId.
 	 */
 	public String getCsmUserId()
@@ -104,6 +98,7 @@ public class SessionDataBean
 	}
 
 	/**
+	 * Sets the csm user id.
 	 * @param csmUserId The csmUserId to set.
 	 */
 	public void setCsmUserId(String csmUserId)
@@ -112,6 +107,7 @@ public class SessionDataBean
 	}
 
 	/**
+	 * Gets the ip address.
 	 * @return Returns the ipAddress.
 	 */
 	public String getIpAddress()
@@ -120,6 +116,7 @@ public class SessionDataBean
 	}
 
 	/**
+	 * Sets the ip address.
 	 * @param ipAddress The ipAddress to set.
 	 */
 	public void setIpAddress(String ipAddress)
@@ -128,6 +125,7 @@ public class SessionDataBean
 	}
 
 	/**
+	 * Gets the user id.
 	 * @return Returns the userId.
 	 */
 	public Long getUserId()
@@ -136,6 +134,7 @@ public class SessionDataBean
 	}
 
 	/**
+	 * Sets the user id.
 	 * @param userId The userId to set.
 	 */
 	public void setUserId(Long userId)
