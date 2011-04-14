@@ -48,17 +48,18 @@ public class ApplicationException extends Exception
 	 */
 	public static final String ERR_MSG_VALUES_SEPARATOR = ":";
 
-	
 	/**
 	 * complete customized error message.
 	 */
 	private String customizedMsg;
 
-	public String getCustomizedMsg() {
+	public String getCustomizedMsg()
+	{
 		return customizedMsg;
 	}
 
-	public void setCustomizedMsg(String customizedMsg) {
+	public void setCustomizedMsg(String customizedMsg)
+	{
 		this.customizedMsg = customizedMsg;
 	}
 
@@ -82,15 +83,15 @@ public class ApplicationException extends Exception
 		this.errorKey = errorKey;
 		setErrorMsg(msgValues);
 	}
-	
-	public ApplicationException(ErrorKey errorKey, Exception exception, String msgValues,String customizedMsg)
+
+	public ApplicationException(ErrorKey errorKey, Exception exception, String msgValues,
+			String customizedMsg)
 	{
 		this(errorKey, exception, msgValues);
 		this.customizedMsg = customizedMsg;
-		
+
 	}
 
-	
 	/**
 	 * Protected constructor which only child classes can use to reuse
 	 * properties of another exception object.
@@ -98,8 +99,9 @@ public class ApplicationException extends Exception
 	 */
 	protected ApplicationException(ApplicationException applicationException)
 	{
-		this(applicationException.errorKey,applicationException,applicationException.msgValues);
+		this(applicationException.errorKey, applicationException, applicationException.msgValues);
 	}
+
 	/**
 	 * Formats error message to be send to end user.
 	 * @return formatted message.
@@ -129,11 +131,11 @@ public class ApplicationException extends Exception
 		{
 			logMsg.append(" Error caused at- ").append(getErrorMsg());
 		}
-		if(getMessage()!=null)
+		if (getMessage() != null)
 		{
 			logMsg.append("\n Root cause: ").append(getMessage());
 		}
-		if(wrapException!=null)
+		if (wrapException != null)
 		{
 			logMsg.append("; ").append(wrapException.getMessage());
 		}
@@ -159,14 +161,15 @@ public class ApplicationException extends Exception
 		String keyName;
 		if (errorKey == null)
 		{
-			keyName="";
+			keyName = "";
 		}
 		else
 		{
-			keyName=errorKey.getErrorKey();
+			keyName = errorKey.getErrorKey();
 		}
 		return keyName;
 	}
+
 	/**
 	 * Sets errorKey object. This function accessible only by child classes
 	 * @param errorKey erroKey object to be set.
@@ -199,7 +202,7 @@ public class ApplicationException extends Exception
 			this.errorMsg = "";
 			setMsgValues(errorValParam);
 			String[] errorValues = errorValParam.split(ERR_MSG_VALUES_SEPARATOR);
-			if(errorKey != null)
+			if (errorKey != null)
 			{
 				errorKey.setMessageValues(errorValues);
 			}
@@ -228,7 +231,6 @@ public class ApplicationException extends Exception
 		}
 	}
 
-
 	/**
 	 * returns error message parameters.
 	 * @return message parameters
@@ -237,19 +239,20 @@ public class ApplicationException extends Exception
 	{
 		return msgValues;
 	}
+
 	/**
 	 * @return String[].
 	 */
 	public String[] toMsgValuesArray()
 	{
-		String [] valueArr;
+		String[] valueArr;
 		if (msgValues == null)
 		{
-			valueArr =new String [] {errorMsg};
+			valueArr = new String[]{errorMsg};
 		}
 		else
 		{
-			valueArr =msgValues.split(ERR_MSG_VALUES_SEPARATOR);
+			valueArr = msgValues.split(ERR_MSG_VALUES_SEPARATOR);
 		}
 		return valueArr;
 	}
@@ -283,17 +286,21 @@ public class ApplicationException extends Exception
 	/**
 	* This will return the complete error message.
 	*/
-	 public String getMessage()
-	 {
-		 String message = "";
-		 if(customizedMsg != null && Validator.isEmpty(customizedMsg))
-		 {
-			 message = customizedMsg;
-		 }
-		 else if(errorKey != null)
-		 {
-			 message = errorKey.getMessageWithValues();
-		 }
-		 return message;
-	 }
+	public String getMessage()
+	{
+		String message = "";
+		if (!Validator.isEmpty(customizedMsg))
+		{
+			message = customizedMsg;
+		}
+		else if (errorKey != null)
+		{
+			message = errorKey.getMessageWithValues();
+		}
+		else if (wrapException != null)
+		{
+			message = wrapException.getMessage();
+		}
+		return message;
+	}
 }
