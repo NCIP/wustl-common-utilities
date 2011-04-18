@@ -9,14 +9,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Finds all classes that belong to specified packages.
- * 
+ *
  * (Code is modification of source that was found at
  * http://forums.sun.com/thread.jspa?threadID=341935&start=15. See comment by
  * jonthefathead on Jul 26, 2007 5:42 PM).
- * 
+ *
  * @author srinath_k
  */
 public class ClassesInPackages {
@@ -78,7 +80,40 @@ public class ClassesInPackages {
 
     private static void searchResource(String packageName, URL resource, List<Class<?>> res) throws IOException,
             ClassNotFoundException {
-        if (resource.getProtocol().equalsIgnoreCase("FILE")) {
+
+    	if(resource.getProtocol().equalsIgnoreCase("vfszip"))
+    	{
+    		  loadVfszip(packageName, resource, res);
+//    		URI uri = null;
+//    		if (!resource.toString().startsWith("vfsfile:/")) {
+//    		try {
+//				uri = resource.toURI();
+//			} catch (URISyntaxException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//
+//    		try {
+//				uri=new  URI(resource.toString().substring(3));
+//				new URI(resource.toString().substring(3));
+//			} catch (URISyntaxException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//    		}
+//    		 String file=  resource.getFile().substring(1);
+//    		loadDirectory(packageName,  file , res);
+            // Used with JBoss 5.x: trim prefix "vfs"
+
+//
+//    		 try {
+//				URI uri = new  URI(resource.toString().substring(3));
+//			} catch (URISyntaxException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+    	}
+    	else if (resource.getProtocol().equalsIgnoreCase("FILE")) {
             loadDirectory(packageName, resource.getFile(), res);
         } else if (resource.getProtocol().equalsIgnoreCase("JAR")) {
             loadJar(packageName, resource, res);
@@ -87,7 +122,53 @@ public class ClassesInPackages {
         }
     }
 
-    private static void loadJar(String packageName, URL resource, List<Class<?>> res) throws IOException,
+    private static void loadVfszip(String packageName, URL resource,
+			List<Class<?>> res) throws IOException, ClassNotFoundException {
+
+    	String[] file=  resource.getFile().substring(1).split("/WEB-INF/classes/edu/wustl/catissuecore/bizlogic/uidomain/");
+        ZipFile zipFile = new  ZipFile(file[0]);
+        Enumeration entries = zipFile.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry entry = (ZipEntry) entries.nextElement();
+            if ((entry.getName().startsWith("edu/wustl/catissuecore/bizlogic/uidomain") || entry.getName()
+                    .startsWith("WEB-INF/classes/" + "edu/wustl/catissuecore/bizlogic/uidomain"))
+                    && entry.getName().endsWith(".class")) {
+
+                String className = entry.getName();
+                if (className.startsWith("/"))
+                    className = className.substring(1);
+                className = className.replace('/', '.');
+
+                className = className.substring(0, className.length() - ".class".length());
+                String[] classes=className.split("WEB-INF.classes.");
+                res.add(Class.forName(classes[1]));
+            }
+        }
+
+//        JarURLConnection conn = (JarURLConnection) resource.openConnection();
+//        JarFile jarFile = conn.getJarFile();
+//        Enumeration<JarEntry> entries = jarFile.entries();
+//        String packagePath = packageName.replace('.', '/');
+//
+//        while (entries.hasMoreElements()) {
+//            JarEntry entry = entries.nextElement();
+//            if ((entry.getName().startsWith(packagePath) || entry.getName()
+//                    .startsWith("WEB-INF/classes/" + packagePath))
+//                    && entry.getName().endsWith(".class")) {
+//
+//                String className = entry.getName();
+//                if (className.startsWith("/"))
+//                    className = className.substring(1);
+//                className = className.replace('/', '.');
+//
+//                className = className.substring(0, className.length() - ".class".length());
+//                res.add(Class.forName(className));
+//            }
+//        }
+
+	}
+
+	private static void loadJar(String packageName, URL resource, List<Class<?>> res) throws IOException,
             ClassNotFoundException {
         JarURLConnection conn = (JarURLConnection) resource.openConnection();
         JarFile jarFile = conn.getJarFile();
