@@ -125,13 +125,16 @@ public class ClassesInPackages {
     private static void loadVfszip(String packageName, URL resource,
 			List<Class<?>> res) throws IOException, ClassNotFoundException {
 
-    	String[] file=  resource.getFile().substring(1).split("/WEB-INF/classes/edu/wustl/catissuecore/bizlogic/uidomain/");
-        ZipFile zipFile = new  ZipFile(file[0]);
+    	String resourceFilePath=resource.getFile();
+    	String zipFilepPath=resourceFilePath.substring(0, resourceFilePath.indexOf(".war")+4);
+
+    	ZipFile zipFile = new  ZipFile(zipFilepPath);
+    	packageName=packageName.replace(".", "/");
         Enumeration entries = zipFile.entries();
         while (entries.hasMoreElements()) {
             ZipEntry entry = (ZipEntry) entries.nextElement();
-            if ((entry.getName().startsWith("edu/wustl/catissuecore/bizlogic/uidomain") || entry.getName()
-                    .startsWith("WEB-INF/classes/" + "edu/wustl/catissuecore/bizlogic/uidomain"))
+            if ((entry.getName().startsWith(packageName) || entry.getName()
+                    .startsWith("WEB-INF/classes/" + packageName))
                     && entry.getName().endsWith(".class")) {
 
                 String className = entry.getName();
@@ -144,27 +147,6 @@ public class ClassesInPackages {
                 res.add(Class.forName(classes[1]));
             }
         }
-
-//        JarURLConnection conn = (JarURLConnection) resource.openConnection();
-//        JarFile jarFile = conn.getJarFile();
-//        Enumeration<JarEntry> entries = jarFile.entries();
-//        String packagePath = packageName.replace('.', '/');
-//
-//        while (entries.hasMoreElements()) {
-//            JarEntry entry = entries.nextElement();
-//            if ((entry.getName().startsWith(packagePath) || entry.getName()
-//                    .startsWith("WEB-INF/classes/" + packagePath))
-//                    && entry.getName().endsWith(".class")) {
-//
-//                String className = entry.getName();
-//                if (className.startsWith("/"))
-//                    className = className.substring(1);
-//                className = className.replace('/', '.');
-//
-//                className = className.substring(0, className.length() - ".class".length());
-//                res.add(Class.forName(className));
-//            }
-//        }
 
 	}
 
