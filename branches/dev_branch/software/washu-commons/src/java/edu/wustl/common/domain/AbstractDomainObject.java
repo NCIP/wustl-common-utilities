@@ -83,7 +83,7 @@ public abstract class AbstractDomainObject implements Serializable,Identifiable
 	 */
 	public String getMessageLabel()
 	{
-		return getId().toString();
+		return " ";
 	}
 
 	private String facilityId;
