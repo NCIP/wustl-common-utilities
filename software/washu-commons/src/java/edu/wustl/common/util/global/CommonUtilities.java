@@ -222,7 +222,9 @@ public class CommonUtilities
 		Method method = null;
 		for (int i = 0; i < methods.length; i++)
 		{
-			if(!methods[i].getName().equals(methodName))
+			if(!methods[i].getName().equals(methodName)
+					||
+					methods[i].getParameterTypes()[0].isInterface())
             {
                 continue;
             }
