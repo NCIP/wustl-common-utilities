@@ -59,16 +59,8 @@ public class CommonUtilities
 	 */
 	public static String parseClassName(String qualifiedName)
 	{
-		String className = qualifiedName;
-		try
-		{
-			Class clazz = Class.forName(qualifiedName);
-			className = clazz.getSimpleName();
-		}
-		catch (Exception e)
-		{
-			LOGGER.warn("Not able to parse class name:" + qualifiedName);
-		}
+		final int index = qualifiedName.lastIndexOf('.');
+		final String className = qualifiedName.substring(index+1);
 		return className;
 	}
 
@@ -431,7 +423,7 @@ public class CommonUtilities
 		Iterator<Long> iterator = collection.iterator();
 		while (iterator.hasNext())
 		{
-			obj[index] = (Long) iterator.next();
+			obj[index] = iterator.next();
 			index++;
 		}
 		return obj;
