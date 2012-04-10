@@ -1,6 +1,8 @@
 package edu.wustl.common.util.global;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -27,7 +29,7 @@ public final class CommonServiceLocator
 	/**
 	 * object of class CommonServiceLocator.
 	 */
-	private static CommonServiceLocator commonServLocator= new CommonServiceLocator();
+	private static CommonServiceLocator commonServLocator;
 	/**
 	 * Application Name.
 	 */
@@ -98,23 +100,22 @@ public final class CommonServiceLocator
 		LoggerConfig.configureLogger(this.propDirPath);
 	}
 
-	/**
-	 * This method return object of the class CommonServiceLocator.
-	 * @return object of the class CommonServiceLocator.
-	 */
-	public static CommonServiceLocator getInstance()
+	public CommonServiceLocator(String applicatioResourcePath)
 	{
-		return commonServLocator;
+		try
+		{
+			initProps(new FileInputStream(applicatioResourcePath));
+		}
+		catch (FileNotFoundException e)
+		{
+			logger.fatal("Not able to load properties file",e);
+		}
+		LoggerConfig.configureLogger(this.propDirPath);
 	}
 
-	/**
-	 * This method loads properties file.
-	 */
-	private void initProps()
+	private void initProps(InputStream stream)
 	{
-		InputStream stream = CommonServiceLocator.class.getClassLoader()
-		.getResourceAsStream("ApplicationResources.properties");
-	    try
+		try
 		{
 			Properties props= new Properties();
 			props.load(stream);
@@ -133,6 +134,43 @@ public final class CommonServiceLocator
 		{
 			logger.fatal("Not able to load properties file",exception);
 		}
+		
+	}
+
+	/**
+	 * This method return object of the class CommonServiceLocator.
+	 * @return object of the class CommonServiceLocator.
+	 */
+	public static CommonServiceLocator getInstance()
+	{
+		if(commonServLocator == null)
+		{
+			commonServLocator = new CommonServiceLocator();
+		}
+		return commonServLocator;
+	}
+
+	/**
+	 * This method return object of the class CommonServiceLocator.
+	 * @return object of the class CommonServiceLocator.
+	 */
+	public static CommonServiceLocator getInstance(String applicatioResourcePath)
+	{
+		if(commonServLocator == null)
+		{
+			commonServLocator = new CommonServiceLocator(applicatioResourcePath);
+		}
+		return commonServLocator;
+	}
+	/**
+	 * This method loads properties file.
+	 */
+	private void initProps()
+	{
+		InputStream stream = CommonServiceLocator.class.getClassLoader()
+		.getResourceAsStream("ApplicationResources.properties");
+		initProps(stream);
+	    
 	}
 
 	/**
