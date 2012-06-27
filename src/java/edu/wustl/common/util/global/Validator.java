@@ -804,7 +804,7 @@ public class Validator
 	private static boolean isValueInList(List<NameValueBean> list, String value)
 	{
 		boolean isValid = false;
-		for (int i = 1; i < list.size(); i++)
+		for (int i = 0; i < list.size(); i++)
 		{
 			NameValueBean bean = list.get(i);
 
@@ -829,7 +829,7 @@ public class Validator
 
 		if (list != null && value != null)
 		{
-			for (int i = 1; i < list.length; i++)
+			for (int i = 0; i < list.length; i++)
 			{
 				if (value.equals(list[i]))
 				{
