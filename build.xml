@@ -7,7 +7,7 @@
 	<property name="lib.dir" value="${base.dir}/src/lib" />
 	<property name="local-ivy-repo.dir" value="${software.dir}/local-ivy-repo"/>
 	<property name="temp.src.classes.dir" value="${software.dir}/target/temp/src/classes"/>
-	<property file="${software.dir}/washu-commons/src/conf/washu-commons.properties"/>
+	<property file="${base.dir}/src/conf/washu-commons.properties"/>
 	<target name="clean">
 		<delete includeemptydirs="true" dir="${temp.src.classes.dir}" />
 	</target>

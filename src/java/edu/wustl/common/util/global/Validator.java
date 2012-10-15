@@ -54,6 +54,8 @@ public class Validator
 	 * This is regular expression to validate phone number.
 	 */
 	private static final String REGEX_VALID_PHONE = "\\(\\d{3}\\)\\d{3}-\\d{4}|\\d{3}\\-\\d{3}-\\d{4}";
+	
+	private final static String[] INVALID_KEYWORDS={ "<",">", "script", "alert", "truncate ", "delete ", "insert " , "drop " , "xp_", "<>", "{", "}", "`", "input" };
 
 	/**
 	 * Checks that the input String is a valid email address.
@@ -962,4 +964,19 @@ public class Validator
     	return isXssVulnerable;
     }
     
+    public boolean isValidAsPerSecurity(String value)
+	{
+		boolean flag=true;
+		for(int i=0; i<INVALID_KEYWORDS.length;i++)
+		{
+			if(value!=null 
+					&& !"".equals(value)
+					&& value.contains(INVALID_KEYWORDS[i]))
+			{
+				flag=false;
+				break;
+			}
+		}
+		return flag;
+	}
 }
