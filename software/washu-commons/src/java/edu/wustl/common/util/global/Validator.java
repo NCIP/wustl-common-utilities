@@ -964,7 +964,7 @@ public class Validator
     	return isXssVulnerable;
     }
     
-    public boolean isValidAsPerSecurity(String value)
+    public static boolean isValidAsPerSecurity(String value)
 	{
 		boolean flag=true;
 		for(int i=0; i<INVALID_KEYWORDS.length;i++)
