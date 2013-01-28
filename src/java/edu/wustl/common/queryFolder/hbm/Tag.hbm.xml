@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="edu.wustl.common.queryFolder.beans.Tag" table="tag">
+		<id name="tagId" type="java.lang.Long" column="TAG_ID">
+			<generator class="increment" />
+		</id>
+
+		<property name="tagLabel" type="java.lang.String" column="TAG_LABEL" />
+		<property name="userId" type="java.lang.Long" column="USER_ID" />
+		<set name="AssignTag" table="assigntag" cascade="save-update,all-delete-orphan"
+			inverse="false" lazy="false" fetch="select">
+			<key>
+				<column name="TAG_ID" not-null="true" />
+			</key>
+			<one-to-many class="edu.wustl.common.queryFolder.beans.AssignTag" />
+		</set>
+	</class>
+</hibernate-mapping>

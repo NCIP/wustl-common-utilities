@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false">
+    <class
+        name="edu.wustl.common.domain.AbstractAuditEventLog"
+        table="CATISSUE_AUDIT_EVENT_LOG" 
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+<!-- table = CATISSUE_AUDIT_EVENT_LOG
+	OBJECT_IDENTIFIER AND OBJECT_NAME AND EVENT_TYPE COLUMNS SHOULD BE DROPPED FROM THIS TABLE.
+	CREATE NEW TABLE WITH THESE COLUMNS (EXCEPT EVENT_TYPE WHICH IS PRESENT IN CATISSUE_AUDIT_EVENT)
+	THIS NEW TABLE IS CATISSUE_DATA_AUDIT_EVENT_LOG WHICH REFERS THE JOINED SUBCLASS. 
+	ADD NEW COLUMN AS PARENT_LOG_ID WHICH REFERS(FOREGIN KEY) TO THIS TABLE ITSELF.
+  -->
+        <id
+            name="id"
+            column="IDENTIFIER"
+            type="long"
+            length="30"
+            unsaved-value="null"
+        >
+            <generator class="native">
+                 <param name="sequence">CATISSUE_AUDIT_EVENT_LOG_SEQ</param> 
+            </generator>
+        </id>
+        
+        <many-to-one
+            name="auditEvent"
+            class="edu.wustl.common.domain.AuditEvent"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="AUDIT_EVENT_ID"
+        />
+
+        <joined-subclass
+            name="edu.wustl.common.domain.AuditDataEventLog"
+            table="CATISSUE_DATA_AUDIT_EVENT_LOG"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+	        <key
+	            column="IDENTIFIER"
+	        />
+	
+	        <property
+	            name="objectIdentifier"
+	            type="long"
+	            update="true"
+	            insert="true"
+	            column="OBJECT_IDENTIFIER"
+	            length="50"
+	        />
+	
+	        <property
+	            name="objectName"
+	            type="string"
+	            update="true"
+	            insert="true"
+	            column="OBJECT_NAME"
+	            length="50"
+	        />
+	        
+	        <set
+	            name="auditDataEventLogs"
+	            table="CATISSUE_DATA_AUDIT_EVENT_LOG"
+	            lazy="false"
+	            cascade="all"
+	            sort="unsorted"
+	        >
+	
+	              <key
+	                  column="PARENT_LOG_ID"
+	              />
+	
+	              <one-to-many
+	                  class="edu.wustl.common.domain.AuditDataEventLog"
+	              />
+	        </set>
+	        
+	        <set
+	            name="auditEventDetailsCollection"
+	            table="CATISSUE_AUDIT_EVENT_DETAILS"
+	            lazy="false"
+	           	inverse="false"
+          		cascade="all"
+	            sort="unsorted"
+	        >
+	
+	              <key
+	                  column="AUDIT_EVENT_LOG_ID"
+	              />
+	
+	              <one-to-many
+	                  class="edu.wustl.common.domain.AuditEventDetails"
+	              />
+	        </set>
+
+        </joined-subclass>
+
+    </class>
+
+</hibernate-mapping>
