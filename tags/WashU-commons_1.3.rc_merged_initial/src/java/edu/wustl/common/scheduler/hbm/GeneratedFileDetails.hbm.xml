@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+<class
+        name="edu.wustl.common.scheduler.domain.ReportAuditData"
+        table="REPORT_JOB_DETAILS"
+		lazy="false"
+    >
+     <id
+            name="id"
+            column="IDENTIFIER"
+            type="long"
+            length="19"
+        >
+       <generator class="increment"/>
+        </id>
+        
+         <property
+            name="scheduleId"
+            type="long"
+            update="true"
+            insert="true"
+            column="SCHEDULE_ID"
+            length="19"
+        />
+        
+        <property
+            name="reportId"
+            type="long"
+            update="true"
+            insert="true"
+            column="REPORT_ID"
+            length="19"
+        />
+        
+         <property
+            name="userId"
+            type="long"
+            update="true"
+            insert="true"
+            column="USER_ID"
+            length="19"
+        />
+        
+        <property
+            name="csId"
+            type="long"
+            update="true"
+            insert="true"
+            column="CS_ID"
+            length="19"
+        />
+           
+        <property
+            name="fileName"
+            type="string"
+            update="true"
+            insert="true"
+            column="FILE_NAME"
+            length="512"
+        />
+        
+        <property
+            name="executeionStart"
+            type="timestamp"
+            update="true"
+            insert="true"
+            column="EXEC_START"
+        />
+        
+         <property
+            name="executeionEnd"
+            type="timestamp"
+            update="true"
+            insert="true"
+            column="EXEC_END"
+        />
+        
+         <property
+            name="jobStatus"
+            type="string"
+            update="true"
+            insert="true"
+            column="EXEC_STATUS"
+            length="20"
+        />
+        
+         <property
+            name="isEmailed"
+            type="boolean"
+            column="IS_EMAILED"
+        />
+        
+         <property
+            name="errorDescription"
+            type="string"
+            update="true"
+            insert="true"
+            column="ERROR_DESC"
+            length="512"
+        />
+        
+        
+        <property
+            name="downloadCount"
+            type="long"
+            update="true"
+            insert="true"
+            column="DOWNLOAD_COUNT"
+            length="19"
+        />
+        
+         <property
+            name="reportDurationStart"
+            type="timestamp"
+            update="true"
+            insert="true"
+            column="START_DATE"
+        />
+        
+         <property
+            name="reportDurationEnd"
+            type="timestamp"
+            update="true"
+            insert="true"
+            column="END_DATE"
+        />
+        
+       
+        
+        
+        </class>
+</hibernate-mapping>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataTypes>
+<DataType name = "bigint" className = "edu.wustl.common.datatypes.NumericDataType"/>
+<DataType name = "integer" className = "edu.wustl.common.datatypes.NumericDataType"/>
+<DataType name = "double" className = "edu.wustl.common.datatypes.DoubleDataType"/>
+<DataType name = "tinyint" className = "edu.wustl.common.datatypes.TinyIntDataType"/>
+<DataType name = "timestamptime" className = "edu.wustl.common.datatypes.TimeStampTimeDataType"/>
+<DataType name = "date" className = "edu.wustl.common.datatypes.DateDataType"/>
+<DataType name = "timestampdate" className = "edu.wustl.common.datatypes.DateDataType"/>
+<DataType name = "long" className = "edu.wustl.common.datatypes.LongDataType"/>
+<DataType name = "string" className = "edu.wustl.common.datatypes.StringDataType"/>
+<DataType name = "float" className = "edu.wustl.common.datatypes.FloatDataType"/>
+<DataType name = "byte" className = "edu.wustl.common.datatypes.NumericDataType"/>
+<DataType name = "short" className = "edu.wustl.common.datatypes.NumericDataType"/>
+<DataType name = "table" className = "edu.wustl.simplequery.query.Table"/>
+<DataType name = "boolean" className = "edu.wustl.common.datatypes.BooleanDataType"/>
+<DataType name = "blob" className = "edu.wustl.common.datatypes.BlobDataType"/>
+<DataType name = "varchar" className = "edu.wustl.common.datatypes.VarCharDataType"/>
+</DataTypes>

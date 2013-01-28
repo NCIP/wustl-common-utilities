@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<query name="getLabelSQLAssocByCPId">
+		from
+		edu.wustl.common.labelSQLApp.domain.LabelSQLAssociation assoc
+		where assoc.labelSQLCollectionProtocol=? order by assoc.seqOrder 
+	</query>
+	
+	<query name="getSystemLabelSQLAssoc">
+		from
+		edu.wustl.common.labelSQLApp.domain.LabelSQLAssociation assoc
+		where assoc.labelSQLCollectionProtocol is null order by assoc.seqOrder 
+	</query>
+	
+	<query name="getLabelSQLAssocByCPIdAndLabelSQLId">
+		from
+		edu.wustl.common.labelSQLApp.domain.LabelSQLAssociation assoc
+		where assoc.labelSQLCollectionProtocol=? 
+		and assoc.labelSQL.id=?
+	</query>
+	
+	<query name="getSysLabelSQLAssocByCPIdAndLabelSQLId">
+		from
+		edu.wustl.common.labelSQLApp.domain.LabelSQLAssociation assoc
+		where assoc.labelSQLCollectionProtocol is null
+		and assoc.labelSQL.id=?
+	</query>
+	
+	<sql-query name="getQueryByLabelSQLAssocId">
+		select lbl.query from labelsql lbl JOIN
+		labelsqlassoc assoc ON lbl.identifier=assoc.labelsqlid
+		and
+		assoc.identifier=?
+	</sql-query>
+	<sql-query name="getLabelSQLIdByLabelOrDisplayName">
+		select lbl.identifier from labelsql lbl JOIN
+		labelsqlassoc assoc ON lbl.identifier=assoc.labelsqlid
+		where
+		assoc.cpid=?
+		and
+		lbl.label=?
+		or
+		assoc.user_defined_label=?
+	</sql-query>
+	
+	<sql-query name="getSysLabelSQLIdByLabelOrDisplayName">
+		select lbl.identifier from labelsql lbl JOIN
+		labelsqlassoc assoc ON lbl.identifier=assoc.labelsqlid
+		where
+		assoc.cpid is null
+		and
+		lbl.label=?
+		or
+		assoc.user_defined_label=?
+	</sql-query>
+	
+	<sql-query name="getLabelsByCPId">
+		<return-scalar column="label" type="string" />
+		select assoc.user_defined_label label
+		from labelsql lbl,
+		labelsqlassoc assoc
+		where lbl.identifier=assoc.labelsqlid
+		and
+		assoc.user_defined_label is not NUll and assoc.cpid=?
+		UNION select
+		lbl1.label label from labelsql lbl1, labelsqlassoc
+		assoc1
+		where
+		lbl1.identifier=assoc1.labelsqlid
+		and
+		assoc1.user_defined_label is NUll
+		and assoc1.cpid=?
+	</sql-query>
+	<sql-query name="getLabelByLabelSQLAssocId">
+		<return-scalar column="label" type="string" />
+		select assoc.user_defined_label label from
+		labelsql lbl,
+		labelsqlassoc assoc where lbl.identifier=assoc.labelsqlid
+		and
+		assoc.user_defined_label is not NUll and
+		assoc.identifier=?
+		UNION select
+		lbl1.label label from labelsql lbl1, labelsqlassoc
+		assoc1
+		where
+		lbl1.identifier=assoc1.labelsqlid
+		and
+		assoc1.user_defined_label is NUll
+		and
+		assoc1.identifier=?
+	</sql-query>
+
+	<sql-query name="getQueriesByCPId">
+		<return-scalar column="label" type="string" />
+		select lbl.query from labelsql lbl, labelsqlassoc assoc where
+		lbl.identifier=assoc.labelsqlid
+		and assoc.cpid=?
+	</sql-query>
+	
+</hibernate-mapping>
