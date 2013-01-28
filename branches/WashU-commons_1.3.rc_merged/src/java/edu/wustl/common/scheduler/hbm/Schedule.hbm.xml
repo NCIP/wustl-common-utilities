@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<class
+        name="edu.wustl.common.scheduler.domain.Schedule"
+        table="SCHEDULE"
+		lazy="false"
+    >
+     <id
+            name="id"
+            column="IDENTIFIER"
+            type="long"
+            length="19"
+        >
+       <generator class="increment"/>
+        </id>
+        
+         <property
+            name="name"
+            type="string"
+            update="true"
+            insert="true"
+            column="NAME"
+            length="255"
+        />
+        
+         <property
+            name="startDate"
+            type="date"
+            update="true"
+            insert="true"
+            column="START_DATE"
+        />
+        
+        <property
+            name="endDate"
+            type="date"
+            update="true"
+            insert="true"
+            column="END_DATE"
+        />
+        
+        <property
+            name="interval"
+            type="string"
+            update="true"
+            insert="true"
+            column="INTERV"
+            length="10"
+        />
+        
+        <property
+            name="activityStatus"
+            type="string"
+            update="true"
+            insert="true"
+            column="STATUS"
+            length="8"
+        />
+        
+        <joined-subclass
+            name="edu.wustl.common.scheduler.domain.BaseSchedule"
+            table="BASE_SCHEDULE"
+            lazy="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+        
+        <property
+            name="ownerId"
+            type="long"
+            update="true"
+            insert="true"
+            column="USER_ID"
+            length="19"
+        />
+        
+        <set name="recepientUserIdCollection" table="RECIPIENT_USERS" lazy="false">
+   		 	<key column="BASE_SCHEDULE_ID"/>
+    		<element column="USER_ID" type="long"/>
+		</set>
+		
+		 <set name="scheduleItemIdCollection" table="SCHEDULED_ITEMS" lazy="false">
+   		 	<key column="BASE_SCHEDULE_ID"/>
+    		<element column="ITEM_ID" type="long"/>
+		</set>
+        
+        <property
+            name="comments"
+            type="string"
+            update="true"
+            insert="true"
+            column="COMMENTS"
+            length="512"
+        />
+        
+        
+        
+        <property
+            name="includeMe"
+            type="boolean"
+            column="INCLUDE_ME"
+        />
+        
+    	<joined-subclass
+            name="edu.wustl.common.scheduler.domain.ReportSchedule"
+            table="REPORT_SCHEDULE"
+            lazy="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+        
+         
+         <property
+            name="duration"
+            type="string"
+            update="true"
+            insert="true"
+            column="DURATION"
+            length="255"
+        />
+        
+        
+        </joined-subclass>    
+    
+        
+    
+        </joined-subclass>
+        
+        
+         
+        
+    </class>
+</hibernate-mapping>

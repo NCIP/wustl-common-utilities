@@ -1,0 +1,403 @@
+<project basedir="." name="securityManager_DBUnit" default="RunTestCasesFromClean" >
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="./lib/ant-contrib.jar" />
+		</classpath>
+	</taskdef>
+	
+	<property environment="env" />	
+	<import file="build-properties.xml"/>
+	<property name="base.dir" value="." />
+	<property name="junit.dir" value="${base.dir}/junit" />
+		<property name="junit.report.dir" value="${junit.dir}/reports" />
+		
+	<property name="db_unit.dir" value="${basedir}/SecurityManager_dbunit" />
+	<property name="db_src.dir" value="${db_unit.dir}/src" />
+	<property name="db_temp.dir" value="${db_unit.dir}/tmp" />
+	<property name="db_lib.dir" value="${db_unit.dir}/lib" />
+	<property name="base.dir" value="." />
+	<property name="tmp.smwar" value="${base.dir}/tempwardir" />
+	<property name="web_lib.dir" value="${tmp.smwar}/WEB-INF/lib" />
+	<property name="lib_dir" value="${base.dir}/lib" />
+	<property name="build.dir" value="${base.dir}/build" />
+	<property name="target.dir" value="${base.dir}/classes" />
+	<property name="src.dir" value="${base.dir}/src" />
+	<property name="code.coverage.report.dir" value="${junit.dir}/coverage-reports" />
+	<property name="instrumented.classes.dir" value="${junit.dir}/instrumented-classes" />
+	<path id="junit.classpath">		
+			<pathelement location="${lib_dir}/cobertura.jar" />
+			<pathelement location="${lib_dir}/jakarta-oro-2.0.8.jar" />
+			<pathelement location="${lib_dir}/asm-2.2.1.jar" />
+			<pathelement location="lib/log4j-1.2.9.jar" />
+		</path>
+
+	<target name="dbinit">
+		<delete dir="${db_unit.dir}/Build_Report"  failonerror="false"/>
+		<mkdir dir="${db_temp.dir}"/>
+		<mkdir dir="${db_temp.dir}/Nightly_Build_Report"/>
+		<mkdir dir="${db_unit.dir}/Build_Report"/>
+		<mkdir dir="${tmp.smwar}"/>		
+	</target>
+	
+	<target name="dbclean">
+		<deltree dir="${db_temp.dir}"/>
+		<!-- deltree dir="${tmp.smwar}"/ -->
+		<delete  >
+    	<fileset dir="${db_src.dir}">
+
+    		<include name="test_*.*"/>
+    	</fileset>
+		</delete>
+
+	</target>
+	
+	
+
+	<target name="db_compile">
+
+		<delete file="${db_lib.dir}/securityManager.jar"/>
+		<copy todir="${db_lib.dir}">
+			<fileset dir="${lib_dir}" >
+				<include name ="*.jar"/>
+			</fileset>
+		</copy>
+		<jar destfile="${db_lib.dir}/securityManager.jar" duplicate="preserve">
+			<fileset dir="${tmp.smwar}/WEB-INF/classes">
+				<include name="**/*.*"/>
+				<exclude name ="dbutil.properties"/>
+				<exclude name ="log4j.properties"/>
+				<exclude name="**/ApplicationSecurityConfig.xml" />
+			</fileset>			
+		</jar>
+
+		<javac destdir="${db_temp.dir}" srcdir="${db_src.dir}" includes="**/*">
+			<classpath id="DbUnit_classpath2">
+				<fileset dir="${web_lib.dir}">
+					<include name="*.jar"/>
+				</fileset>
+					
+				<fileset dir="${db_lib.dir}">
+					<include name="*.jar"/>
+				</fileset>	
+				<!--pathelement path="${tmp.smwar}/WEB-INF/classes/"/ -->
+			</classpath>
+		</javac>
+		
+		<copy todir="${db_temp.dir}">
+			<fileset dir="${db_unit.dir}/src" >
+				<include name ="*.xml"/>
+				<include name = "*.properties"/>
+			</fileset>
+			<fileset dir="${base.dir}">
+				<include name="TestDataSet.xml"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name ="clean_db">
+		<sql driver="${database.driver}" password="${database.password}" url="jdbc:mysql://${database.host}:${database.port}/${database.name}" userid="${database.username}">
+			<classpath path="${web_lib.dir}/mysql*.jar" > 
+				<fileset dir="${web_lib.dir}">
+					<include name="*.jar"/>
+				</fileset> 
+			</classpath>
+		<transaction>drop database ${database.name}</transaction>
+		<transaction>create database ${database.name}</transaction>
+		</sql>
+	</target>
+	<target name="RunTestCases" depends="clean_db, initialize_data, RundbUnit" />
+	<target name="RunTestCasesFromClean" depends="RunTestCases" />
+	
+	<target name="initialize_data" depends="configure_properties">
+		<antcall target="runJUnit"  >
+			<param name="classNames" value="**/CaTissueBaseDBUnitTestCase.java" />
+		</antcall>
+	</target>
+	
+	<target name="RundbUnit" depends="dbclean, dbinit, configure_properties, build_jar" >
+		<antcall target="runJUnitDB">
+			<param name="classNames" value="**/Test*.java" />
+		</antcall>
+	</target>
+	
+	<target name="configure_properties" >
+		<copy tofile="${db_src.dir}/smDBUnit.properties" file="${db_src.dir}/T_smDBUnit.properties"
+		 />		
+		
+		<antcall target="replaceDBParams">
+			<param name="SourceFile" value="${db_src.dir}/smDBUnit.properties" />
+		</antcall>		
+		
+		<antcall target="generate_hibernate_cfg">
+				<param name ="DestFile" value="csm.hibernate.cfg.xml"/>
+				<param name ="SrcFile" value="csm.hibernate.cfg.xml"/>
+				<param name ="SrcDir"  value="${base.dir}/csm-properties/"/>
+		</antcall>
+	
+		<copy todir="${db_src.dir}">
+			<fileset dir = "${base.dir}/csm-properties/">
+				<include name="ApplicationSecurityConfig.xml"/>
+			</fileset>
+		</copy>
+		
+		<antcall target="replaceDBParams">
+			<param name="SourceFile" value="${db_src.dir}/csm.hibernate.cfg.xml" />
+		</antcall>
+
+		<replace file="${db_src.dir}/ApplicationSecurityConfig.xml" token="@@hibernate-config-file@@" value="${db_src.dir}/csm.hibernate.cfg.xml" />
+		<replace file="${db_src.dir}/ApplicationSecurityConfig.xml" token="\" value="/" />
+
+		<replace file="${db_src.dir}/smDBUnit.properties" token="\" value="/"  />
+		
+
+	</target>
+	
+	
+	<target name="runJUnit" depends="db_compile">
+		<echo message="Please see the test report at ${db_unit.dir}/Build_Report" />
+		<echo message="running test cases ${classNames}" />
+		<mkdir dir="${junit.report.dir}/Html_reports" />
+		<junit printsummary="yes" haltonfailure="no">
+			  <formatter type="xml"/>
+			<sysproperty key="net.sourceforge.cobertura.datafile" file="${base.dir}/cobertura.ser" />
+			<classpath>
+				<pathelement location="${lib_dir}/cobertura.jar" />
+				<pathelement location="${instrumented.classes.dir}" />
+				<pathelement path="${target.dir}"/>
+				
+				<fileset dir="${web_lib.dir}">
+					<include name="*.jar"/>
+				</fileset>
+
+				<fileset dir="${jboss.server.url}/lib">
+					<include name="jboss-j2ee.jar"/>
+					<include name="dom4j.jar"/>					
+					<include name="servlet-api.jar"/>
+
+				</fileset>
+
+				
+				<fileset dir="${db_lib.dir}">
+					<include name="*.jar"/>
+				</fileset>	
+
+				<!-- fileset dir="${tmp.smwar}/WEB-INF/classes">
+					<include name="**/*"/>
+				</fileset -->				
+				<pathelement path="${db_temp.dir}"/>
+			</classpath>
+			<batchtest todir="${db_unit.dir}/Build_Report">
+				<fileset dir="${db_src.dir}">
+					<include name="**/TestAll.java"/>
+				</fileset>
+			</batchtest>
+		</junit>
+		<junitreport todir="${junit.report.dir}/Html_reports">
+					<fileset dir="${junit.report.dir}/Html_reports">
+						<include name="*.xml" />
+					</fileset>
+					<report todir="${junit.report.dir}/Html_reports" />
+		</junitreport>
+
+	</target>
+
+	<target name="replaceDBParams">
+
+		<replace file="${SourceFile}">
+		
+			<replacefilter 
+				token="@@gov.nih.nci.security.configFile@@" 
+				value="${db_src.dir}/ApplicationSecurityConfig.xml"/>
+			<replacefilter 
+				token="@@app.propertiesFile@@" 
+				value="file:///${db_src.dir}/caTissueCore_Properties.xml"/>
+			<replacefilter 
+				token="@@DATABASE_USER@@" 
+				value="${database.username}"/>
+			<replacefilter 
+				token="@@DATABASE_PASSWORD@@" 
+				value="${database.password}"/>			
+		</replace>
+		
+		
+		<if>
+			<equals arg1="mysql" arg2="${database.type}" />
+			<then>
+				
+				<replace file="${SourceFile}">
+	
+				<replacefilter 
+					token="@@URL@@" 
+					value="jdbc:mysql://${database.host}:${database.port}/${database.name}"/>
+				<replacefilter 
+					token="@@DRIVER@@" 
+					value="com.mysql.jdbc.Driver"/>
+				</replace>
+			</then>
+		</if>
+		<if>
+			<equals arg1="oracle" arg2="${database.type}" />
+			<then>
+				<replace file="${SourceFile}">
+	
+					<replacefilter 
+						token="@@URL@@" 
+						value="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}"/>
+					<replacefilter 
+						token="${mysql.dialect.string}" 
+						value="${oracle.dialect.string}"/>
+					
+					<replacefilter 
+						token="@@DRIVER@@" 
+						value="${oracle.driver.string}"/>
+				</replace>
+			</then>
+		</if>
+
+	</target>
+	
+	<target name="generate_hibernate_cfg">
+		<echo message="configuring ${db_src.dir}/${DestFile} from ${SrcFile} "></echo>
+		<delete file="${db_src.dir}/${DestFile}" />
+		<delete file="${db_src.dir}/tmpMappings.cfg.xml" />
+		<concat destfile="${db_src.dir}/${DestFile}" encoding="utf-8" >
+			&lt;!DOCTYPE hibernate-configuration PUBLIC
+			    "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+			    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd"&gt;
+			    
+			&lt;hibernate-configuration&gt;
+				
+			    &lt;session-factory&gt;
+
+			&lt;property name="show_sql"&gt;false&lt;/property&gt;
+	   		&lt;property name="dialect"&gt;org.hibernate.dialect.MySQLDialect&lt;/property&gt;	
+	        &lt;property name="connection.driver_class"&gt;@@DRIVER@@&lt;/property&gt;
+		    &lt;property name="connection.url"&gt;@@URL@@&lt;/property&gt;
+		    &lt;property name="connection.username"&gt;@@DATABASE_USER@@&lt;/property&gt;
+		    &lt;property name="connection.password"&gt;@@DATABASE_PASSWORD@@&lt;/property&gt;   
+			&lt;property name="hibernate.transaction.factory_class"&gt;org.hibernate.transaction.JDBCTransactionFactory&lt;/property&gt;
+			&lt;property name="hibernate.cache.provider_class"&gt;org.hibernate.cache.EhCacheProvider&lt;/property&gt;
+			&lt;property name="hibernate.jdbc.batch_size"&gt;0&lt;/property&gt;
+			&lt;property name="hibernate.query.substitutions"&gt;true 1,false 0&lt;/property&gt;
+
+		</concat>
+		
+		<concat destfile="${db_src.dir}/tmpMappings.cfg.xml" encoding="utf-8" >
+			<filelist dir="${SrcDir}"  files="${SrcFile}" />
+			<filterchain>
+				<linecontains>
+					<contains value="mapping resource" />
+				</linecontains>
+			</filterchain>
+		</concat>
+		
+		<concat destfile="${db_src.dir}/${DestFile}" append="true" encoding="utf-8" >
+			<filelist dir="${db_src.dir}"  files="tmpMappings.cfg.xml" />
+		</concat>
+		<concat destfile="${db_src.dir}/${DestFile}" append="true" encoding="utf-8" >
+		    &lt;/session-factory&gt;
+		    
+		&lt;/hibernate-configuration&gt;
+		</concat>
+	
+	</target>
+	<target name="build_jar" depends="compile">
+			<delete>
+				<fileset dir="${build.dir}" includes="**/*" />
+			</delete>
+			<tstamp />
+			<jar taskname="build_jar" jarfile="${build.dir}/securityManager.jar">
+				<fileset dir="${target.dir}">
+					<include name="**/*" />
+				</fileset>
+				<manifest>
+					<attribute name="Built-At-Time" value="${TODAY} ${TSTAMP}" />
+				</manifest>
+			</jar>
+			<copy todir="${web_lib.dir}">
+					<fileset dir="${build.dir}">
+						<include name="**/*.jar" />
+					</fileset>
+					<fileset dir="${lib_dir}">
+						<include name="**/*.jar" />
+					</fileset>
+				</copy>
+		</target>
+		<target name="compile">
+			<javac destdir="${target.dir}" includes="**/*.*" debug="on" includeAntRuntime="false" target="1.5">
+				<src path="${src.dir}" />
+				<classpath>
+					<fileset dir="${lib_dir}">
+						<include name="*.jar" />
+					</fileset>
+				</classpath>
+			</javac>
+			<copy todir="${target.dir}">
+				<fileset dir="${src.dir}">
+					<include name="**/*.properties" />
+					<include name="**/*.xml" />
+					<include name="**/*.hbm.xml" />
+					<include name="**/*.ser" />
+				</fileset>
+			</copy>
+		
+		</target>
+	<taskdef classpathref="junit.classpath" resource="tasks.properties" />
+	<target name="instrument">
+		<mkdir dir="${code.coverage.report.dir}" />
+		<mkdir dir="${instrumented.classes.dir}" />
+		<cobertura-instrument todir="${instrumented.classes.dir}">	
+			<ignore regex="org.apache.log4j.*" />
+			<fileset dir="${target.dir}">
+				<include name="**/*.class" />
+				<exclude name="**/*Test.class" />
+				<exclude name="**/Mock*.class" />
+			</fileset>				
+		</cobertura-instrument>
+		</target>
+	<target name="coverage_report">
+		<cobertura-report srcdir="${src.dir}" destdir="${code.coverage.report.dir}" />
+		<delete file="${base.dir}/cobertura.ser" />
+	</target>
+	<target name="Generate_Report_Cobertura">			 
+		 <antcall target="instrument" />
+		<antcall target="runJUnit" />
+		<antcall target="coverage_report" />
+	</target>
+	<target name="runJUnitDB" depends="db_compile">
+			<echo message="Please see the test report at ${db_unit.dir}/Build_Report" />
+			<echo message="running test cases ${classNames}" />		
+			<junit printsummary="yes" haltonfailure="no">
+				  <formatter type="xml"/>
+				<classpath>
+					<fileset dir="${web_lib.dir}">
+						<include name="*.jar"/>
+					</fileset>
+
+					<fileset dir="${jboss.server.url}/lib">
+						<include name="jboss-j2ee.jar"/>
+						<include name="dom4j.jar"/>					
+						<include name="servlet-api.jar"/>
+
+					</fileset>
+
+					
+					<fileset dir="${db_lib.dir}">
+						<include name="*.jar"/>
+					</fileset>	
+
+					<!-- fileset dir="${tmp.smwar}/WEB-INF/classes">
+						<include name="**/*"/>
+					</fileset -->	
+
+					<pathelement path="${db_temp.dir}"/>
+				</classpath>
+				<batchtest todir="${db_unit.dir}/Build_Report">
+					<fileset dir="${db_src.dir}">
+						<include name="${classNames}"/>
+					</fileset>
+				</batchtest>
+			</junit>
+
+		</target>
+</project>
