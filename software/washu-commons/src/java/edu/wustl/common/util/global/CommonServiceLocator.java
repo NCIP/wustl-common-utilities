@@ -289,7 +289,7 @@ public final class CommonServiceLocator
 	 */
 	public String getDateSeparator()
 	{
-		return dateSeparator;
+		return ApplicationProperties.getValue("date.separator");
 	}
 
 	/**
@@ -313,7 +313,7 @@ public final class CommonServiceLocator
 	 */
 	public String getMinYear()
 	{
-		return minYear;
+		return  ApplicationProperties.getValue("min.year");
 	}
 
 	/**
@@ -329,7 +329,7 @@ public final class CommonServiceLocator
 	 */
 	public String getMaxYear()
 	{
-		return maxYear;
+		return ApplicationProperties.getValue("max.year");
 	}
 
 	/**
@@ -345,7 +345,7 @@ public final class CommonServiceLocator
 	 */
 	public String getDatePattern()
 	{
-		return datePattern;
+		return  ApplicationProperties.getValue("date.pattern");
 	}
 
 	/**
@@ -361,7 +361,7 @@ public final class CommonServiceLocator
 	 */
 	public String getTimePattern()
 	{
-		return timePattern;
+		return ApplicationProperties.getValue("time.pattern");
 	}
 
 	/**
@@ -377,7 +377,7 @@ public final class CommonServiceLocator
 	 */
 	public String getTimeStampPattern()
 	{
-		return timeStampPattern;
+		return ApplicationProperties.getValue("timestamp.pattern");
 	}
 
 	/**
