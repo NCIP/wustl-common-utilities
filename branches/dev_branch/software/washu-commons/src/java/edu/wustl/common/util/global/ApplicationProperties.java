@@ -56,7 +56,7 @@ public final class ApplicationProperties
 		}
 		else
 		{
-			val = bundle.getString(theKey);
+			val = bundle.getObject(theKey).toString();
 		}
 		return val;
 	}
@@ -78,7 +78,7 @@ public final class ApplicationProperties
 		}
 		else
 		{
-			msg = bundle.getString(theKey);
+			msg = bundle.getObject(theKey).toString();
 			StringBuffer message = new StringBuffer(msg);
 			for (int i = 0; i < placeHolders.size(); i++)
 			{

@@ -88,7 +88,8 @@ public class CommonUtilities
 		String datePattern = null;
 		if(strDate != null)
 		{
-			List<SimpleDateFormat> datePatternList = new ArrayList<SimpleDateFormat>();
+			datePattern = CommonServiceLocator.getInstance().getDatePattern();
+			/*List<SimpleDateFormat> datePatternList = new ArrayList<SimpleDateFormat>();
 			datePatternList.add(new SimpleDateFormat("MM-dd-yyyy", CommonServiceLocator.getInstance()
 					.getDefaultLocale()));
 			datePatternList.add(new SimpleDateFormat("MM/dd/yyyy", CommonServiceLocator.getInstance()
@@ -122,7 +123,7 @@ public class CommonUtilities
 				{
 					LOGGER.info(strDate+" date not in formate:" + dtPattern.toPattern());
 				}
-			}
+			}*/
 		}
 		return datePattern;
 	}
@@ -510,7 +511,7 @@ public class CommonUtilities
 	/**
 	 * Specifies date pattern.
 	 */
-	private static String pattern = "MM-dd-yyyy";
+	private static String pattern = CommonServiceLocator.getInstance().getDatePattern();//"MM-dd-yyyy";
 
 	/**
 	 * This method gets month from given date.
