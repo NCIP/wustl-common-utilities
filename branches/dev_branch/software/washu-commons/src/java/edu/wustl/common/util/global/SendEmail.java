@@ -52,6 +52,12 @@ public class SendEmail
 	 * Password of the User Email Id.
 	 */
 	private String emailPassword ;
+	
+	private String port;
+	
+	private String isAuthEnabled;
+	
+	private String isStartTLSEnabled;
 	/**
 	 * Constructor with host and from e-mail address.
 	 * @param host -host address of man server.
@@ -74,7 +80,7 @@ public class SendEmail
 	 * @param from host address of man server.
 	 * @param host Sender email address.
 	 */
-	public SendEmail(String host, String from, String emailPassword) throws MessagingException
+	public SendEmail(String host, String from, String emailPassword, String port,String isAuthEnabled,String isStartTLSEnabled) throws MessagingException
 	{
 		if(null==host)
 		{
@@ -84,6 +90,9 @@ public class SendEmail
 		this.host = host;
 		this.from = from;
 		this.emailPassword = emailPassword;
+		this.port=port;
+		this.isAuthEnabled=isAuthEnabled;
+		this.isStartTLSEnabled=isStartTLSEnabled;
 	}
 	/**
 	 * Used to send the mail with given parameters.
@@ -163,7 +172,9 @@ public class SendEmail
 		}
 		else
 		{
-			props.put("mail.smtp.auth", Boolean.valueOf(true)) ;
+			props.put("mail.smtp.auth", isAuthEnabled);
+			props.put("mail.smtp.starttls.enable", isStartTLSEnabled);
+			props.put("mail.smtp.port", port);
 			Authenticator auth = new MailAuthenticator(this.from,this.emailPassword) ;
 			session = Session.getInstance(props, auth);
 		}
@@ -215,6 +226,38 @@ public class SendEmail
 	{
 		this.emailPassword = emailPassword;
 	}
+	
+	public String getPort()
+	{
+		return port;
+	}
+	
+	public void setPort(String port)
+	{
+		this.port = port;
+	}
+
+	public String getIsAuthEnabled()
+	{
+		return isAuthEnabled;
+	}
+	
+	public void setIsAuthEnabled(String isAuthEnabled)
+	{
+		this.isAuthEnabled = isAuthEnabled;
+	}
+	
+	public String getIsStartTLSEnabled()
+	{
+		return isStartTLSEnabled;
+	}
+	
+	public void setIsStartTLSEnabled(String isStartTLSEnabled)
+	{
+		this.isStartTLSEnabled = isStartTLSEnabled;
+	}
+
+
 	/**
 	 * This is the private class which performs SMTP Mail Authentication
 	 * This mail authentication is Password Authentication to check the sender of 
@@ -267,7 +310,10 @@ public class SendEmail
 			String host = args[0]  ;
 			String from = args[1] ;
 			String passwd = args[2] ;
-			SendEmail sendEmail = new SendEmail(host,from,passwd);
+			String port = args[3] ;
+			String isAuthEnabled = args[4] ;
+			String isStartTLSEnabled = args[5] ;
+			SendEmail sendEmail = new SendEmail(host,from,passwd,port,isAuthEnabled,isStartTLSEnabled);
 			if(sendEmail.sendMail(emailDetails))
 			{
 				System.out.println("Email Sent Successfully...");
