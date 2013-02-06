@@ -9,6 +9,8 @@ package edu.wustl.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.Filter;
+
 import edu.wustl.common.domain.LoginDetails;
 import edu.wustl.dao.exception.AuditException;
 import edu.wustl.dao.exception.DAOException;
@@ -146,4 +148,12 @@ public interface HibernateDAO extends DAO
 	 */
 	List executeQuery(String query,List<ColumnValueBean> columnValueBeans, int maxResults)
 	throws DAOException;
+
+	/**
+	 * @param filterName
+	 * @return
+	 */
+	public Filter enableFilter(String filterName);
+
+	public void clearSession();
 }

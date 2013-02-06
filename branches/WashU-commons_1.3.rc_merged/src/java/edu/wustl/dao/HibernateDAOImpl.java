@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.Filter;
 import org.hibernate.HibernateException;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Query;
@@ -930,5 +931,18 @@ public class HibernateDAOImpl extends AbstractDAOImpl implements HibernateDAO
 		}
 
 	}
+	
+	
+	public Filter enableFilter(String filterName)
+	{
+		return session.enableFilter(filterName);
+	}
+	
+	public void clearSession()
+	{
+		session.clear();
+	}
+	
+	
 
 }
