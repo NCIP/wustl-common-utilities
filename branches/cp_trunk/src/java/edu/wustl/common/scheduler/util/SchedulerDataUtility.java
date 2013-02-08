@@ -95,10 +95,10 @@ public class SchedulerDataUtility
 				if (!recipientUsersIds[i].equals(""))
 					recipientUserIdsCollection.add(Long.valueOf(recipientUsersIds[i]));
 			}
-			if(recipientUserIdsCollection.isEmpty())
+			/*if(recipientUserIdsCollection.isEmpty())
 			{
 				recipientUserIdsCollection = null;
-			}
+			}*/
 			base.setRecepientUserIdCollection(recipientUserIdsCollection);
 		}
 		SimpleDateFormat formatter = new SimpleDateFormat(SchedulerConstants.DATE_FORMAT);
@@ -117,6 +117,10 @@ public class SchedulerDataUtility
 		if (jsonDataMap.has(SchedulerConstants.INCLUDE_ME))
 		{
 			base.setIncludeMe(jsonDataMap.getBoolean(SchedulerConstants.INCLUDE_ME));
+		}
+		else
+		{
+			base.setIncludeMe(false);
 		}
 
 		if (jsonDataMap.has("Duration"))
