@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Applications>
+	<Application name = "caTissuecore">
+		<DAOFactory name="edu.wustl.dao.daofactory.DAOFactory" default="true">
+	
+			<DefaultDAO>
+				<Class-name name = "edu.wustl.dao.HibernateDAOImpl"/>
+				<Config-file name = "hibernate.cfg.xml"/>
+				<DefaultConnectionManager name = "edu.wustl.dao.connectionmanager.ConnectionManager"/>
+			</DefaultDAO>
+	
+			<JDBCDAO>
+				<DBPropertyFile name ="MySQLDAOProperties.xml"/>
+			</JDBCDAO>
+			
+	
+		</DAOFactory>
+	 </Application>
+	
+	 <Application name = "cider">
+		<DAOFactory name="edu.wustl.dao.daofactory.DAOFactory">
+	
+			<DefaultDAO>
+				<Class-name name = "edu.wustl.dao.HibernateDAOImpl"/>
+				<Config-file name = "hibernateOracle.cfg.xml"/>
+				<DefaultConnectionManager name = "edu.wustl.dao.connectionmanager.ConnectionManager"/>
+			</DefaultDAO>
+		
+			<JDBCDAO>
+				<DBPropertyFile name ="OracleDAOProperties.xml"/>
+			</JDBCDAO>
+			
+		</DAOFactory>
+	 </Application>
+</Applications>

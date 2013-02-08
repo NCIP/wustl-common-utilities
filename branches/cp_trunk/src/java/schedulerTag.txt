@@ -1,0 +1,680 @@
+
+		<link rel="STYLESHEET" type="text/css" href="dhtmlx_suite/css/dhtmlxgrid.css">
+		<link rel="STYLESHEET" type="text/css" href="dhtmlx_suite/skins/dhtmlxgrid_dhx_skyblue.css">
+		<link rel="stylesheet" type="text/css" href="dhtmlx_suite/css/dhtmlxcalendar.css"></link>
+    		<link rel="stylesheet" type="text/css" href="dhtmlx_suite/skins/dhtmlxcalendar_dhx_skyblue.css"></link>	
+		<script src="dhtmlx_suite/js/dhtmlxcommon.js"></script>
+		<script src="dhtmlx_suite/js/dhtmlxgrid.js"></script>
+		<script src="dhtmlx_suite/js/dhtmlxgridcell.js"></script>
+		<script  src="dhtmlx_suite/ext/dhtmlxgrid_pgn.js"></script>		
+		<script  src="dhtmlx_suite/ext/dhtmlxgrid_filter.js"></script>
+		<script src="dhtmlx_suite/ext/dhtmlxgrid_srnd.js"></script>
+		
+		<script src="dhtmlx_suite/js/dhtmlxcalendar.js"></script>
+		<script src="jss/json2.js"></script>	
+		<script language="JavaScript" type="text/javascript" src="jss/ext-base.js"></script>
+		<script language="JavaScript" type="text/javascript" src="jss/ext-all.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/clinicalstudyext-all.css"/>
+
+<div style="margin:5px;">
+<input type="hidden" name="scgeduleType" id="scheduleType1" value="$scheduleTypeToken$">
+<input type="hidden" name="scgeduleId" id="scheduleId1" value="">
+<input type="hidden" name="dropDownType" id="dropDownType1" value="">
+<input type="hidden" name="isEdit" id="isEdit1" value="">
+<input type="hidden" name="ownerIdOfEdit" id="ownerIdOfEdit1" value="">
+<input type="hidden" name="userClassName" id="userClassName1" value="$userClassNameToken$">
+<input type="hidden" name="userClassEmailAttributeName" id="userClassEmailAttributeName1" value="$emailAttributeNameToken$">
+<input type="hidden" name="userId" id="userId1" value="">
+
+
+	<table width="100%">
+	<tr>
+		<td>
+		<style>
+		.red_ar_b {
+					font-family: verdana;
+					font-size: 12px;
+					font-weight: normal;
+					}
+		</style><div id="errorMessages" class="red_ar_b"></div></td>
+	</tr>
+		<tr class="tr_bg_blue1">
+			<td><span class="blue_ar_b">&nbsp;Scheduling Options</span></td>
+		</tr>
+		<tr>
+			<td style="padding-left: 5px;">
+			<form name="scheduleForm">
+					<table width="550px">
+						<tr>
+							<td width="1%"><img width="6" vspace="0" hspace="0" height="6" alt="Mandatory" src="images/uIEnhancementImages/star.gif"></td>
+							<td class="black_ar_new" width="200px">Schedule Name:</td>
+							<td class="black_ar_new" align="left"><input type="text" style="width:340px" name="scheduleName" id="scheduleName1"></td>
+						</tr>
+						<tr>
+						<td width="1%"></td>
+							<td class="black_ar_new">Start Date:</td>
+							<td class="black_ar_new" align="left"><input type="text" style="width:100px" name="startDate" id="startDate1"><img width="24" vspace="0" hspace="0" height="22" alt="Calendar" src="images/calendar.gif">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End Date:&nbsp;&nbsp;
+							<input type="text" style="width:100px" name="endDate" id="endDate1"><img width="24" vspace="0" hspace="0" height="22" alt="Calendar" src="images/calendar.gif"></td>
+						</tr>
+						
+						<tr>
+							<td><img width="6" vspace="0" hspace="0" height="6" alt="Mandatory" src="images/uIEnhancementImages/star.gif"></td>
+							<td class="black_ar_new">Repeat:</td>
+							<td class="black_ar_new" align="left">
+								<table>
+							<tr>
+								<td>
+									<input type="radio" name="interval" id="interval1" value="daily">
+								</td>
+								<td class="black_ar_new">
+									Daily
+								</td>
+								<td>
+									<input type="radio" name="interval" id="interval1" value="weekly">								
+								</td>
+								<td class="black_ar_new">
+									Weekly
+								</td>
+								<td>
+									<input type="radio" name="interval" id="interval1" value="monthly">								
+								</td>
+								<td class="black_ar_new">
+									Monthly
+								</td>
+								<td>
+									<input type="radio" name="interval" id="interval1" value="quarterly">								
+								</td>
+								<td class="black_ar_new">
+									Quarterly
+								</td>
+								<td>
+									<input type="radio" name="interval" id="interval1" value="yearly">								
+								</td>
+								<td class="black_ar_new">
+									Yearly
+								</td>	
+							</tr>
+							</table>
+								</td>
+						</tr>
+						
+						<tr>
+							<td width="1%" valign="top"><img width="6" vspace="0" hspace="0" height="6" alt="Mandatory" src="images/uIEnhancementImages/star.gif"></td>
+							<td valign="top">
+									<span class="black_ar_new">Reports:</span>
+							</td><td align="left">
+								<table width="100%">
+									<tr>
+										<td valign="top" align="left">
+											<input type='text' name ="dropDown" id="dropDown1" style="width: 150px"/>
+										</td>
+										<td valign="top" align="left">
+											<a href="javascript:addItem()">
+											<img height="18" border="0" align="absmiddle" alt="Add" src="images/b_add_inact.gif">
+											</a>
+											<DIV style="height:7px;"></DIV>
+											<a href="javascript:removeItem()">
+											<img height="18" border="0" align="absmiddle" alt="Remove" src="images/b_remove_inact.gif">
+											</a>
+										</td>
+										<td valign="top" align="left">
+											<select name="itemList" id="itemList1" size="6" multiple="multiple" style="width:150px;font-family: verdana;font-size: 12px;font-weight: normal;">
+							    
+										</select>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr id ="duration1"  style="display:none">
+							<td></td>
+							
+						</tr>
+						
+						<tr>
+							<td width="1%"></td>
+							<td class="black_ar_new">Comments:</td>
+							<td class="black_ar_new" align="left"><textarea rows="2" cols="45" name="comments" id="comments1"></textarea></td>
+						</tr>
+						
+					</table>
+					</form>
+			</td>
+		</tr>
+		<tr class="tr_bg_blue1">
+			<td><span class="blue_ar_b">&nbsp;&nbsp;Recipients</span></td>
+		</tr>
+		<tr>
+		<td>
+				<table >
+					<tr>
+					<td width="170px" valign="top">
+					<span class="black_ar_new">Recipients:</span>
+					</td>
+						<td valign="top"  align="left">
+							<input type='text' name ="userList" id="userList1"/>
+						</td>
+						<td valign="top" align="left"><a href="javascript:addRecipientUser()"><img height="18" border="0" align="absmiddle" alt="Add" src="images/b_add_inact.gif"></a><DIV style="height:7px;"></DIV><a href="javascript:removeRecipientUser()"><img height="18" border="0" align="absmiddle" alt="Remove" src="images/b_remove_inact.gif"></a></td>
+						<td class="black_ar_new" align="left">
+							<select name="recipientList" id="recipientList1" size="6" multiple="multiple" style="width:150px;font-family: verdana;font-size: 12px;font-weight: normal;">
+							    
+							</select>
+							
+						</td>
+						
+					</tr>
+					<tr><td><br></td></tr>
+					<tr>
+						<td class="black_ar_new" valign="middle" colspan="2"><input type="checkbox" name="meTo" id ="meTo1" value="meTo" checked="checked" /> &nbsp;&nbsp;&nbsp;&nbsp;Include me in the recipients
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		
+		<tr>
+		<td style="padding-left:10px;"><input type="button" id="add1" value="Add Schedule" class="blue_ar_b" onClick="submitFormData();">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="Cancel" class="blue_ar_b" onCLick='clearForm();'></td>
+		</tr>
+		<tr>
+			<td></td>
+		</tr>
+		<tr class="tr_bg_blue1">
+			<td><span class="blue_ar_b">&nbsp;Scheduled $captionToken$  &nbsp;&nbsp;&nbsp; <font style="font-weight: normal">(Note: Double click on a row to edit the schedule)</font></span></td>
+		</tr>
+		<tr>
+			<td>
+				<center>
+						<div style="width:99%; height:200px; overflow:hidden" id="scheduleGrid">
+					
+						</div>
+						<br>
+					
+					
+					<script>
+					window.dhx_globalImgPath = "dhtmlx_suite/imgs/";
+					
+					
+
+					var scheduleGrid;
+					var startDate,endDate,startDate1,endDate1;
+					var comboInfo,usersDS,usersCombo,dropDownDS,dropDownComboInfo,dropDownCombo;
+					var id;
+
+							function loadFormUI()
+							{
+								if(currentCsId=="undefined")
+								{
+									currentCsId=0;
+								}
+								scheduleGrid = new dhtmlXGridObject("scheduleGrid");
+								scheduleGrid.setImagePath("dhtmlx_suite/imgs/");
+								scheduleGrid.setSkin("dhx_skyblue");
+								scheduleGrid.setHeader("No.,Schedule Name,$captionToken$ Name,Start Date : End Date,Interval,Scheduled By,Recipients,Delete,,,,,,,,");
+								scheduleGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
+								scheduleGrid.setInitWidths("40,200,140,140,80,150,150,60,0,0,0,0,0,0,0,0,0");
+								scheduleGrid.setColAlign("left,left,left,left,left,left,left,left,,,,,left,left,,,")
+								scheduleGrid.init();
+								scheduleGrid.load('CommonScheduleAction.do?type=populateScheduleGrid&scheduleType='+document.getElementById('scheduleType1').value+'&id='+currentCsId+'&isSysDashboard='+isSysDashboard,'json');
+								scheduleGrid.attachEvent("onRowDblClicked", function(rId,cInd){populateFormFromGrid(rId);});
+								scheduleGrid.attachHeader(",#text_filter,#text_filter,,#select_filter,#text_filter,#text_filter,,,,,,,#text_filter,,,");
+								scheduleGrid.enableMultiselect(false);
+								
+								startDate = new dhtmlXCalendarObject("startDate1");
+								endDate= new dhtmlXCalendarObject("endDate1");
+								startDate.setSkin("dhx_skyblue");
+								startDate.setDateFormat("%m/%d/%Y");
+								endDate.setSkin("dhx_skyblue");
+								endDate.setDateFormat("%m/%d/%Y");
+								
+								
+								
+								if(document.getElementById('scheduleType1').value=="main.java.scheduler.domain.QuerySchedule")
+								{
+								document.getElementById('dropDownType1').value="QueryId";
+								}
+								
+								if(document.getElementById('scheduleType1').value=="edu.wustl.common.scheduler.domain.ReportSchedule")
+								{
+									
+									id = currentCsId;
+									
+									
+									
+								}
+								populateUserId();
+								//id in the following url is the deciding parameter for user retrieval. For eg. for reports it is cs id or cp id, for query its query id
+								
+								 usersDS =getAdvDs('$userDropDownToken$&scheduleType='+document.getElementById('scheduleType1').value+'&id='+id);
+		        				 comboInfo = {
+		        					store:usersDS,
+		        					mode: 'remote',
+		        					width:150,
+		        					applyTo: 'userList1',
+		        					hiddenName:'userList',
+		        					pageSize:15,
+		        					minChars : 1,
+		        				    emptyText:''
+		        				}
+		        				 usersCombo = getAdvCombo(comboInfo);
+
+		        				
+		        				 if(document.getElementById('scheduleType1').value=="edu.wustl.common.scheduler.domain.ReportSchedule")
+								{
+									dropDownDS =getAdvDs('$dropDownToken$&csId='+currentCsId);
+								}
+		        				else
+		        				{
+		        					dropDownDS =getAdvDs('$dropDownToken$');
+		        				} 
+		        				
+		        				 
+		        				 dropDownComboInfo = {
+		        					store:dropDownDS,
+		        					mode: 'remote',
+		        					width:150,
+		        					applyTo: 'dropDown1',
+		        					hiddenName:'dropDown',
+		        					pageSize:15,
+		        					minChars : 1,
+		        				    emptyText:''
+		        				}
+		        				dropDownCombo = getAdvCombo(dropDownComboInfo);
+		        				
+								dropDownCombo.on("select",function(){
+		        					//usersDS =getAdvDs('CommonScheduleAction.do?type=populateUsers&queryId='+dropDownCombo.getValue());
+  									});
+		        				
+								
+
+							}
+							
+							function deleteSchedule(id)
+							{
+								if(confirm('Delete Schedule?'))
+								{
+								dhtmlxAjax.get('CommonScheduleAction.do?type=deleteSchedule&id='+id+'&scheduleType='+document.getElementById('scheduleType1').value,deleteHandler);
+								if(document.getElementById('scheduleId1').value==id)
+								{
+									clearForm();
+								}
+								 }							
+							}
+							
+							function deleteHandler(loader)
+							{
+								scheduleGrid.clearAll();
+								scheduleGrid.load('CommonScheduleAction.do?type=populateScheduleGrid&scheduleType='+document.getElementById('scheduleType1').value+'&id='+currentCsId+'&isSysDashboard='+isSysDashboard,'json');
+																
+							}
+							
+							
+							function getFormDataMapJSON()
+							{
+								var scheduleData={};
+								var isEdit = document.getElementById('isEdit1').value;
+								scheduleData['scheduleType']=document.getElementById('scheduleType1').value;
+								scheduleData['Name']=document.getElementById('scheduleName1').value;
+								
+								if(document.getElementById('startDate1').value!="")
+								{scheduleData['StartDate']=document.getElementById('startDate1').value;}
+								
+								if(document.getElementById('endDate1').value!="")
+								{scheduleData['EndDate']=document.getElementById('endDate1').value;}
+								
+								scheduleData['Comments']=document.getElementById('comments1').value;
+								scheduleData['dropDown']=dropDownCombo.getValue();
+								scheduleData['userClassName']=document.getElementById('userClassName1').value;
+								scheduleData['userClassEmailAttribName']=document.getElementById('userClassEmailAttributeName1').value;
+								if(document.getElementById('meTo1').checked==true)
+								{
+									scheduleData['meTo']="true";
+								}
+								
+								if(document.getElementById('scheduleType1').value=="edu.wustl.common.scheduler.domain.ReportSchedule")
+								{
+									
+									
+								}
+						
+								scheduleData['dropDownType']=document.getElementById('dropDownType1').value;
+								
+								if(isEdit=="true")
+									{
+									scheduleData['OwnerId']=document.getElementById('ownerIdOfEdit1').value;
+									scheduleData['Id']=document.getElementById('scheduleId1').value;
+									}
+								
+								var recipientsListElement = document.getElementById('recipientList1');
+								var recipientList = "";							
+								for(i=0;i<recipientsListElement.length;i++)
+									{
+											recipientList+=","+recipientsListElement.options[i].value;
+									}
+								scheduleData['RecepientUserIdCollection']=recipientList;	
+
+
+
+								var itemListElement = document.getElementById('itemList1');
+								var itemList = "";							
+								for(i=0;i<itemListElement.length;i++)
+									{
+											itemList+=";"+itemListElement.options[i].value;
+									}
+								scheduleData['itemIdCollection']=itemList;
+
+						
+								var intervalElement = document.scheduleForm.interval;								
+								for(var i = 0; i < intervalElement.length; i++)
+								{
+									if(intervalElement[i].checked) 
+									{
+										scheduleData['Interval']=intervalElement[i].value;
+									}
+								}								
+								return JSON.stringify(scheduleData);
+							}
+							
+							function createOption(text,value)
+							{
+								var opt = document.createElement("option");
+						        opt.text = text;
+						        opt.value = value;
+								return opt;	
+							}
+							
+							function getRowValues(rowId) 
+							{
+								var arrayValue = new Array();
+								var j = 0;
+								for ( var i = 1; i < 16; i++) 
+								{
+									arrayValue[j++] = scheduleGrid.cells(rowId, i).getValue();
+								}
+								return arrayValue;
+							}
+							
+							
+							function populateFormFromGrid(rowId)
+							{
+								clearForm();
+								
+								var gridData=getRowValues(rowId);
+								document.getElementById('isEdit1').value="true";
+								document.getElementById('scheduleName1').value=gridData[0];
+								if(gridData[2]!="")
+								{
+									var dates = gridData[2].split(":");
+									document.getElementById('startDate1').value=dates[0];
+									document.getElementById('endDate1').value=dates[1];
+								}
+ 								var intervalElement = document.scheduleForm.interval;							
+								for(var i = 0; i < intervalElement.length; i++)
+								{
+									if(intervalElement[i].value==gridData[3]) 
+									{
+										intervalElement[i].checked=true;
+										break;
+									}
+								}
+								document.getElementById('comments1').value=gridData[11];
+								if(gridData[12]==true)
+								{
+									document.getElementById('meTo1').checked=true;
+								}
+								if(gridData[12]=="")
+								{
+									document.getElementById('meTo1').checked=false;
+								}
+								
+								//dropDownCombo.setValue(gridData[7]);
+								
+								var itemList=document.getElementById('itemList1');
+								 var itemIdList = gridData[7].split(";");
+								 var itemNameList = gridData[1].split(",");
+								 for(i=0;i<itemIdList.length;i++)
+									{
+									 itemList.options.add(createOption(itemNameList[i],itemIdList[i]));	
+									} 
+								
+								document.getElementById('scheduleId1').value=gridData[9];
+								document.getElementById('ownerIdOfEdit1').value=gridData[8];
+								var recipientList=document.getElementById('recipientList1');
+								 var userIdList = gridData[10].split(",");
+								 var userNameList = gridData[5].split(";");
+								 for(i=0;i<userIdList.length;i++)
+									{
+										recipientList.options.add(createOption(userNameList[i],userIdList[i]));	
+									} 
+									
+									if(document.getElementById('ownerIdOfEdit1').value!=document.getElementById('userId1').value)
+									{
+										document.getElementById('add1').disabled=true;										
+									}
+									
+								if(document.getElementById('scheduleType1').value=="edu.wustl.common.scheduler.domain.ReportSchedule")
+								{
+									
+								}
+							}
+							
+							
+							
+							function clearForm()
+							{
+								document.getElementById('scheduleName1').value="";
+								document.getElementById('startDate1').value="";
+								document.getElementById('endDate1').value="";
+								document.getElementById('comments1').value="";
+								document.getElementById('ownerIdOfEdit1').value="";
+								document.getElementById('scheduleId1').value="";
+								document.getElementById('isEdit1').value="false";
+								document.getElementById('errorMessages').innerHTML="";
+								dropDownCombo.setValue('');
+								usersCombo.setValue('');
+								document.getElementById('add1').disabled=false;										
+								document.getElementById('meTo1').checked="true";
+								var choice = document.scheduleForm.interval; 
+								for (i = 0; i < choice.length; i++)
+								{ if ( choice[i].checked = true )  choice[i].checked = false;  }
+								
+								var recipientsListElement = document.getElementById('recipientList1');
+								recipientsListElement.innerHTML="";
+								
+								var itemListElement = document.getElementById('itemList1');
+								itemListElement.innerHTML="";
+							}
+							
+							
+							
+							
+							function displayMessage(type,message)
+							{
+								var divMessage= document.getElementById("errorMessages");
+								if(type=='error')
+									{
+										divMessage.innerHTML +="<br><font style='color:red'>"+message+"</font>";
+									}
+								else if (type=='success')
+									{
+										divMessage.innerHTML +="<br><font style='color:green'>"+message+"</font>";
+									}
+							}
+							
+							function submitFormData()
+							{
+								document.getElementById('errorMessages').innerHTML="";								
+								if(validateForm())
+									{
+	 								dhtmlxAjax.get('CommonScheduleAction.do?type=addAndSchedule&formJson='+getFormDataMapJSON(),submitHandler);
+									}
+ 						}
+							
+							function submitHandler(loader)
+							{
+								var jsonObject = eval('(' + loader.xmlDoc.responseText  + ')');
+								displayMessage(jsonObject.type,jsonObject.message);
+								if(jsonObject.type='success')
+								{
+								scheduleGrid.clearAll();
+								scheduleGrid.load('CommonScheduleAction.do?type=populateScheduleGrid&scheduleType='+document.getElementById('scheduleType1').value+'&id='+currentCsId+'&isSysDashboard='+isSysDashboard,'json');
+								}
+							}
+							
+							function populateUserId()
+							{
+								 dhtmlxAjax.get('CommonScheduleAction.do?type=getCurrentUserId',userHandler);
+							
+							}
+							
+							function userHandler(loader)
+							{
+								document.getElementById('userId1').value=loader.xmlDoc.responseText;
+							}
+							
+							
+							function addRecipientUser()
+							{
+								var recipientList=document.getElementById('recipientList1');
+								var flag="false"
+								if(document.getElementById('userList1').value==' ')
+									{alert("  Is not a valid input. Please choose another.");}
+								else
+									{
+										if(recipientList.length>0)
+										for(i=0;i<recipientList.length;i++)
+										{ 
+										if(recipientList.options[i].text==document.getElementById('userList1').value)
+											{flag="true";}
+										}
+									if(flag=='false' &&  usersCombo.getValue()!="")
+									{
+									recipientList.options.add(createOption(document.getElementById('userList1').value,usersCombo.getValue()));
+									recipientList.options[0].selected=true;
+									}
+									}
+							}
+							
+							function removeRecipientUser()
+							{
+								var recipientList=document.getElementById('recipientList1');
+								for(i=0;i<=recipientList.length;i++)
+								{ if(recipientList.options[i].selected) recipientList.remove(i); }
+							}
+							
+							function addItem()
+							{
+								var itemsList=document.getElementById('itemList1');
+								var flag="false"
+								if(document.getElementById('dropDown1').value==' ')
+									{alert("  Is not a valid input. Please choose another.");}
+								else
+									{
+										if(itemsList.length>0)
+										for(i=0;i<itemsList.length;i++)
+										{ 
+										if(itemsList.options[i].text==document.getElementById('dropDown1').value)
+											{flag="true";}
+										}
+									if(flag=='false' &&  dropDownCombo.getValue()!="")
+									{
+									itemsList.options.add(createOption(document.getElementById('dropDown1').value,dropDownCombo.getValue()));
+									itemsList.options[0].selected=true;
+									}
+									}
+							}
+							
+							function removeItem()
+							{
+								var itemsList=document.getElementById('itemList1');
+								for(i=0;i<=itemsList.length;i++)
+								{ if(itemsList.options[i].selected) itemsList.remove(i); }
+							}
+							
+							function validateForm()
+							{
+
+								//var userRegex = /^[\s\w\.@]{1,100}$/;
+								//var userRegex =/[^A-Za-z\d]/;
+								var isValid=true;
+								var checkFlag=false;
+								//if(document.getElementById('scheduleName1').value.match(userRegex)==null)
+								if(document.getElementById('scheduleName1').value=="" ||document.getElementById('scheduleName1').value==" " )
+								{
+									isValid=false;
+									displayMessage("error","Schedule Name empty.");
+								}
+								
+								var choice = document.scheduleForm.interval; 
+								for (i = 0; i < choice.length; i++)
+								{ if ( choice[i].checked == true ) checkFlag=true;  }
+								
+								if(checkFlag==false)
+								{
+									displayMessage("error","Invalid interval.");
+								}
+								
+								
+								var itemList=document.getElementById('itemList1');
+								if(!itemList.options.length>0)
+								{
+									isValid=false;
+									displayMessage("error","Select $captionToken$.");
+								}
+								 								
+								if((new Date(document.getElementById('startDate1').value))>(new Date(document.getElementById('endDate1').value)))
+								{
+									isValid=false;
+									displayMessage("error","End date cannot be earlier than start date.");
+								}
+								return isValid;
+							}
+							
+							function getAdvDs(dsUrl){
+								var ds = new Ext.data.Store({
+											proxy: new Ext.data.HttpProxy({url: dsUrl}),
+											
+											reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'},
+											[{name: 'id', mapping: 	'id'},{name: 'excerpt', mapping: 'field'}])
+											});
+											ds.load({params:{start:0, limit:15,query:''}});
+								return ds;
+							}
+							function getAdvCombo(comboInfo){
+							var combo = new Ext.form.ComboBox({
+											store: comboInfo['store'],
+											displayField:'excerpt',
+											cls:Ext.isIE?'forIe':'',
+											valueField: 'id',
+											typeAhead: 'true',
+											pageSize:comboInfo['pageSize'],
+											//forceSelection: 'true',
+											queryParam : 'query',
+											width: comboInfo['width'],
+											mode: 'remote',
+											lazyInit:'true',
+											maxHeight:250,
+											listWidth:250,
+											triggerAction: 'all',
+											minChars : 1,
+											emptyText:' ',
+											selectOnFocus:'true',
+											applyTo: comboInfo['applyTo'],
+											hiddenName:comboInfo['hiddenName'],
+											tpl:'<tpl for=\".\"><div title=\"{excerpt}\" class=\"x-combo-list-item\">{excerpt}</div></tpl>'
+									});
+
+							return combo;
+
+							}
+							
+			                        
+							
+						
+					</script>
+				</center>
+			</td>
+		</tr>
+	</table>	
+</div>
+	

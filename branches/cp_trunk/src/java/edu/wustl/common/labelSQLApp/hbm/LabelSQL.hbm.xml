@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="edu.wustl.common.labelSQLApp.domain.LabelSQL" table="LABELSQL">
+		<id name="id" type="long" length="30" column="IDENTIFIER">
+			<generator class="native">
+                <param name="sequence">LABELSQL_IDENTIFIER_SEQ</param>
+            </generator>
+		</id>
+
+		<property name="label" type="string" update="true" insert="true"
+			column="LABEL" length="255" />
+
+
+		<property name="query" type="string" update="true" insert="true"
+			column="QUERY" length="255" />
+
+
+
+
+	</class>
+</hibernate-mapping>
+
