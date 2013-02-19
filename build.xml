@@ -28,15 +28,17 @@
 	</path>
 	<target name="compile" depends="clean">
 		<mkdir dir="${temp.src.classes.dir}" />
-		<javac srcdir="${src.dir}" destdir="${temp.src.classes.dir}" fork="true" memoryMaximumSize="1200m" includes="**/*.java" debug="on" deprecation="true" classpathref="compile.classpath" failonerror="true" nowarn="on" target="1.5" />
+		<javac destdir="${temp.src.classes.dir}" debug="on" includeAntRuntime="false" target="1.5">
+			<src path="${src.dir}"/>
+		    	<classpath refid="compile.classpath"/>
+		 </javac>
+		<!--javac srcdir="${src.dir}" destdir="${temp.src.classes.dir}" fork="true" memoryMaximumSize="1200m" includes="**/*.java" debug="on" deprecation="true" classpathref="compile.classpath" failonerror="true" nowarn="on" target="1.5" /-->
 		<copy todir="${temp.src.classes.dir}">
 			<fileset dir="${src.dir}" includes="**/schedulerTag.txt" />
-			<fileset dir="${src.dir}" includes="**/*.hbm.xml" />
-			<fileset dir="${src.dir}" includes="**/*.properties" />
+			<fileset dir="${src.dir}" includes="**/*.hbm.xml"/>
+			<fileset dir="${src.dir}" includes="**/*.properties" excludes="**/cab2b.properties" />
 			<fileset dir="${src.dir}" includes="**/*.xml" />
 			<fileset dir="${src.dir}" includes="**/*.ser" />
-			<fileset dir="${src.dir}" excludes="**/cab2b.properties" />
-			
 		</copy>
 	</target>
 	<target name="dist" depends="build.jar,build.src.zip"/>
