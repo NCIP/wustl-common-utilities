@@ -34,7 +34,7 @@ public interface DAO<T, ID extends Serializable>
 	 * @param obj Object to be updated in database
 	 * @throws DAOException : generic DAOException
 	 */
-	void update(T obj) throws DAOException;
+	T update(T obj) throws DAOException;
 
 	/**h 
 	 * 
@@ -42,7 +42,7 @@ public interface DAO<T, ID extends Serializable>
 	 * @param previousObj
 	 * @throws DAOException
 	 */
-	void update(T currentObj, T previousObj) throws DAOException;
+	T update(T currentObj, T previousObj) throws DAOException;
 
 	/**
 	 * Deletes the persistent object from the database.
