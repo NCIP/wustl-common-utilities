@@ -135,7 +135,7 @@ public class GenericHibernateDAO<T, ID extends Serializable> implements DAO<T, I
 	 * @param currentObj Object to be updated in database
 	 * @throws DAOException : generic DAOException
 	 */
-	public void update(T currentObj) throws DAOException
+	public T update(T currentObj) throws DAOException
 	{
 		logger.debug("Update Object");
 		try
@@ -143,7 +143,7 @@ public class GenericHibernateDAO<T, ID extends Serializable> implements DAO<T, I
 			Long objectId = auditManager.getObjectId(currentObj);
 			getSession().evict(currentObj);
 			T previousObj = findById((ID)objectId);
-			update(currentObj, previousObj);
+			currentObj =update(currentObj, previousObj);
 		}
 		catch (AuditException exp)
 		{
@@ -155,6 +155,7 @@ public class GenericHibernateDAO<T, ID extends Serializable> implements DAO<T, I
 			throw DAOUtility.getInstance().getDAOException(hibExp, "db.update.data.error",
 					"GenericHibernateDAO.java ");
 		}
+		return currentObj ;
 	}
 
 
@@ -164,7 +165,7 @@ public class GenericHibernateDAO<T, ID extends Serializable> implements DAO<T, I
 	 * * @param previousObj persistent object fetched from database.
 	 * @throws DAOException : generic DAOException
 	 */
-	public void update(T currentObj, T previousObj) throws DAOException
+	public T update(T currentObj, T previousObj) throws DAOException
 	{
 		logger.debug("Update Object");
 		try
@@ -183,6 +184,7 @@ public class GenericHibernateDAO<T, ID extends Serializable> implements DAO<T, I
 			throw DAOUtility.getInstance().getDAOException(hibExp, "db.update.data.error",
 					"GenericHibernateDAO.java ");
 		}
+		return currentObj;
 
 	}
 
