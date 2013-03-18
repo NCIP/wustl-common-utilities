@@ -41,6 +41,11 @@ public class EmailDetails
 	private String body;
 
 	/**
+	 * HTML E-mail body.
+	 */
+	private boolean htmlBody = false;
+
+	/**
 	 * No argument constructor.
 	 */
 	public EmailDetails()
@@ -217,9 +222,17 @@ public class EmailDetails
 	public void setBody(String body)
 	{
 		this.body = body;
+	} 
+
+	public boolean isHtmlBody() 
+	{
+		return htmlBody;
 	}
-
-
+	
+	public void setHtmlBody(boolean htmlBody) 
+	{
+		this.htmlBody = htmlBody;
+	}
 	/**
 	 * This method convert Array To InternetAddrArray.
 	 * Added by kiran_pinnamaneni. code reviewer abhijit_naik
