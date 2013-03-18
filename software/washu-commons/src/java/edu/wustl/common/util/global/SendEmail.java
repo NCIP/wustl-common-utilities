@@ -148,7 +148,11 @@ public class SendEmail
 		msg.setSentDate(new Date());
 		// create and fill the first message part
 		MimeBodyPart messageBodyPart = new MimeBodyPart();
-		messageBodyPart.setText(emailDetails.getBody());
+		if(emailDetails.isHtmlBody()){
+			messageBodyPart.setContent(emailDetails.getBody(), "text/html");
+		} else {
+			messageBodyPart.setText(emailDetails.getBody());
+		}
 		Multipart multiPart = new MimeMultipart();
 		multiPart.addBodyPart(messageBodyPart);
 		// add the Multipart to the message
