@@ -1,16 +1,17 @@
 
-		<link rel="STYLESHEET" type="text/css" href="dhtmlx_suite/css/dhtmlxgrid.css">
-		<link rel="STYLESHEET" type="text/css" href="dhtmlx_suite/skins/dhtmlxgrid_dhx_skyblue.css">
-		<link rel="stylesheet" type="text/css" href="dhtmlx_suite/css/dhtmlxcalendar.css"></link>
-    		<link rel="stylesheet" type="text/css" href="dhtmlx_suite/skins/dhtmlxcalendar_dhx_skyblue.css"></link>	
-		<script src="dhtmlx_suite/js/dhtmlxcommon.js"></script>
-		<script src="dhtmlx_suite/js/dhtmlxgrid.js"></script>
-		<script src="dhtmlx_suite/js/dhtmlxgridcell.js"></script>
-		<script  src="dhtmlx_suite/ext/dhtmlxgrid_pgn.js"></script>		
-		<script  src="dhtmlx_suite/ext/dhtmlxgrid_filter.js"></script>
-		<script src="dhtmlx_suite/ext/dhtmlxgrid_srnd.js"></script>
+		<link rel="STYLESHEET" type="text/css" href="dhtmlxSuite_v35/dhtmlxGrid/codebase/dhtmlxgrid.css" />
+		<link rel="STYLESHEET" type="text/css" href="dhtmlxSuite_v35/dhtmlxGrid/codebase/skins/dhtmlxgrid_dhx_skyblue.css" />
+		<link rel="STYLESHEET" type="text/css" href="dhtmlxSuite_v35/dhtmlxCalendar/codebase/dhtmlxcalendar.css" />
+		<link rel="STYLESHEET" type="text/css" href="dhtmlxSuite_v35/dhtmlxCalendar/codebase/skins/dhtmlxcalendar_dhx_terrace.css" />
 		
-		<script src="dhtmlx_suite/js/dhtmlxcalendar.js"></script>
+		<script type="text/javascript" src="dhtmlxSuite_v35/dhtmlxGrid/codebase/dhtmlxcommon.js"></script>
+		<script type="text/javascript" src="dhtmlxSuite_v35/dhtmlxGrid/codebase/dhtmlxgrid.js"></script>
+		<script type="text/javascript" src="dhtmlxSuite_v35/dhtmlxGrid/codebase/dhtmlxgridcell.js"></script>
+		<script type="text/javascript" src="dhtmlxSuite_v35/dhtmlxGrid/codebase/ext/dhtmlxgrid_pgn.js"></script> 
+		<script type="text/javascript" src="dhtmlxSuite_v35/dhtmlxGrid/codebase/ext/dhtmlxgrid_filter.js"></script>
+		<script type="text/javascript" src="dhtmlxSuite_v35/dhtmlxGrid/codebase/ext/dhtmlxgrid_srnd.js"></script>
+		
+		<script type="text/javascript" src="dhtmlxSuite_v35/dhtmlxCalendar/codebase/dhtmlxcalendar.js"></script>
 		<script src="jss/json2.js"></script>	
 		<script language="JavaScript" type="text/javascript" src="jss/ext-base.js"></script>
 		<script language="JavaScript" type="text/javascript" src="jss/ext-all.js"></script>
@@ -192,9 +193,7 @@
 					
 					
 					<script>
-					window.dhx_globalImgPath = "dhtmlx_suite/imgs/";
-					
-					
+			
 
 					var scheduleGrid;
 					var startDate,endDate,startDate1,endDate1;
@@ -208,7 +207,7 @@
 									currentCsId=0;
 								}
 								scheduleGrid = new dhtmlXGridObject("scheduleGrid");
-								scheduleGrid.setImagePath("dhtmlx_suite/imgs/");
+								scheduleGrid.setImagePath("dhtmlxSuite_v35/dhtmlxGrid/codebase/imgs/");
 								scheduleGrid.setSkin("dhx_skyblue");
 								scheduleGrid.setHeader("No.,Schedule Name,$captionToken$ Name,Start Date : End Date,Interval,Scheduled By,Recipients,Delete,,,,,,,,");
 								scheduleGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
@@ -222,11 +221,12 @@
 								
 								startDate = new dhtmlXCalendarObject("startDate1");
 								endDate= new dhtmlXCalendarObject("endDate1");
-								startDate.setSkin("dhx_skyblue");
+								startDate.setSkin("dhx_terrace");
 								startDate.setDateFormat("%m/%d/%Y");
-								endDate.setSkin("dhx_skyblue");
+								startDate.hideTime();
+								endDate.setSkin("dhx_terrace");
 								endDate.setDateFormat("%m/%d/%Y");
-								
+								endDate.hideTime();
 								
 								
 								if(document.getElementById('scheduleType1').value=="main.java.scheduler.domain.QuerySchedule")
