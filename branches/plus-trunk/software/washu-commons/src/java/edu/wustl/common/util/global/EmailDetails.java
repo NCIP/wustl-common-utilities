@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import java.io.File;
 
 /**
  * This class contains email details.
@@ -44,6 +45,21 @@ public class EmailDetails
 	 * HTML E-mail body.
 	 */
 	private boolean htmlBody = false;
+	
+	/**
+	* Attachment E-Mail
+	*/
+	
+	public List<File> attachments;
+	
+	
+
+	public List<File> getAttachments() {
+		return attachments;
+	}
+	public void setAttachments(List<File> attachments) {
+		this.attachments = attachments;
+	}
 
 	/**
 	 * No argument constructor.

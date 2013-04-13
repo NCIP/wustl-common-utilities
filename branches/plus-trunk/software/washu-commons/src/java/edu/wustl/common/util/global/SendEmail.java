@@ -27,6 +27,10 @@ import javax.mail.internet.MimeMultipart;
 
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.util.logger.LoggerConfig;
+import java.io.File;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 
 /**
  * This Class is used to send E-mails.
@@ -146,6 +150,21 @@ public class SendEmail
 		msg.setRecipients(Message.RecipientType.TO, emailDetails.getToInternetAddrArray());
 		msg.setSubject(emailDetails.getSubject());
 		msg.setSentDate(new Date());
+		Multipart multiPart = new MimeMultipart();
+		if (emailDetails.getAttachments() != null)
+		{
+			int index = 0;
+			
+			for (File attachment : emailDetails.getAttachments())
+			{
+				MimeBodyPart messageBodyPart = new MimeBodyPart();
+				DataSource source = new FileDataSource(attachment);
+				messageBodyPart.setDataHandler(new DataHandler(source));
+				messageBodyPart.setFileName(source.getName());
+				multiPart.addBodyPart(messageBodyPart, index);
+				index++;
+			}
+		}
 		// create and fill the first message part
 		MimeBodyPart messageBodyPart = new MimeBodyPart();
 		if(emailDetails.isHtmlBody()){
@@ -153,7 +172,6 @@ public class SendEmail
 		} else {
 			messageBodyPart.setText(emailDetails.getBody());
 		}
-		Multipart multiPart = new MimeMultipart();
 		multiPart.addBodyPart(messageBodyPart);
 		// add the Multipart to the message
 		msg.setContent(multiPart);
