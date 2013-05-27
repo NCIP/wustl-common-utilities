@@ -133,7 +133,7 @@ public class ConnectionManager implements IConnectionManager
 			{
 			//	session.connection().close();
 				session.close();
-				System.out.println("**************************Session is closed and counter=**************************************************"+Scounter);
+				//System.out.println("**************************Session is closed and counter=**************************************************"+Scounter);
 				Scounter--;
 				session=null;
 			}
@@ -205,7 +205,7 @@ public class ConnectionManager implements IConnectionManager
 			session = sessionFactory.openSession();
 			session.setFlushMode(FlushMode.COMMIT);
 			Scounter++;
-			System.out.println("*&*&*&*&*&*&*&*&**&*&*&&**&*&**&**&**Open Session and Counter::"+Scounter);
+			//System.out.println("*&*&*&*&*&*&*&*&**&*&*&&**&*&**&**&**Open Session and Counter::"+Scounter);
 			//session.connection().setAutoCommit(false);
 		}
 		catch (Exception excp)
@@ -225,7 +225,7 @@ public class ConnectionManager implements IConnectionManager
 	{
 		newSession();
 		Ccounter++;
-		System.out.println("*&*&*&*&*&*&*&*&**&*&*&&**&*&**&**&**Open Connection and counter::"+Ccounter);
+		//System.out.println("*&*&*&*&*&*&*&*&**&*&*&&**&*&**&**&**Open Connection and counter::"+Ccounter);
 		return session.connection();
 	}
 
@@ -247,7 +247,7 @@ public class ConnectionManager implements IConnectionManager
 			try
 			{
 				session.connection().close();
-				System.out.println("**************************close connection and counter**************************************************"+Ccounter);
+				//System.out.println("**************************close connection and counter**************************************************"+Ccounter);
 				Ccounter--;
 			}
 			catch (Exception e)
