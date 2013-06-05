@@ -610,6 +610,19 @@ public final class DAOUtility
 			throw new RuntimeException("Error committing txn: ", e);
 		}
 	}
+
+	public void cleanupTxnState() 
+	{
+		try {
+			UserTransaction txn = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+			if (txn.getStatus() != Status.STATUS_NO_TRANSACTION) {
+				txn.rollback();
+			}
+		} catch (Exception e) {
+		}
+	}
+	
+
 	
 	/**
 	 * @return
