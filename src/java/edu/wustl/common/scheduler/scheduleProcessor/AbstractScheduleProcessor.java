@@ -16,6 +16,8 @@ import edu.wustl.common.scheduler.exception.ScheduleHandlerNotFoundException;
 import edu.wustl.common.scheduler.processorScheduler.Scheduler;
 import edu.wustl.common.scheduler.util.SchedulerDataUtility;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.dao.util.DAOUtility;
+
 
 
 /**
@@ -94,6 +96,8 @@ public abstract class AbstractScheduleProcessor implements Runnable
 		{
 			e.printStackTrace();
 
+		} finally {
+			DAOUtility.getInstance().cleanupTxnState();
 		}
 
 	}

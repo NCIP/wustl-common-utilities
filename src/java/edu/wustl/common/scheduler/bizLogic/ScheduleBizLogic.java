@@ -1,7 +1,6 @@
 
 package edu.wustl.common.scheduler.bizLogic;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,8 +13,6 @@ import edu.wustl.common.scheduler.constants.SchedulerConstants;
 import edu.wustl.common.scheduler.domain.BaseSchedule;
 import edu.wustl.common.scheduler.domain.ReportSchedule;
 import edu.wustl.common.scheduler.domain.Schedule;
-import edu.wustl.common.scheduler.exception.AlreadyScheduledException;
-import edu.wustl.common.scheduler.exception.ScheduleHandlerNotFoundException;
 import edu.wustl.common.scheduler.processorScheduler.Scheduler;
 import edu.wustl.common.scheduler.propertiesHandler.SchedulerConfigurationPropertiesHandler;
 import edu.wustl.common.scheduler.scheduleProcessor.AbstractScheduleProcessor;
@@ -25,7 +22,6 @@ import edu.wustl.common.scheduler.util.ReportSchedulerUtil;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.dao.DAO;
 import edu.wustl.dao.exception.DAOException;
-import edu.wustl.dao.util.DAOUtility;
 
 public class ScheduleBizLogic extends DefaultBizLogic
 {
@@ -145,7 +141,7 @@ public class ScheduleBizLogic extends DefaultBizLogic
 		}
 		else
 		{
-			cal.setTimeInMillis(date.getTime() + 24 * 60 * 60 * 1000);
+			cal.add(Calendar.DAY_OF_MONTH,1);
 			delay = (cal.getTimeInMillis() - date.getTime()) / 1000;
 		}
 
