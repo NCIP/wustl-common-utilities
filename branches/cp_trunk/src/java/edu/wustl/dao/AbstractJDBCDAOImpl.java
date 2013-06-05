@@ -869,6 +869,14 @@ public abstract class AbstractJDBCDAOImpl extends AbstractDAOImpl implements JDB
 					int length = (int)blobFile.length();
 					stmt.setBinaryStream(index, (InputStream)colValueBean.getColumnValue(), length);
 				}
+				else if (colValueBean.getColumnValue() instanceof Float)
+				{
+					stmt.setFloat(index, (Float)colValueBean.getColumnValue());
+				}
+				else if (colValueBean.getColumnValue() instanceof Double)
+				{
+					stmt.setDouble(index, (Double)colValueBean.getColumnValue());
+				}
 				else
 				{
 					stmt.setObject(index, colValueBean.getColumnValue());
