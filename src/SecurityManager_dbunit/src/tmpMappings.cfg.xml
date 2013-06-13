@@ -1,3 +1,13 @@
+<!--L
+   Copyright Washington University in St. Louis
+   Copyright SemanticBits
+   Copyright Persistent Systems
+   Copyright Krishagni
+
+   Distributed under the OSI-approved BSD 3-Clause License.
+   See http://ncip.github.com/wustl-common-utilities/LICENSE.txt for details.
+L-->
+
 		        <mapping resource="gov/nih/nci/security/authorization/domainobjects/Privilege.hbm.xml"/>
         <mapping resource="gov/nih/nci/security/authorization/domainobjects/Application.hbm.xml"/>
         <mapping resource="gov/nih/nci/security/authorization/domainobjects/Role.hbm.xml"/>
