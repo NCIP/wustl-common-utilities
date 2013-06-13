@@ -1,3 +1,13 @@
+/*L
+ *  Copyright Washington University in St. Louis
+ *  Copyright SemanticBits
+ *  Copyright Persistent Systems
+ *  Copyright Krishagni
+ *
+ *  Distributed under the OSI-approved BSD 3-Clause License.
+ *  See http://ncip.github.com/wustl-common-utilities/LICENSE.txt for details.
+ */
+
 /**
  * <p>Title: PagenatedResultData class</p>
  * <p>Description:  PagenatedResultData class is a class which can hold the Query Results. </p>
