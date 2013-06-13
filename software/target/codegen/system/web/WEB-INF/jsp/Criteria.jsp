@@ -1,3 +1,13 @@
+<%--L
+   Copyright Washington University in St. Louis
+   Copyright SemanticBits
+   Copyright Persistent Systems
+   Copyright Krishagni
+
+   Distributed under the OSI-approved BSD 3-Clause License.
+   See http://ncip.github.com/wustl-common-utilities/LICENSE.txt for details.
+L--%>
+
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@taglib prefix="s" uri="/struts-tags" %>
 <%@ page import="gov.nih.nci.system.web.util.JSPUtils,

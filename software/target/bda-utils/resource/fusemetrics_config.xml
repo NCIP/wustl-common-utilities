@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--L
+   Copyright Washington University in St. Louis
+   Copyright SemanticBits
+   Copyright Persistent Systems
+   Copyright Krishagni
+
+   Distributed under the OSI-approved BSD 3-Clause License.
+   See http://ncip.github.com/wustl-common-utilities/LICENSE.txt for details.
+L-->
+
 <config project="Project" search="reports" output="C:\dev\fusematrix/target/output" persist="C:\dev\fusematrix/target/persist" template="C:\dev\fusematrix/bda-utils/resource/dashboard.tmpl" html="C:\dev\fusematrix/target/output/dashboard.html">
 
    <metric name="loc" analysis="javancss" />

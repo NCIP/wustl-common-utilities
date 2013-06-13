@@ -1,3 +1,13 @@
+/*L
+ *  Copyright Washington University in St. Louis
+ *  Copyright SemanticBits
+ *  Copyright Persistent Systems
+ *  Copyright Krishagni
+ *
+ *  Distributed under the OSI-approved BSD 3-Clause License.
+ *  See http://ncip.github.com/wustl-common-utilities/LICENSE.txt for details.
+ */
+
 /* Copyright 2004, 2005, 2006 Acegi Technology Pty Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
