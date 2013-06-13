@@ -1,0 +1,14 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+	precomposeunicode = false
+[svn-remote "svn"]
+	url = https://ncisvn.nci.nih.gov/svn/wustl_common_utilities/washu-commons
+	fetch = trunk:refs/heads/trunk
+	branches = branches/*:refs/heads/*
+	tags = tags/*:refs/tags/*
+[svn]
+	authorsfile = authors.txt
