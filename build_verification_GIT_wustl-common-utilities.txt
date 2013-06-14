@@ -1,0 +1,18 @@
+Buildfile: C:\DEV\GIT-WORK\catissue\wustl-common-utilities\build.xml
+
+clean:
+   [delete] Deleting directory C:\DEV\GIT-WORK\catissue\wustl-common-utilities\workarea
+
+compile:
+    [mkdir] Created dir: C:\DEV\GIT-WORK\catissue\wustl-common-utilities\workarea\classes
+    [javac] C:\DEV\GIT-WORK\catissue\wustl-common-utilities\build.xml:28: warning: 'includeantruntime' was not set, defaulting to build.sysclasspath=last; set to false for repeatable builds
+    [javac] Compiling 23 source files to C:\DEV\GIT-WORK\catissue\wustl-common-utilities\workarea\classes
+    [javac] Note: Some input files use unchecked or unsafe operations.
+    [javac] Note: Recompile with -Xlint:unchecked for details.
+     [copy] Copying 1 file to C:\DEV\GIT-WORK\catissue\wustl-common-utilities\workarea\classes
+
+build.jar:
+      [jar] Building jar: C:\DEV\GIT-WORK\catissue\wustl-common-utilities\workarea\washu-commons.jar
+
+BUILD SUCCESSFUL
+Total time: 2 seconds
