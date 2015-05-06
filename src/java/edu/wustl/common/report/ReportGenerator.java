@@ -213,7 +213,7 @@ public abstract class ReportGenerator
 			csId = Long.valueOf(csID);
 		}
 		List<Object> reportNames;
-		if(participantId != null)
+		if(participantId != null && !"null".equals(participantId))
 		{
 			reportNames = repoLogic.getReportNames(csId, Long.valueOf(participantId));
 		}
