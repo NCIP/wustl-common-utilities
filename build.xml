@@ -39,7 +39,7 @@ L-->
 	</path>
 	<target name="compile" depends="clean">
 		<mkdir dir="${temp.src.classes.dir}" />
-		<javac destdir="${temp.src.classes.dir}" debug="on" includeAntRuntime="false" target="1.5">
+		<javac destdir="${temp.src.classes.dir}" debug="on" includeAntRuntime="false" target="1.6">
 			<src path="${src.dir}"/>
 		    	<classpath refid="compile.classpath"/>
 		 </javac>

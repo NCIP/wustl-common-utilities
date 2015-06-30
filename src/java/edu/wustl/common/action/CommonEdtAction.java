@@ -22,7 +22,7 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
 import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.bizlogic.DefaultBizLogic;
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.ApplicationException;
@@ -32,8 +32,6 @@ import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.global.Status;
 import edu.wustl.common.util.global.TextConstants;
 import edu.wustl.common.util.logger.Logger;
-import edu.wustl.dao.HibernateDAO;
-import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.newdao.ActionStatus;
 import edu.wustl.dao.newdao.CleanDAO;
 
@@ -77,7 +75,8 @@ public class CommonEdtAction extends BaseAddEditAction
 		}
 		else
 		{
-			target = getForwardToTarget(request, abstractForm, abstractDomain, objectName);
+			SessionDataBean sessionDataBean=(SessionDataBean) request.getSession().getAttribute(Constants.SESSION_DATA);
+			target = getForwardToTarget(request, abstractForm, abstractDomain, objectName,sessionDataBean);
 		}
 		//Sets the domain object value in PrintMap for Label Printing
 		request.setAttribute("forwardToPrintMap", generateForwardToPrintMap(abstractForm,
@@ -110,7 +109,8 @@ public class CommonEdtAction extends BaseAddEditAction
 	private void setSuccessMsg(HttpServletRequest request, ActionMessages messages,
 			String objectName, AbstractDomainObject abstractDomain) throws ApplicationException
 	{
-		String[] displayNameParams = addMessage(abstractDomain, objectName);
+		SessionDataBean sessionDataBean=(SessionDataBean) request.getSession().getAttribute(Constants.SESSION_DATA);
+		String[] displayNameParams = addMessage(abstractDomain, objectName,sessionDataBean);
 		messages.add(ActionErrors.GLOBAL_MESSAGE, new ActionMessage("object.edit.successOnly",
 				displayNameParams));
 		request.setAttribute(ActionStatus.ACTIONSTAUS, ActionStatus.SUCCESSFUL);
@@ -207,7 +207,7 @@ public class CommonEdtAction extends BaseAddEditAction
 	 * @throws ApplicationException Application Exception
 	 */
 	private String getForwardToTarget(HttpServletRequest request, AbstractActionForm abstractForm,
-			AbstractDomainObject abstractDomain, String objectName) throws ApplicationException
+			AbstractDomainObject abstractDomain, String objectName,SessionDataBean sessionDataBean) throws ApplicationException
 	{
 		String target;
 		setForwardToHashMap(request, abstractForm, abstractDomain);
@@ -223,7 +223,7 @@ public class CommonEdtAction extends BaseAddEditAction
 		{
 			target = pageOf;
 			ActionMessages messages = new ActionMessages();
-			String[] displayNameParams = addMessage(abstractDomain, objectName);
+			String[] displayNameParams = addMessage(abstractDomain, objectName,sessionDataBean);
 			messages.add(ActionErrors.GLOBAL_MESSAGE, new ActionMessage("object. edit"
 					+ ".successOnly", displayNameParams));
 			saveMessages(request, messages);

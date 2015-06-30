@@ -223,14 +223,14 @@ public abstract class BaseAddEditAction extends XSSSupportedAction
 	 * @return display param.
 	 * @throws ApplicationException Application Exception
 	 */
-	protected String[] addMessage(AbstractDomainObject abstractDomain, String objectName)
+	protected String[] addMessage(AbstractDomainObject abstractDomain, String objectName,SessionDataBean sessionDataBean)
 			throws ApplicationException
 	{
 		String message = abstractDomain.getMessageLabel();
 		String displayName;
 		String[] displayparams;
 		IQueryBizLogic queryBizLogic = getQueryBizLogic();
-		displayName = getDispNameOfDomainObj(abstractDomain, objectName, queryBizLogic);
+		displayName = getDispNameOfDomainObj(abstractDomain, objectName, queryBizLogic,sessionDataBean);
 		if (Validator.isEmpty(message))
 		{
 			displayparams = new String[1];
@@ -252,7 +252,7 @@ public abstract class BaseAddEditAction extends XSSSupportedAction
 	 * @return display Name.
 	 */
 	private String getDispNameOfDomainObj(AbstractDomainObject abstractDomain, String objectName,
-			IQueryBizLogic queryBizLogic)
+			IQueryBizLogic queryBizLogic,SessionDataBean sessionDataBean)
 	{
 		String displayName;
 		try
@@ -262,7 +262,7 @@ public abstract class BaseAddEditAction extends XSSSupportedAction
 			if (hibernateMetaData != null)
 			{
 				displayName = queryBizLogic.getDisplayNamebyTableName(hibernateMetaData
-						.getTableName(abstractDomain.getClass()));
+						.getTableName(abstractDomain.getClass()),sessionDataBean);
 			}
 			else
 			{

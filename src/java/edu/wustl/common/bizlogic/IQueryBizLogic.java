@@ -96,6 +96,8 @@ public interface IQueryBizLogic
 	 * @throws ClassNotFoundException Class Not Found Exception.
 	 */
 	String getDisplayNamebyTableName(String tableName) throws DAOException,ClassNotFoundException;
+	
+	String getDisplayNamebyTableName(String tableName,SessionDataBean sessionDataBean) throws DAOException,ClassNotFoundException;
 
 	/**
 	 * get All Table Names.

@@ -404,6 +404,7 @@ public class GenericHibernateDAO<T, ID extends Serializable> implements DAO<T, I
 	public void setSessionDataBean(SessionDataBean sessionDataBean)
 	{
 		this.sessionDataBean = sessionDataBean;
+		updateAuditEventValues();
 	}
 	
 	public String getActivityStatus(Long id) throws DAOException
@@ -418,5 +419,21 @@ public class GenericHibernateDAO<T, ID extends Serializable> implements DAO<T, I
 			activityStatus = list.get(0);
 		}
 		return activityStatus;
+	}
+	
+	public void updateAuditEventValues()
+	{
+		AuditEvent auditEvent=auditManager.getAuditEvent();
+		if(auditManager.getAuditEvent()!=null)
+		{
+			if(auditEvent.getIpAddress()==null)
+			{
+				auditEvent.setIpAddress(sessionDataBean.getIpAddress());
+			}
+			if(auditEvent.getUserId()==null)
+			{
+				auditEvent.setUserId(sessionDataBean.getUserId());
+			}
+		}
 	}
 }

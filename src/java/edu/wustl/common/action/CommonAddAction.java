@@ -25,6 +25,7 @@ import org.apache.struts.action.ActionMessages;
 
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.beans.AddNewSessionDataBean;
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.IBizLogic;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.exception.ApplicationException;
@@ -65,7 +66,8 @@ public class CommonAddAction extends BaseAddEditAction
 		String target;
 		String objectName = getObjectName(abstractForm);
 		AbstractDomainObject abstractDomain = insertDomainObject(request, abstractForm);
-		setSuccessMsg(request, messages, objectName, abstractDomain);
+		SessionDataBean sessionDataBean=(SessionDataBean) request.getSession().getAttribute(Constants.SESSION_DATA);
+		setSuccessMsg(request, messages, objectName, abstractDomain,sessionDataBean);
 		abstractForm.setId(abstractDomain.getId().longValue());
 		request.setAttribute(Constants.SYSTEM_IDENTIFIER, abstractDomain.getId());
 		abstractForm.setMutable(false);
@@ -102,9 +104,9 @@ public class CommonAddAction extends BaseAddEditAction
 	 * @throws ApplicationException Application Exception.
 	 */
 	private void setSuccessMsg(HttpServletRequest request, ActionMessages messages,
-			String objectName, AbstractDomainObject abstractDomain) throws ApplicationException
+			String objectName, AbstractDomainObject abstractDomain,SessionDataBean sessionDataBean) throws ApplicationException
 	{
-		String[] displayNameParams = addMessage(abstractDomain, objectName);
+		String[] displayNameParams = addMessage(abstractDomain, objectName,sessionDataBean);
 		messages.add(ActionErrors.GLOBAL_MESSAGE, new ActionMessage("object.add" + ".successOnly",
 				displayNameParams));
 		request.setAttribute(ActionStatus.ACTIONSTAUS, ActionStatus.SUCCESSFUL);

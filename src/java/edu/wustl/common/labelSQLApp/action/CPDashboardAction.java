@@ -116,7 +116,7 @@ public class CPDashboardAction extends Action
 		else
 		{
 			//reportNameList = ReportGenerator.getReportNamesForUSer(Long.valueOf(cpId), userId);
-			if(participantId != null && !participantId.equals("") && "null".equalsIgnoreCase(participantId))
+			if(participantId != null && !participantId.equals("") && !"null".equalsIgnoreCase(participantId))
 			{
 				reportNameList = ReportGenerator.getReportNames(cpId, participantId);
 				QueryWhereClause queryWhereClause = new QueryWhereClause("edu.wustl.clinportal.domain.Participant");
