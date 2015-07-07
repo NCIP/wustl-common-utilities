@@ -54,7 +54,7 @@ public class CommonAddAction extends BaseAddEditAction
 	 * @param response HttpServletResponse
 	 * @param form Action Form.
 	 * @return ActionForward
-	 * @throws ApplicationException Application Exceptio.
+	 * @throws ApplicationException Application Exception.
 	 */
 	public ActionForward executeXSS(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws ApplicationException
@@ -67,6 +67,12 @@ public class CommonAddAction extends BaseAddEditAction
 		String objectName = getObjectName(abstractForm);
 		AbstractDomainObject abstractDomain = insertDomainObject(request, abstractForm);
 		SessionDataBean sessionDataBean=(SessionDataBean) request.getSession().getAttribute(Constants.SESSION_DATA);
+		if(sessionDataBean == null)
+		{
+			sessionDataBean =new SessionDataBean();
+			sessionDataBean.setIpAddress(request.getRemoteAddr());
+			sessionDataBean.setUserId(0L);
+		}
 		setSuccessMsg(request, messages, objectName, abstractDomain,sessionDataBean);
 		abstractForm.setId(abstractDomain.getId().longValue());
 		request.setAttribute(Constants.SYSTEM_IDENTIFIER, abstractDomain.getId());
