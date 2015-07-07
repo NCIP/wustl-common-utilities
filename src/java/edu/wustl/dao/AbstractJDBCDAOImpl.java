@@ -55,6 +55,7 @@ import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.dao.util.DAOConstants;
 import edu.wustl.dao.util.DAOUtility;
 import edu.wustl.dao.util.StatementData;
+import edu.wustl.security.exception.SMException;
 
 
 /**

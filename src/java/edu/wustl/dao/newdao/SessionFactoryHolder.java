@@ -10,17 +10,6 @@
 
 package edu.wustl.dao.newdao;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-
-import edu.wustl.common.util.logger.Logger;
-import edu.wustl.dao.daofactory.ApplicationDAOPropertiesParser;
-import edu.wustl.dao.daofactory.IDAOFactory;
-import edu.wustl.dao.util.HibernateMetaDataFactory;
 /**
  * 
  * @author sachin

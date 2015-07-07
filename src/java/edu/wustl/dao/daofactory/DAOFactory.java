@@ -20,6 +20,7 @@
 package edu.wustl.dao.daofactory;
 
 import java.io.InputStream;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +42,6 @@ import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.util.DAOUtility;
 import edu.wustl.dao.util.HibernateMetaData;
 import edu.wustl.dao.util.HibernateMetaDataFactory;
-import java.sql.Connection;
 
 
 /**

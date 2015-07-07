@@ -52,14 +52,9 @@ import edu.wustl.common.scheduler.exception.FileCleanedException;
 import edu.wustl.common.scheduler.exception.NotAuthorizedToDownloadException;
 import edu.wustl.common.scheduler.propertiesHandler.SchedulerConfigurationPropertiesHandler;
 import edu.wustl.common.util.Utility;
-import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.global.CommonServiceLocator;
-import edu.wustl.common.util.global.EmailDetails;
-import edu.wustl.common.util.global.SendEmail;
 import edu.wustl.dao.JDBCDAO;
-import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.exception.DAOException;
-import edu.wustl.dao.util.DAOUtility;
 
 public class ReportSchedulerUtil
 {

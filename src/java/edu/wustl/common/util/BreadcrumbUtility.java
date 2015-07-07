@@ -16,8 +16,8 @@ package edu.wustl.common.util;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.logger.Logger;

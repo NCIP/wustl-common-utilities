@@ -17,11 +17,11 @@
 
 package edu.wustl.security.impl;
 
-import org.hibernate.SessionFactory;
-
 import edu.wustl.security.locator.SecurityManagerPropertiesLocator;
 import gov.nih.nci.security.exceptions.CSConfigurationException;
 import gov.nih.nci.security.system.ApplicationSessionFactory;
+
+import org.hibernate.SessionFactory;
 
 /**
  * @author aarti_sharma

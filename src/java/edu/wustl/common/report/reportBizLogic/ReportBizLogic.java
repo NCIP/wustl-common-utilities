@@ -19,12 +19,9 @@ import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.report.bean.ReportBean;
 import edu.wustl.common.report.bean.ReportConditions;
 import edu.wustl.common.util.global.CommonServiceLocator;
-import edu.wustl.dao.DAO;
-import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.exception.DAOException;
-import edu.wustl.dao.query.generator.ColumnValueBean;
 
 public class ReportBizLogic extends DefaultBizLogic
 {

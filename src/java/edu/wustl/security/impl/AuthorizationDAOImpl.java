@@ -17,6 +17,22 @@
 
 package edu.wustl.security.impl;
 
+import edu.wustl.security.exception.SMException;
+import edu.wustl.security.global.Constants;
+import edu.wustl.security.global.ProvisionManager;
+import edu.wustl.security.locator.SecurityManagerPropertiesLocator;
+import gov.nih.nci.logging.api.logger.hibernate.HibernateSessionFactoryHelper;
+import gov.nih.nci.security.UserProvisioningManager;
+import gov.nih.nci.security.authorization.ObjectPrivilegeMap;
+import gov.nih.nci.security.authorization.domainobjects.Group;
+import gov.nih.nci.security.authorization.domainobjects.Privilege;
+import gov.nih.nci.security.authorization.domainobjects.ProtectionElement;
+import gov.nih.nci.security.authorization.domainobjects.User;
+import gov.nih.nci.security.exceptions.CSConfigurationException;
+import gov.nih.nci.security.exceptions.CSException;
+import gov.nih.nci.security.exceptions.CSObjectNotFoundException;
+import gov.nih.nci.security.util.StringUtilities;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,22 +50,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-
-import edu.wustl.security.exception.SMException;
-import edu.wustl.security.global.Constants;
-import edu.wustl.security.global.ProvisionManager;
-import edu.wustl.security.locator.SecurityManagerPropertiesLocator;
-import gov.nih.nci.logging.api.logger.hibernate.HibernateSessionFactoryHelper;
-import gov.nih.nci.security.UserProvisioningManager;
-import gov.nih.nci.security.authorization.ObjectPrivilegeMap;
-import gov.nih.nci.security.authorization.domainobjects.Group;
-import gov.nih.nci.security.authorization.domainobjects.Privilege;
-import gov.nih.nci.security.authorization.domainobjects.ProtectionElement;
-import gov.nih.nci.security.authorization.domainobjects.User;
-import gov.nih.nci.security.exceptions.CSConfigurationException;
-import gov.nih.nci.security.exceptions.CSException;
-import gov.nih.nci.security.exceptions.CSObjectNotFoundException;
-import gov.nih.nci.security.util.StringUtilities;
 
 /**
  * @author aarti_sharma

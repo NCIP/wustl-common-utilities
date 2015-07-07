@@ -19,7 +19,6 @@ import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
-
 import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.logger.Logger;
 

@@ -11,7 +11,8 @@
 package edu.wustl.common.xml2excel;
 
 import java.util.Hashtable;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import jxl.format.Colour;
 import jxl.write.WritableWorkbook;

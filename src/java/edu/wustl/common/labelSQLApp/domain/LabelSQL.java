@@ -10,7 +10,6 @@
 
 package edu.wustl.common.labelSQLApp.domain;
 
-import java.util.Collection;
 
 public class LabelSQL implements java.io.Serializable
 {

@@ -10,7 +10,8 @@
 
 package edu.wustl.common.xml2pdf;
 import java.util.Hashtable;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 

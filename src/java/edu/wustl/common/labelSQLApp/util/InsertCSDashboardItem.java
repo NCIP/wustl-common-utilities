@@ -13,12 +13,13 @@ package edu.wustl.common.labelSQLApp.util;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
-import edu.wustl.common.util.logger.Logger;
+
 import au.com.bytecode.opencsv.CSVReader;
 import edu.wustl.common.labelSQLApp.bizlogic.LabelSQLAssociationBizlogic;
 import edu.wustl.common.labelSQLApp.bizlogic.LabelSQLBizlogic;
 import edu.wustl.common.labelSQLApp.domain.LabelSQL;
 import edu.wustl.common.labelSQLApp.exception.LabelSQLAppException;
+import edu.wustl.common.util.logger.Logger;
 
 public class InsertCSDashboardItem
 {

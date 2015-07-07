@@ -10,8 +10,6 @@
 
 package edu.wustl.common.xml2pdf;
 
-import com.pdfjet.*;
-
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,6 +19,16 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
+
+import com.pdfjet.Box;
+import com.pdfjet.Font;
+import com.pdfjet.Image;
+import com.pdfjet.ImageType;
+import com.pdfjet.Line;
+import com.pdfjet.PDF;
+import com.pdfjet.Page;
+import com.pdfjet.Point;
+import com.pdfjet.TextLine;
 
 public class PDFWriter {
 	private PDFXMLParser parser;

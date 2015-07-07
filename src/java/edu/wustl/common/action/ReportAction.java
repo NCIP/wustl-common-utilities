@@ -28,7 +28,6 @@ import edu.wustl.common.report.bean.FileDetails;
 import edu.wustl.common.report.bean.ReportBean;
 import edu.wustl.common.scheduler.bizLogic.ReportAuditDataBizLogic;
 import edu.wustl.common.scheduler.domain.ReportAuditData;
-import edu.wustl.common.scheduler.propertiesHandler.SchedulerConfigurationPropertiesHandler;
 import edu.wustl.common.scheduler.util.ReportSchedulerUtil;
 import edu.wustl.common.scheduler.util.SchedulerDataUtility;
 import edu.wustl.common.util.SendFile;

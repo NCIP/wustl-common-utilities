@@ -20,12 +20,13 @@
 
 package edu.wustl.dao.daofactory;
 
+import java.sql.Connection;
+
 import edu.wustl.dao.DAO;
 import edu.wustl.dao.DatabaseProperties;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.util.HibernateMetaData;
-import java.sql.Connection;
 
 
 

@@ -31,8 +31,8 @@ import gov.nih.nci.security.constants.Constants;
 import gov.nih.nci.security.exceptions.internal.CSInternalConfigurationException;
 import gov.nih.nci.security.exceptions.internal.CSInternalInsufficientAttributesException;
 import gov.nih.nci.security.util.StringEncrypter;
-import gov.nih.nci.security.util.StringUtilities;
 import gov.nih.nci.security.util.StringEncrypter.EncryptionException;
+import gov.nih.nci.security.util.StringUtilities;
 
 public class CSMRDBMSHelper
 {

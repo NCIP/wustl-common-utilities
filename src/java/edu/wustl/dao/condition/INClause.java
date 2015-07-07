@@ -19,11 +19,7 @@
  */
 package edu.wustl.dao.condition;
 
-import java.util.Arrays;
-import java.util.Iterator;
-
 import edu.wustl.dao.exception.DAOException;
-import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.dao.util.DAOConstants;
 import edu.wustl.dao.util.DAOUtility;
 
